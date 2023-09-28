@@ -221,6 +221,17 @@ class Order(models.Model):
     ])
     created_at = models.DateTimeField(auto_now_add=True)
 
+class CancelOrder(models.Model):
+    order_id = models.PositiveSmallIntegerField()
+    is_cancelled = models.BooleanField(default=True)
+    reason = models.CharField(max_length=100, choices=[
+        (1, 'The price of the product has fallen due to sales/discounts.'),
+        (2, 'Cheaper alternative available for lesser price.'),
+        (3, 'Order delivered time is too much'),
+        (4, 'others')
+    ])
+    others = models.TextField(null=True)
+
 class Payment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

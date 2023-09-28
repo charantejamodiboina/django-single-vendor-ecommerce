@@ -175,21 +175,26 @@ class ResetPasswordView(APIView):
             return Response({'error': 'email is required.'}, status=status.HTTP_400_BAD_REQUEST)
         if not otp:
             return Response({'error': 'OTP is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
         # Get the user and their associated OTP from the database (assuming you have stored it during registration)
         if new != confirm: 
             return Response({'error': 'New password doesnot match with confirm password.'}, status=status.HTTP_404_NOT_FOUND)
-        user = CustomUser.objects.get(email=email)
+        try:
+            user = CustomUser.objects.get(email=email ,otp = otp)
+        except CustomUser.DoesNotExist:
+                return Response({'error': 'User with this email does not exist. or the OTP you entered is wrong, please check the OTP'}, status=status.HTTP_404_NOT_FOUND)
+            
         user.set_password(new)
         user.save()
         update_session_auth_hash(request, user)
         status_code = status.HTTP_200_OK
-            
+                
 
         response = {
-            'success': True,
-            'statusCode': status_code,
-            'message': 'Your password is updated succesfully',
-        }
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Your password is updated succesfully',
+            }
         return Response(response, status_code)
     
 class DeleteAccountView(APIView):
@@ -248,7 +253,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     """
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class SubCategoriesViewSet(viewsets.ModelViewSet):
@@ -257,7 +262,7 @@ class SubCategoriesViewSet(viewsets.ModelViewSet):
     """
     queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -266,7 +271,7 @@ class BrandViewSet(viewsets.ModelViewSet):
     """
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class ProductsViewSet(viewsets.ModelViewSet):
@@ -275,7 +280,7 @@ class ProductsViewSet(viewsets.ModelViewSet):
     """
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
     filterset_class = ProductsFilter
@@ -286,7 +291,7 @@ class VarientsViewSet(viewsets.ModelViewSet):
     """
     queryset = ProductVariant.objects.all()
     serializer_class = VarientsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
     filterset_class = ProductVariantFilter
@@ -297,7 +302,7 @@ class ProductMediaViewSet(viewsets.ModelViewSet):
     """
     queryset = ProductMedia.objects.all()
     serializer_class = ProductMediaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class ProductTransactionViewSet(viewsets.ModelViewSet):
@@ -315,7 +320,7 @@ class ProductDetailsViewSet(viewsets.ModelViewSet):
     """
     queryset = ProductDetails.objects.all()
     serializer_class = ProductDetailsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
     filterset_class = ProductDetailsFilter
@@ -326,7 +331,7 @@ class ProductQuestionsViewSet(viewsets.ModelViewSet):
     """
     queryset = ProductQuestions.objects.all()
     serializer_class = ProductQuestionsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
     filterset_class = ProductQuestionsFilter
@@ -357,7 +362,7 @@ class CartViewSet(viewsets.ModelViewSet):
     """
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class CartItemListView(generics.ListCreateAPIView):
@@ -366,7 +371,7 @@ class CartItemListView(generics.ListCreateAPIView):
     """
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -375,7 +380,7 @@ class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -411,6 +416,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
     """
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+class OrderCancelViewSet(viewsets.ModelViewSet):
+    queryset = CancelOrder.objects.all()
+    serializer_class=OrderCanceledSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
