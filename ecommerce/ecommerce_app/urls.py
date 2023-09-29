@@ -20,6 +20,7 @@ routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
 routers.register('payment',views.PaymentViewSet , "Payment")
 routers.register('address',views.AddressViewSet , "Address")
 routers.register('inventory',views.InventoryViewSet , "Inventory")
+routers.register('banner',views.BannerViewSet , "Banner")
 
 urlpatterns = [
     path('', include(routers.urls)),
@@ -36,4 +37,5 @@ urlpatterns = [
     path('cartitems/<int:pk>/', CartItemDetailView.as_view(), name='profile update'),
     path('orderitems', OrderItemListView.as_view(), name='profile update'),
     path('orderitems/<int:pk>/', OrderItemDetailView.as_view(), name='profile update'),
+
 ]

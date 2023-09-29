@@ -425,4 +425,9 @@ class OrderCancelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
+class BannerViewSet(viewsets.ModelViewSet):
+    queryset = Banner.objects.all()
+    serializer_class=BannerSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
 # Create your views here.
