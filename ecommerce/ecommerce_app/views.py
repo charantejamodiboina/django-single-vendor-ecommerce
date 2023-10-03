@@ -97,8 +97,8 @@ class UserLoginView(TokenObtainPairView):
                             'message': 'User logged in successfully',
                             'access': access_token,
                             'refresh': refresh_token,
-                            'last_login': user.last_login,
-                            'user': serializer.data
+                            'user': user.first_name+" "+user.last_name,
+                            'role': user.role
                         }
 
                     return Response(response, status=status_code)
