@@ -37,5 +37,7 @@ urlpatterns = [
     path('cartitems/<int:pk>/', CartItemDetailView.as_view(), name='profile update'),
     path('orderitems', OrderItemListView.as_view(), name='profile update'),
     path('orderitems/<int:pk>/', OrderItemDetailView.as_view(), name='profile update'),
+    path('count', Count.as_view(), name='Count'),
+    path('user/count', UserCount.as_view(), name='Count By Role based')
 
 ]

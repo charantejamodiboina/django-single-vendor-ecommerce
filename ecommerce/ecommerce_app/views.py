@@ -431,3 +431,27 @@ class BannerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 # Create your views here.
+
+class Count(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        counts = {
+            'Categories': Categories.objects.count(),
+            'Sub Categories': SubCategories.objects.count(),
+            'Brands':Brand.objects.count(),
+            'Products':Products.objects.count(),
+            'Users':CustomUser.objects.count(),
+
+            
+            # Add more counts for other models as needed
+        }
+        return Response(counts)
+
+class UserCount(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        counts = {}
+        for role, _ in CustomUser.ROLE_CHOICES:
+            count = CustomUser.objects.filter(role=role).count()
+            counts[role] = count
+        return Response(counts)
