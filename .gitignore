@@ -2,3 +2,4 @@ venv/
 ecommerce/ecommerce_app/__pycache__/
 ecommerce/ecommerce_app/migrations/__pycache__/
 ecommerce/ecommerce/__pycache__/
+ecommerce/static/admin/
