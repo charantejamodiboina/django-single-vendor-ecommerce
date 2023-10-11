@@ -75,11 +75,11 @@ class UserProfile(models.Model):
             MaxValueValidator(9999999999),
             MinValueValidator(1000000000)
         ])
-    display_pic = models.ImageField(upload_to='images/', null=True, blank=True)
+    display_pic = models.ImageField(upload_to='uploads/', null=True, blank=True)
 
 class Inventory(models.Model):
     name=models.CharField(max_length=255)
-    profile=models.ImageField(upload_to='images/', null=True, blank=True)
+    profile=models.ImageField(upload_to='uploads/', null=True, blank=True)
     description=models.TextField()
     created_at=models.DateTimeField(default=timezone.now)
 
@@ -88,7 +88,7 @@ class Inventory(models.Model):
   
 class Categories(models.Model):
     name=models.CharField(max_length=255)
-    thumbnail=models.ImageField(upload_to='images/', null=True, blank=True)
+    thumbnail=models.ImageField(upload_to='uploads/', null=True, blank=True)
     description=models.TextField()
     created_at=models.DateTimeField(auto_now_add=True)
 
@@ -99,7 +99,7 @@ class Categories(models.Model):
 class SubCategories(models.Model):
     category_id=models.ForeignKey(Categories,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
-    thumbnail=models.ImageField(upload_to='images/', null=True, blank=True)
+    thumbnail=models.ImageField(upload_to='uploads/', null=True, blank=True)
     description=models.TextField()
     created_at=models.DateTimeField(auto_now_add=True)
     modified_at=models.DateTimeField(default=timezone.now)
@@ -114,7 +114,7 @@ class Discount(models.Model):
 
 class Brand(models.Model):
     brand_name = models.CharField(max_length=225, unique=True)
-    brand_image = models.ImageField(upload_to='images/', null=True, blank=True)
+    brand_image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     
 class ProductVariant(models.Model):
     variant_name = models.CharField(max_length=100)
@@ -131,7 +131,7 @@ class Products(models.Model):
     description = models.TextField(default=" ")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_available = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -161,7 +161,7 @@ class ProductDetails(models.Model):
     name=models.CharField(max_length=255)
     name_details=models.CharField(max_length=255)
     created_at=models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
 
 class ProductQuestions(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
