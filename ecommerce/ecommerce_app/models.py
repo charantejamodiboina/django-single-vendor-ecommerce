@@ -110,10 +110,6 @@ class SubCategories(models.Model):
     description=models.TextField(null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     modified_at=models.DateTimeField(default=timezone.now)
-
-class Brand(models.Model):
-    brand_name = models.CharField(max_length=225, unique=True)
-    brand_image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     
 class ProductVariant(models.Model):
     variant_name = models.CharField(max_length=100, unique=True)
@@ -125,7 +121,6 @@ class ProductMedia(models.Model):
 
 class Products(models.Model):
     subcategories_id=models.ForeignKey(SubCategories,on_delete=models.CASCADE)
-    brand = models.ForeignKey(Brand,on_delete=models.CASCADE)
     variant=models.ForeignKey(ProductVariant,on_delete=models.CASCADE)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(default=" ")

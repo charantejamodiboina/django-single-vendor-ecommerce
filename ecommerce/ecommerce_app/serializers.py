@@ -95,15 +95,7 @@ class SubCategoriesSerializer(serializers.ModelSerializer):
             required=False  # Make the field optional
         )
 
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
-        fields = "__all__"
-    brand_image = serializers.ImageField(
-            default=settings.MEDIA_URL + 'default_image.jpg',
-            required=False  # Make the field optional
-        )
-    
+
 class VarientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant

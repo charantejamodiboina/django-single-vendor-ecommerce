@@ -346,37 +346,6 @@ class SubcategoryDeleteView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated ]
     pagination_class = PageNumberPagination
 
-#Brand Views
-class BrandCreateView(generics.CreateAPIView):  
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class BrandView(generics.ListAPIView):   
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
-    
-class BrandRetrieveView(generics.RetrieveAPIView):
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination    
-
-class BrandUpdateView(generics.UpdateAPIView):    
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class BrandDeleteView(generics.DestroyAPIView):   
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
 #Products Views
 class ProductsCreateView(generics.CreateAPIView):  
     queryset = Products.objects.all()
@@ -547,7 +516,6 @@ class Count(APIView):
         counts = {
             'Categories': Categories.objects.count(),
             'Sub Categories': SubCategories.objects.count(),
-            'Brands':Brand.objects.count(),
             'Products':Products.objects.count(),
             'Users':CustomUser.objects.count(),
 

@@ -53,13 +53,6 @@ urlpatterns = [
     path('subcategory/update/<int:pk>/', SubcategoryUpdateView.as_view(), name='Update Subcategory'),
     path('subcategory/delete/<int:pk>/', SubcategoryDeleteView.as_view(), name='Delete Subcategory'),
 
-    # Api's for Brand
-    path('brand/create', BrandCreateView.as_view(), name='Create Brand'),
-    path('brands', BrandView.as_view(), name='Brand List'),
-    path('brand/retrieve/<int:pk>/', BrandRetrieveView.as_view(), name='Brand Retrieve By Id'),
-    path('brand/update/<int:pk>/', BrandUpdateView.as_view(), name='Update Brand'),
-    path('brand/delete/<int:pk>/', BrandDeleteView.as_view(), name='Delete Brand'),
-
     # Api's for vProducts
     path('product/create', ProductsCreateView.as_view(), name='Create Products'),
     path('products', ProductsView.as_view(), name='Products List'),
