@@ -21,6 +21,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
 from .filters import*
 TIME_ZONE ='Asia/Kolkata'
 class UserRegistrationView(APIView):
@@ -239,56 +240,176 @@ class UpdateUserProfile(generics.RetrieveUpdateAPIView):
     pagination_class = PageNumberPagination
 
 class InventoryViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
-    queryset = Inventory.objects.all()
+    
+    queryset = Store.objects.all()
     serializer_class = InventorySerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
-class CategoriesViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+
+#Brand Views
+class BannerCreateView(generics.CreateAPIView):  
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class BannersView(generics.ListAPIView):   
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+class BannerRetrieveView(generics.RetrieveAPIView):
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination    
+
+class BannerUpdateView(generics.UpdateAPIView):    
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class BannerDeleteView(generics.DestroyAPIView):   
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class CategoryCreateView(generics.CreateAPIView):
+    
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated ]
     pagination_class = PageNumberPagination
 
-class SubCategoriesViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+class CategoriesView(generics.ListAPIView):
+    
+    queryset = Categories.objects.all()
+    serializer_class = CategoriesSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+class CategoryRetrieveView(generics.RetrieveAPIView):
+    
+    queryset = Categories.objects.all()
+    serializer_class = CategoriesSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+
+class CategoryUpdateView(generics.UpdateAPIView):
+    
+    queryset = Categories.objects.all()
+    serializer_class = CategoriesSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class CategoryDeleteView(generics.DestroyAPIView):
+    
+    queryset = Categories.objects.all()
+    serializer_class = CategoriesSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+
+#Subcategory Views
+class SubcategoryCreateView(generics.CreateAPIView):  
     queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated ]
     pagination_class = PageNumberPagination
 
-class BrandViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+class SubcategoriesView(generics.ListAPIView):   
+    queryset = SubCategories.objects.all()
+    serializer_class = SubCategoriesSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+class SubcategoryRetrieveView(generics.RetrieveAPIView):
+    queryset = SubCategories.objects.all()
+    serializer_class = SubCategoriesSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination    
+
+class SubcategoryUpdateView(generics.UpdateAPIView):    
+    queryset = SubCategories.objects.all()
+    serializer_class = SubCategoriesSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class SubcategoryDeleteView(generics.DestroyAPIView):   
+    queryset = SubCategories.objects.all()
+    serializer_class = SubCategoriesSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+#Brand Views
+class BrandCreateView(generics.CreateAPIView):  
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated ]
     pagination_class = PageNumberPagination
 
-class ProductsViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+class BrandView(generics.ListAPIView):   
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+class BrandRetrieveView(generics.RetrieveAPIView):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination    
+
+class BrandUpdateView(generics.UpdateAPIView):    
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class BrandDeleteView(generics.DestroyAPIView):   
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+#Products Views
+class ProductsCreateView(generics.CreateAPIView):  
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated ]
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
-    filterset_class = ProductsFilter
+
+class ProductsView(generics.ListAPIView):   
+    queryset = Products.objects.all()
+    serializer_class = ProductsSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+class ProductsRetrieveView(generics.RetrieveAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductsSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination    
+
+class ProductsUpdateView(generics.UpdateAPIView):    
+    queryset = Products.objects.all()
+    serializer_class = ProductsSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class ProductsDeleteView(generics.DestroyAPIView):   
+    queryset = Products.objects.all()
+    serializer_class = ProductsSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
 
 class VarientsViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = ProductVariant.objects.all()
     serializer_class = VarientsSerializer
     permission_classes = (AllowAny,)
@@ -297,38 +418,15 @@ class VarientsViewSet(viewsets.ModelViewSet):
     filterset_class = ProductVariantFilter
     
 class ProductMediaViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = ProductMedia.objects.all()
     serializer_class = ProductMediaSerializer
     permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
-class ProductTransactionViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
-    queryset = ProductTransaction.objects.all()
-    serializer_class = ProductTransactionSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-
-class ProductDetailsViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
-    queryset = ProductDetails.objects.all()
-    serializer_class = ProductDetailsSerializer
-    permission_classes = (AllowAny,)
-    pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
-    filterset_class = ProductDetailsFilter
 
 class ProductQuestionsViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = ProductQuestions.objects.all()
     serializer_class = ProductQuestionsSerializer
     permission_classes = (AllowAny,)
@@ -337,18 +435,14 @@ class ProductQuestionsViewSet(viewsets.ModelViewSet):
     filterset_class = ProductQuestionsFilter
 
 class AnswerViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = ProductAnswer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
 class ProductReviewsViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = ProductReviews.objects.all()
     serializer_class = ProductReviewsSerializer
     permission_classes = [IsAuthenticated]
@@ -357,63 +451,66 @@ class ProductReviewsViewSet(viewsets.ModelViewSet):
     filterset_class = ProductReviewsFilter
 
 class CartViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
-class CartItemListView(generics.ListCreateAPIView):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+class CartItemCreateView(generics.CreateAPIView):
+    
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
 
-class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+class CartItemView(generics.ListAPIView):   
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination
+    
+class CartItemRetrieveView(generics.RetrieveAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+    permission_classes = (AllowAny, )
+    pagination_class = PageNumberPagination    
+
+class CartItemUpdateView(generics.UpdateAPIView):    
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated ]
+    pagination_class = PageNumberPagination
+
+class CartItemDeleteView(generics.DestroyAPIView):   
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated ]
     pagination_class = PageNumberPagination
 
 class OrderViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
 class OrderItemListView(generics.ListCreateAPIView):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
 class OrderItemDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
 class PaymentViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
-    """
+    
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
@@ -425,9 +522,21 @@ class OrderCancelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
-class BannerViewSet(viewsets.ModelViewSet):
-    queryset = Banner.objects.all()
-    serializer_class=BannerSerializer
+class WishlistView(generics.ListAPIView):
+    queryset = Wishlist.objects.all()
+    serializer_class=GetWishlistSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+class WishlistCreateView(generics.CreateAPIView):
+    queryset = Wishlist.objects.all()
+    serializer_class=CreateWishlistSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+class WishlistCreateView(generics.RetrieveDestroyAPIView):
+    queryset = Wishlist.objects.all()
+    serializer_class=CreateWishlistSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 # Create your views here.
@@ -455,3 +564,4 @@ class UserCount(APIView):
             count = CustomUser.objects.filter(role=role).count()
             counts[role] = count
         return Response(counts)
+

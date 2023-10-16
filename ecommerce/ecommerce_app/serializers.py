@@ -70,7 +70,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Inventory
+        model = Store
         fields = "__all__"
     profile = serializers.ImageField(
             default=settings.MEDIA_URL + 'default_image.jpg',
@@ -129,15 +129,7 @@ class ProductMediaSerializer(serializers.ModelSerializer):
         model = ProductMedia
         fields = "__all__"
 
-class ProductTransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductTransaction
-        fields = "__all__"
 
-class ProductDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductDetails
-        fields = "__all__"
 
 class ProductQuestionsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -187,4 +179,25 @@ class PaymentSerializer(serializers.ModelSerializer):
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banner
+        fields = "__all__"
+class CustomProductField(serializers.RelatedField):
+    def to_representation(self, value):
+        product_serializer = ProductsSerializer(value)
+        return (product_serializer.data)
+class CustomUserField(serializers.RelatedField):
+    def to_representation(self, value):
+        user_serializer = UserListSerializer(value)
+        return (user_serializer.data)
+class GetWishlistSerializer(serializers.ModelSerializer):
+    product =ProductsSerializer()
+    user =UserListSerializer()
+    class Meta:
+
+        model = Wishlist
+        fields = "__all__"
+
+class CreateWishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+
+        model = Wishlist
         fields = "__all__"

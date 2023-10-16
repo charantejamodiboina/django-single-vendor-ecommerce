@@ -17,12 +17,6 @@ class ProductVariantFilter(django_filters.FilterSet):
         model = ProductVariant
         fields = ['variant_name']
 
-class ProductDetailsFilter(django_filters.FilterSet):
-    title = django_filters.CharFilter(lookup_expr='icontains')
-    
-    class Meta:
-        model = ProductDetails
-        fields = ['title']
 
 class ProductQuestionsFilter(django_filters.FilterSet):
     question = django_filters.CharFilter(lookup_expr='icontains')

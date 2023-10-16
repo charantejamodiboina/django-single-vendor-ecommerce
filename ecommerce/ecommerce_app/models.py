@@ -77,19 +77,26 @@ class UserProfile(models.Model):
         ])
     display_pic = models.ImageField(upload_to='uploads/', null=True, blank=True)
 
-class Inventory(models.Model):
+class Store(models.Model):
     name=models.CharField(max_length=255)
     profile=models.ImageField(upload_to='uploads/', null=True, blank=True)
-    description=models.TextField()
-    created_at=models.DateTimeField(default=timezone.now)
+    description=models.TextField(null=True)
+    mobile = models.BigIntegerField(unique=True, validators=[
+            MaxValueValidator(9999999999),
+            MinValueValidator(1000000000)
+        ])
+    email=models.EmailField(max_length=250)
+    vat=models.CharField(max_length=255)
+    gstin=models.CharField(max_length=255)
+
 
     def __str__(self):
         return self.name
   
 class Categories(models.Model):
-    name=models.CharField(max_length=255)
+    name=models.CharField(max_length=255, unique=True)
     thumbnail=models.ImageField(upload_to='uploads/', null=True, blank=True)
-    description=models.TextField()
+    description=models.TextField(null=True)
     created_at=models.DateTimeField(auto_now_add=True)
 
 
@@ -97,19 +104,11 @@ class Categories(models.Model):
         return self.name
 
 class SubCategories(models.Model):
-    category_id=models.ForeignKey(Categories,on_delete=models.CASCADE)
-    name=models.CharField(max_length=255)
+    category=models.ForeignKey(Categories,on_delete=models.CASCADE)
+    name=models.CharField(max_length=255, unique=True)
     thumbnail=models.ImageField(upload_to='uploads/', null=True, blank=True)
-    description=models.TextField()
+    description=models.TextField(null=True)
     created_at=models.DateTimeField(auto_now_add=True)
-    modified_at=models.DateTimeField(default=timezone.now)
-
-class Discount(models.Model):
-    name=models.CharField(max_length=255)
-    description=models.TextField()
-    discount_percent = models.DecimalField(max_digits=10, decimal_places=2)
-    is_active=models.BooleanField(default=True)
-    created_at=models.DateTimeField(default=timezone.now)
     modified_at=models.DateTimeField(default=timezone.now)
 
 class Brand(models.Model):
@@ -117,56 +116,40 @@ class Brand(models.Model):
     brand_image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     
 class ProductVariant(models.Model):
-    variant_name = models.CharField(max_length=100)
-    stock_quantity = models.PositiveIntegerField(default=0)
+    variant_name = models.CharField(max_length=100, unique=True)
+    varient_quantity = models.PositiveIntegerField(default=0)
+
+class ProductMedia(models.Model):
+    media_content=models.FileField(upload_to='uploads/')
 
 
 class Products(models.Model):
     subcategories_id=models.ForeignKey(SubCategories,on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand,on_delete=models.CASCADE)
     variant=models.ForeignKey(ProductVariant,on_delete=models.CASCADE)
-    inventory_id=models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    discount_id=models.IntegerField(null=True )
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(default=" ")
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_type = models.CharField(max_length=200, choices=[
+        ('percentage', 'Percentage'),
+        ('amount', 'Amount'),
+    ], default='amount')
+    discount=models.DecimalField(max_digits=10, decimal_places=2, null = True)
     is_available = models.BooleanField(default=True)
     image = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    product_media= models.ManyToManyField(ProductMedia, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    stock = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
-    
 
-class ProductMedia(models.Model):
-    product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
-    media_type_choice=((1,"Image"),(2,"Video"))
-    media_type=models.CharField(max_length=255)
-    media_content=models.FileField()
-    created_at=models.DateTimeField(auto_now_add=True)
-    
-
-class ProductTransaction(models.Model):
-    transaction_type_choices=((1,"BUY"),(2,"SELL"))
-    product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
-    transaction_product_count=models.IntegerField(default=1)
-    transaction_type=models.CharField(choices=transaction_type_choices,max_length=255)
-    transaction_description=models.CharField(max_length=255)
-    created_at=models.DateTimeField(auto_now_add=True)
-
-
-class ProductDetails(models.Model):
-    product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
-    name=models.CharField(max_length=255)
-    name_details=models.CharField(max_length=255)
-    created_at=models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
 
 class ProductQuestions(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
     user_id=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    question=models.TextField()
+    question=models.CharField(max_length=200, unique=True)
     created_at=models.DateTimeField(auto_now_add=True)
 
 class ProductAnswer(models.Model):
@@ -181,9 +164,9 @@ class ProductReviews(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
     user_id=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     review_image=models.FileField()
-    rating=models.SmallIntegerField(validators=[
-            MaxValueValidator(5),
-            MinValueValidator(1)
+    rating=models.FloatField(validators=[
+            MaxValueValidator(5.0),
+            MinValueValidator(0.5)
         ],)
     review=models.TextField(default="")
     created_at=models.DateTimeField(auto_now_add=True)
@@ -254,11 +237,15 @@ class Payment(models.Model):
 from .signals import*
 
 class Banner(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     image = models.ImageField(upload_to='banners/')
-    link = models.URLField(null=True)
+    link = models.CharField(max_length=200, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='wishlist')
