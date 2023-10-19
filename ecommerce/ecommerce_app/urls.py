@@ -1,6 +1,8 @@
 from django.urls import path, include
 from .views import*
 from ecommerce_app import views
+from django.conf.urls.static import static
+
 from rest_framework import routers
 routers = routers.DefaultRouter()
 routers.register('variant', views.VarientsViewSet, "Product Varients")
@@ -78,4 +80,7 @@ urlpatterns = [
     path('wishlist', WishlistView.as_view(), name='WishList'),
     path('wishlist/create/', WishlistCreateView.as_view(), name='Creating wishlist'),
     path('wishlist/<int:pk>/', WishlistCreateView.as_view(), name='Creating wishlist'),
+    path('push/', PushNotificationView.as_view(), name='push-notification'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

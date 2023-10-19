@@ -23,6 +23,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import*
+from fcm_django.models import FCMDevice
 TIME_ZONE ='Asia/Kolkata'
 class UserRegistrationView(APIView):
     user=CustomUser.objects.all()
@@ -390,7 +391,7 @@ class ProductMediaViewSet(viewsets.ModelViewSet):
     
     queryset = ProductMedia.objects.all()
     serializer_class = ProductMediaSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
     pagination_class = PageNumberPagination
 
 
@@ -533,3 +534,20 @@ class UserCount(APIView):
             counts[role] = count
         return Response(counts)
 
+class PushNotificationView(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request):
+        serializer = PushNotificationSerializer(data=request.data)
+        if serializer.is_valid():
+            registration_ids = serializer.validated_data['registration_ids']
+            data = serializer.validated_data['data']
+            
+            # Send the push notification to the specified devices
+            devices = FCMDevice.objects.filter(registration_id__in=registration_ids)
+            message = "Your push notificat0ion message"
+            devices.send_message(message)
+            
+            
+            return Response({"message": "Push notifications sent successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

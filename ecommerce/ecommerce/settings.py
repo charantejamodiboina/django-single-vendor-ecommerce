@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'push_notifications',
+    'webpush',
     'django_filters',
     'rest_framework',
+    'fcm_django',
     'ecommerce_app'
 ]
 
@@ -180,4 +183,8 @@ EMAIL_USE_SSL = False
 # Backend Deployment
 STATIC_ROOT = BASE_DIR/'static'
 
-
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": "AAAAtROjFNg:APA91bHGVIDj_FaRNcGgHJf7mhAmRpCLuVVt42zM2__BdxUz7iOtzSYHyyRJ8f_YwZZ9pyqTxstj3EECUm4wYry_pmishD9NHtCcZpEz-4i2Kxag_v_URsNUVyK01_rWr1sPXf1mPm66",
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": True,
+}

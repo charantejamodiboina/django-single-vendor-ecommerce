@@ -10,7 +10,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name', 'email', 'password', 'role')
     
     def create(self, validated_data):
-        auth_user = CustomUser.objects.create_user(**validated_data)
+        auth_user = CustomUser.objects.create_user(**validated_data) # type: ignore
         return auth_user
 
 class VerifyAccountSerializer(serializers.Serializer):
@@ -193,3 +193,7 @@ class CreateWishlistSerializer(serializers.ModelSerializer):
 
         model = Wishlist
         fields = "__all__"
+
+class PushNotificationSerializer(serializers.Serializer):
+    registration_ids = serializers.ListField(child=serializers.CharField())
+    data = serializers.DictField()

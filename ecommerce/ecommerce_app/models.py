@@ -233,7 +233,7 @@ from .signals import*
 
 class Banner(models.Model):
     title = models.CharField(max_length=255, unique=True)
-    image = models.ImageField(upload_to='banners/')
+    image = models.ImageField(upload_to='uploads/')
     link = models.CharField(max_length=200, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
