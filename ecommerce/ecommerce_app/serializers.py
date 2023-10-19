@@ -54,14 +54,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = "__all__"
-    def get_display_pic(self, obj):
-        # Define image URLs based on gender
-        if obj.gender == 1:
-            return 'default_male_profile.jpg'
-        elif obj.gender == 2:
-            return 'default_female_profile.jpg'
-        else:
-            return 'default.jpg'
+    
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,28 +65,19 @@ class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = "__all__"
-    profile = serializers.ImageField(
-            default=settings.MEDIA_URL + 'default_image.jpg',
-            required=False  # Make the field optional
-        )
+   
     
 class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = "__all__"
-    thumbnail = serializers.ImageField(
-            default=settings.MEDIA_URL + 'default_image.jpg',
-            required=False  # Make the field optional
-        )
+    
 
 class SubCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategories
         fields = "__all__"
-    thumbnail = serializers.ImageField(
-            default=settings.MEDIA_URL + 'default_image.jpg',
-            required=False  # Make the field optional
-        )
+    
 
 
 class VarientsSerializer(serializers.ModelSerializer):
@@ -105,10 +89,7 @@ class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = "__all__"
-    image = serializers.ImageField(
-            default=settings.MEDIA_URL + 'default_image.jpg',
-            required=False  # Make the field optional
-        )
+    
     # def to_representation(self, instance):
     #     rep = super(ProductsSerializer, self).to_representation(instance)
     #     rep['subcategories_id'] = {instance.subcategories_id.id, instance.subcategories_id.title, instance.subcategories_id.description}
