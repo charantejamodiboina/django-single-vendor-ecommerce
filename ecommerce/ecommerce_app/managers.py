@@ -1,4 +1,3 @@
-
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
@@ -19,7 +18,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_verified', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('role', 1)
+        extra_fields.setdefault('role', 'admin')
 
 
         if extra_fields.get('is_superuser') is not True:

@@ -10,19 +10,6 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from .managers import CustomUserManager
 # from .signals import*
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-        # These fields tie to the roles!
-    ADMIN = 1
-    DELIVERY = 2
-    EMPLOYEE = 3
-    CUSTOMER = 4
-
-    ROLE_CHOICES = (
-        (ADMIN, 'Admin'),
-        (DELIVERY, 'Delivery'),
-        (CUSTOMER, 'Customer'),
-        (EMPLOYEE, 'Employee')
-    )
-
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
@@ -32,14 +19,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
     otp = models.CharField(max_length=6, default=000000)
-    role = models.PositiveIntegerField(choices=ROLE_CHOICES)
+    role = models.CharField(max_length =100, choices=[
+        ('admin', 'Admin'),
+        ('store admin', 'Store Admin'),
+        ('delivery', 'Delivery'),
+        ('customer', 'Customer'),
+        ('employe', 'Employee')], default= 'customer')
     is_staff = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
     modified_date = models.DateTimeField(default=timezone.now)
     is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    created_by = models.EmailField()
-    modified_by = models.EmailField()
+    
 
     
     USERNAME_FIELD = 'email'
@@ -49,7 +40,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.first_name+self.last_name
-    
+
+class Subscription(models.Model):
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    is_subscribed = models.BooleanField(default=True)
+
 class ShippingAddress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     address = models.TextField(max_length=500)
@@ -203,10 +199,10 @@ class CancelOrder(models.Model):
     order_id = models.PositiveSmallIntegerField()
     is_cancelled = models.BooleanField(default=True)
     reason = models.CharField(max_length=100, choices=[
-        (1, 'The price of the product has fallen due to sales/discounts.'),
-        (2, 'Cheaper alternative available for lesser price.'),
-        (3, 'Order delivered time is too much'),
-        (4, 'others')
+        ('Reason1', 'The price of the product has fallen due to sales/discounts.'),
+        ('Reason2', 'Cheaper alternative available for lesser price.'),
+        ('Reason3', 'Order delivered time is too much'),
+        ('Reason4', 'others')
     ])
     others = models.TextField(null=True)
 

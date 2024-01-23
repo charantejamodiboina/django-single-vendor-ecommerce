@@ -21,9 +21,13 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from rest_framework.pagination import PageNumberPagination
-from django_filters.rest_framework import DjangoFilterBackend
 from .filters import*
-from fcm_django.models import FCMDevice
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+
+# from fcm_django.models import FCMDevice
 TIME_ZONE ='Asia/Kolkata'
 class UserRegistrationView(APIView):
     user=CustomUser.objects.all()
@@ -70,48 +74,32 @@ class VerifyOtp(APIView):
             return Response({'error': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
             
             
-class UserLoginView(TokenObtainPairView):
-    serializer_class = UserLoginSerializer
+class UserLoginView(ObtainAuthToken):
     permission_classes = (AllowAny, )
+    user=CustomUser.objects.all()
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
-        valid = serializer.is_valid(raise_exception=True)
-        user = CustomUser.objects.all()
-        
+        serializer.is_valid(raise_exception=True)
 
-        if valid:
-            email= serializer.validated_data['email']
-            password= serializer.validated_data['password']
-        
-            user = authenticate(email=email, password=password)
-            if user is not None:
-                if user.is_verified:
-                    login(request, user)
-                    refresh = RefreshToken.for_user(user)
-                    refresh_token = str(refresh)
-                    access_token = str(refresh.access_token)
-
-                    update_last_login(None, user)
-                    status_code = status.HTTP_200_OK
-                    response = {
-                            'success': True,
-                            'statusCode': status_code,
-                            'message': 'User logged in successfully',
-                            'access': access_token,
-                            'refresh': refresh_token,
-                            'user': user.first_name+" "+user.last_name,
-                            'role': user.role
-                        }
-
-                    return Response(response, status=status_code)
-                else:
-                        return Response({'error': 'Email not verified'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                    
+        user = serializer.validated_data['user']
+        print(user)
+        if user.is_verified:
+            login(request, user)
+            token, created = Token.objects.get_or_create(user=user)
             
+            response_data = {
+                'success': True,
+                'statusCode': status.HTTP_200_OK,
+                'message': 'User logged in successfully',
+                'user': user.first_name + " " + user.last_name,
+                'role': user.role,
+                'user_id': user.id,
+                'access': token.key,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Email not verified'}, status=status.HTTP_400_BAD_REQUEST)    
     
 class UserListView(APIView):
     serializer_class = UserListSerializer
@@ -200,6 +188,7 @@ class ResetPasswordView(APIView):
         return Response(response, status_code)
     
 class DeleteAccountView(APIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get_object(self, pk):
         try:
@@ -214,6 +203,7 @@ class DeleteAccountView(APIView):
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = ShippingAddress.objects.all()
     serializer_class = AddressSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     @action(detail=False, methods=['GET'])
     def get_addresses_by_user(self, request):
@@ -224,292 +214,352 @@ class AddressViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response({'message': 'Please provide a user parameter in the query.'}, status=400)
-        
-class CreateUserProfile(generics.CreateAPIView):
-    """
-    create a new user profile.
-    """
-    permission_classes = [IsAuthenticated]
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    pagination_class = PageNumberPagination
-
-class UpdateUserProfile(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    pagination_class = PageNumberPagination
-
-class InventoryViewSet(viewsets.ModelViewSet):
-    
-    queryset = Store.objects.all()
-    serializer_class = InventorySerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-
-
-#Brand Views
+#Banner Views
 class BannerCreateView(generics.CreateAPIView):  
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
 class BannersView(generics.ListAPIView):   
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
+
     
 class BannerRetrieveView(generics.RetrieveAPIView):
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination    
 
-class BannerUpdateView(generics.UpdateAPIView):    
-    queryset = Banner.objects.all()
-    serializer_class = BannerSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
+class BannerUpdateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return Banner.objects.get(pk=pk)
+        except Banner.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        banner = self.get_object(pk)
+        serializer = BannerSerializer(banner, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        banner = self.get_object(pk)
+        banner.delete()
+        return Response({'message': f'banner is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
-class BannerDeleteView(generics.DestroyAPIView):   
-    queryset = Banner.objects.all()
-    serializer_class = BannerSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
+# Categories code
 class CategoryCreateView(generics.CreateAPIView):
-    
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class CategoriesView(generics.ListAPIView):
-    
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
     
-class CategoryRetrieveView(generics.RetrieveAPIView):
-    
+class CategoryRetrieveView(generics.RetrieveAPIView): 
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
-    
 
-class CategoryUpdateView(generics.UpdateAPIView):
-    
-    queryset = Categories.objects.all()
-    serializer_class = CategoriesSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class CategoryDeleteView(generics.DestroyAPIView):
-    
-    queryset = Categories.objects.all()
-    serializer_class = CategoriesSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
+class CategoryUpdateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return Categories.objects.get(pk=pk)
+        except Categories.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        category = self.get_object(pk)
+        serializer = CategoriesSerializer(category, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        category = self.get_object(pk)
+        category.delete()
+        return Response({'message': f'category is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 #Subcategory Views
 class SubcategoryCreateView(generics.CreateAPIView):  
     queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class SubcategoriesView(generics.ListAPIView):   
     queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
     
 class SubcategoryRetrieveView(generics.RetrieveAPIView):
     queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesSerializer
-    permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination    
+    permission_classes = (AllowAny, ) 
 
-class SubcategoryUpdateView(generics.UpdateAPIView):    
-    queryset = SubCategories.objects.all()
-    serializer_class = SubCategoriesSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class SubcategoryDeleteView(generics.DestroyAPIView):   
-    queryset = SubCategories.objects.all()
-    serializer_class = SubCategoriesSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
+class SubcategoryUpdateView(APIView):    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return SubCategories.objects.get(pk=pk)
+        except SubCategories.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        subcategory = self.get_object(pk)
+        serializer = SubCategoriesSerializer(subcategory, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        subcategory = self.get_object(pk)
+        subcategory.delete()
+        return Response({'message': 'subcategory is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 #Products Views
 class ProductsCreateView(generics.CreateAPIView):  
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class ProductsView(generics.ListAPIView):   
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
-    
+
 class ProductsRetrieveView(generics.RetrieveAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination    
-
-class ProductsUpdateView(generics.UpdateAPIView):    
-    queryset = Products.objects.all()
-    serializer_class = ProductsSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class ProductsDeleteView(generics.DestroyAPIView):   
-    queryset = Products.objects.all()
-    serializer_class = ProductsSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class VarientsViewSet(viewsets.ModelViewSet):
     
+class ProductsUpdateView(APIView):    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return Products.objects.get(pk=pk)
+        except Products.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = ProductsSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        product = self.get_object(pk)
+        product.delete()
+        return Response({'message': 'Product is deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
+# Product variants views
+class VarientsPost(generics.CreateAPIView):
     queryset = ProductVariant.objects.all()
     serializer_class = VarientsSerializer
-    permission_classes = (AllowAny,)
-    pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
-    filterset_class = ProductVariantFilter
-    
-class ProductMediaViewSet(viewsets.ModelViewSet):
-    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class Varientslist(generics.ListAPIView):
+    queryset = ProductVariant.objects.all()
+    serializer_class = VarientsSerializer
+    permission_classes = (AllowAny, ) 
+
+class VarientsDetails(generics.RetrieveAPIView):
+    queryset = ProductVariant.objects.all()
+    serializer_class = VarientsSerializer
+    permission_classes = (AllowAny, )
+
+class VarientUpdateView(APIView):    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return ProductVariant.objects.get(pk=pk)
+        except ProductVariant.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        product_variant = self.get_object(pk)
+        serializer = VarientsSerializer(product_variant, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        product_variant = self.get_object(pk)
+        product_variant.delete()
+        return Response({'message': 'Product Variant is deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
+# Product Media views
+class ProductMediaCreate(generics.CreateAPIView):
+    queryset = ProductMedia.objects.all()
+    serializer_class = ProductMediaSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class ProductMedialist(generics.ListAPIView):
     queryset = ProductMedia.objects.all()
     serializer_class = ProductMediaSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
 
+class ProductMediaDetails(generics.RetrieveAPIView):
+    queryset = ProductMedia.objects.all()
+    serializer_class = ProductMediaSerializer
+    permission_classes = (AllowAny, )
 
-class ProductQuestionsViewSet(viewsets.ModelViewSet):
-    
+class ProductMediaUpdateView(APIView):    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return ProductMedia.objects.get(pk=pk)
+        except ProductMedia.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        product_media = self.get_object(pk)
+        serializer = VarientsSerializer(product_media, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        product_media = self.get_object(pk)
+        product_media.delete()
+        return Response({'message': 'Product Media is deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
+# Product Questions view
+class ProductQuestionsCreate(generics.CreateAPIView):
+    queryset = ProductQuestions.objects.all()
+    serializer_class = ProductQuestionsSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class ProductQuestionslist(generics.ListAPIView):
     queryset = ProductQuestions.objects.all()
     serializer_class = ProductQuestionsSerializer
     permission_classes = (AllowAny,)
-    pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
-    filterset_class = ProductQuestionsFilter
 
-class AnswerViewSet(viewsets.ModelViewSet):
-    
+class ProductQuestionsDetails(generics.RetrieveAPIView):
+    queryset = ProductQuestions.objects.all()
+    serializer_class = ProductQuestionsSerializer
+    permission_classes = (AllowAny,)
+
+# product answer view
+class PostAnswer(generics.CreateAPIView):   
     queryset = ProductAnswer.objects.all()
     serializer_class = AnswerSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
 
-class ProductReviewsViewSet(viewsets.ModelViewSet):
-    
+
+class Answerslist(generics.ListAPIView):
+    queryset = ProductAnswer.objects.all()
+    serializer_class = AnswerSerializer
+    permission_classes = (AllowAny, )
+
+
+class AnswerDetails(generics.RetrieveAPIView):
+    queryset = ProductAnswer.objects.all()
+    serializer_class = AnswerSerializer
+    permission_classes = (AllowAny, )
+
+# Product review
+class CreateProductReview(generics.CreateAPIView):   
     queryset = ProductReviews.objects.all()
     serializer_class = ProductReviewsSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,filters.OrderingFilter)
-    filterset_class = ProductReviewsFilter
 
-class CartViewSet(viewsets.ModelViewSet):
-    
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
+class ListProductReview(generics.ListAPIView):
+    queryset = ProductReviews.objects.all()
+    serializer_class = ProductReviewsSerializer
+    permission_classes = (AllowAny, )
 
+class RetrieveProductReview(generics.RetrieveAPIView):
+    queryset = ProductReviews.objects.all()
+    serializer_class = ProductReviewsSerializer
+    permission_classes = (AllowAny, )
+
+# Cart item  views
 class CartItemCreateView(generics.CreateAPIView):
-    
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = (AllowAny,)
-    pagination_class = PageNumberPagination
 
 class CartItemView(generics.ListAPIView):   
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination
     
 class CartItemRetrieveView(generics.RetrieveAPIView):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = (AllowAny, )
-    pagination_class = PageNumberPagination    
-
-class CartItemUpdateView(generics.UpdateAPIView):    
-    queryset = CartItem.objects.all()
-    serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class CartItemDeleteView(generics.DestroyAPIView):   
-    queryset = CartItem.objects.all()
-    serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated ]
-    pagination_class = PageNumberPagination
-
-class OrderViewSet(viewsets.ModelViewSet):
     
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+class CartItemUpdateView(APIView):    
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
+    def get_object(self, pk):
+        try:
+            return CartItem.objects.get(pk=pk)
+        except CartItem.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        cart_item = self.get_object(pk)
+        serializer = CartItemSerializer(cart_item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        cart_item = self.get_object(pk)
+        cart_item.delete()
+        return Response({'message': 'CartItem is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
+# order item views
 class OrderItemListView(generics.ListCreateAPIView):
-    
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
 
 class OrderItemDetailView(generics.RetrieveUpdateDestroyAPIView):
-    
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
 
-class PaymentViewSet(viewsets.ModelViewSet):
-    
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-
-class OrderCancelViewSet(viewsets.ModelViewSet):
-    queryset = CancelOrder.objects.all()
-    serializer_class=OrderCanceledSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
 
 class WishlistView(generics.ListAPIView):
     queryset = Wishlist.objects.all()
     serializer_class=GetWishlistSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
+
 
 class WishlistCreateView(generics.CreateAPIView):
     queryset = Wishlist.objects.all()
     serializer_class=CreateWishlistSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
 
-class WishlistCreateView(generics.RetrieveDestroyAPIView):
+class WishlistUpdateView(generics.RetrieveDestroyAPIView):
     queryset = Wishlist.objects.all()
     serializer_class=CreateWishlistSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-# Create your views here.
+
 
 class Count(APIView):
     permission_classes = (AllowAny,)
@@ -534,20 +584,55 @@ class UserCount(APIView):
             counts[role] = count
         return Response(counts)
 
-class PushNotificationView(APIView):
-    permission_classes = (AllowAny,)
-    def post(self, request):
-        serializer = PushNotificationSerializer(data=request.data)
-        if serializer.is_valid():
-            registration_ids = serializer.validated_data['registration_ids']
-            data = serializer.validated_data['data']
+# class PushNotificationView(APIView):
+#     permission_classes = (AllowAny,)
+#     def post(self, request):
+#         serializer = PushNotificationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             registration_ids = serializer.validated_data['registration_ids']
+#             data = serializer.validated_data['data']
             
-            # Send the push notification to the specified devices
-            devices = FCMDevice.objects.filter(registration_id__in=registration_ids)
-            message = "Your push notificat0ion message"
-            devices.send_message(message)
+#             # Send the push notification to the specified devices
+#             devices = FCMDevice.objects.filter(registration_id__in=registration_ids)
+#             message = "Your push notificat0ion message"
+#             devices.send_message(message)
             
             
-            return Response({"message": "Push notifications sent successfully"}, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#             return Response({"message": "Push notifications sent successfully"}, status=status.HTTP_200_OK)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # cart views
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class OrderCancelViewSet(viewsets.ModelViewSet):
+    queryset = CancelOrder.objects.all()
+    serializer_class=OrderCanceledSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer        
+class InventoryViewSet(viewsets.ModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = InventorySerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]

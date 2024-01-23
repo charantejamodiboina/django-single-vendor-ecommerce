@@ -41,11 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'push_notifications',
-    'webpush',
+    'rest_framework.authtoken',
+    # 'push_notifications',
+    # 'webpush',
     'django_filters',
     'rest_framework',
-    'fcm_django',
+    # 'fcm_django',
     'ecommerce_app'
 ]
 
@@ -84,21 +85,29 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#                 'ENGINE': 'django.db.backends.mysql',  
+#                 'NAME': 'ecommerce',  
+#                 'USER': 'root',  
+#                 'PASSWORD': 'root',  
+#                 'HOST': '127.0.0.1',  
+#                 'PORT': '3306',  
+#         'OPTIONS': {  
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
+#         }  
+#     }
+# }
+
 DATABASES = {
     'default': {
-                'ENGINE': 'django.db.backends.mysql',  
-                'NAME': 'ecommerce',  
-                'USER': 'root',  
-                'PASSWORD': 'root',  
-                'HOST': '127.0.0.1',  
-                'PORT': '3306',  
-        'OPTIONS': {  
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
-        }  
+        'ENGINE': 'djongo',
+        'NAME': 'SingleVendor',  # Replace with your desired database name
+        'CLIENT': {
+            'host': 'mongodb://localhost:27017',  # MongoDB connection URL
+        },
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -177,14 +186,10 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS =True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'charantejamodiboyina@gmail.com'
-EMAIL_HOST_PASSWORD = 'pdruwazqcceslees'
+EMAIL_HOST_PASSWORD = 'blynyfkhwjvxoeby'
 EMAIL_USE_SSL = False
 
 # Backend Deployment
 STATIC_ROOT = BASE_DIR/'static'
 
-FCM_DJANGO_SETTINGS = {
-    "FCM_SERVER_KEY": "AAAAtROjFNg:APA91bHGVIDj_FaRNcGgHJf7mhAmRpCLuVVt42zM2__BdxUz7iOtzSYHyyRJ8f_YwZZ9pyqTxstj3EECUm4wYry_pmishD9NHtCcZpEz-4i2Kxag_v_URsNUVyK01_rWr1sPXf1mPm66",
-    "ONE_DEVICE_PER_USER": True,
-    "DELETE_INACTIVE_DEVICES": True,
-}
+

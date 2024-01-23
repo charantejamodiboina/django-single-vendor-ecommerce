@@ -15,11 +15,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class VerifyAccountSerializer(serializers.Serializer):
     class Meta:
-        
-        
         email = models.EmailField()
         otp = models.CharField(max_length=6)
 
+class SubscriptionSerializer(serializers.Serializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+    
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length=128, write_only=True)
@@ -50,7 +53,6 @@ class ResetPasswordSerializer(serializers.Serializer):
             return auth_user
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    display_pic = serializers.SerializerMethodField()
     class Meta:
         model = UserProfile
         fields = "__all__"
@@ -77,8 +79,6 @@ class SubCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategories
         fields = "__all__"
-    
-
 
 class VarientsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -161,6 +161,7 @@ class CustomUserField(serializers.RelatedField):
     def to_representation(self, value):
         user_serializer = UserListSerializer(value)
         return (user_serializer.data)
+    
 class GetWishlistSerializer(serializers.ModelSerializer):
     product =ProductsSerializer()
     user =UserListSerializer()
@@ -175,6 +176,3 @@ class CreateWishlistSerializer(serializers.ModelSerializer):
         model = Wishlist
         fields = "__all__"
 
-class PushNotificationSerializer(serializers.Serializer):
-    registration_ids = serializers.ListField(child=serializers.CharField())
-    data = serializers.DictField()
