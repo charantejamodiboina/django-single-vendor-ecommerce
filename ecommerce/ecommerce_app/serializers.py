@@ -80,7 +80,13 @@ class SubCategoriesSerializer(serializers.ModelSerializer):
         model = SubCategories
         fields = "__all__"
 
-class VarientsSerializer(serializers.ModelSerializer):
+class SubCategoriesViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategories
+        fields = "__all__"
+    category=CategoriesSerializer()
+
+class VariantsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = "__all__"
@@ -90,18 +96,12 @@ class ProductsSerializer(serializers.ModelSerializer):
         model = Products
         fields = "__all__"
     
-    # def to_representation(self, instance):
-    #     rep = super(ProductsSerializer, self).to_representation(instance)
-    #     rep['subcategories_id'] = {instance.subcategories_id.id, instance.subcategories_id.title, instance.subcategories_id.description}
-    #     rep['brand'] = instance.brand.brand_name
-    #     rep['variant'] = instance.variant.variant_name
-    #     return rep
-    
-class ProductMediaSerializer(serializers.ModelSerializer):
+class ProductsViewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductMedia
+        model = Products
         fields = "__all__"
-
+    subcategories_id=SubCategoriesViewSerializer()
+    variant=VariantsSerializer()
 
 
 class ProductQuestionsSerializer(serializers.ModelSerializer):

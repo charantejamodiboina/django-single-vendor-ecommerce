@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -165,7 +166,8 @@ class ResetPasswordView(APIView):
             return Response({'error': 'email is required.'}, status=status.HTTP_400_BAD_REQUEST)
         if not otp:
             return Response({'error': 'OTP is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+        if not new:
+            return Response({'error': 'new_password is required.'}, status=status.HTTP_400_BAD_REQUEST)
         # Get the user and their associated OTP from the database (assuming you have stored it during registration)
         if new != confirm: 
             return Response({'error': 'New password doesnot match with confirm password.'}, status=status.HTTP_404_NOT_FOUND)
@@ -298,13 +300,23 @@ class SubcategoryCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 class SubcategoriesView(generics.ListAPIView):   
-    queryset = SubCategories.objects.all()
-    serializer_class = SubCategoriesSerializer
+    # queryset = SubCategories.objects.all()
+    serializer_class = SubCategoriesViewSerializer
     permission_classes = (AllowAny, )
+    def get_queryset(self):
+        queryset = SubCategories.objects.all()
+        category_name = self.request.query_params.get('category_name', None)
+        name_contains = self.request.query_params.get('name', None)
+        if category_name:
+            queryset=queryset.filter(category__name__icontains=category_name)
+        if name_contains:
+            if name_contains.strip():
+                queryset = queryset.filter(name__icontains=name_contains)
+        return queryset
     
 class SubcategoryRetrieveView(generics.RetrieveAPIView):
     queryset = SubCategories.objects.all()
-    serializer_class = SubCategoriesSerializer
+    serializer_class = SubCategoriesViewSerializer
     permission_classes = (AllowAny, ) 
 
 class SubcategoryUpdateView(APIView):    
@@ -335,13 +347,36 @@ class ProductsCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 class ProductsView(generics.ListAPIView):   
-    queryset = Products.objects.all()
-    serializer_class = ProductsSerializer
+    serializer_class = ProductsViewSerializer
     permission_classes = (AllowAny, )
+    def get_queryset(self):
+        queryset = Products.objects.all()
+        subcategory = self.request.query_params.get('subcategory', None)
+        variant = self.request.query_params.get('variant', None)
+        name = self.request.query_params.get('name', None)
+        
+        if subcategory:
+            queryset=queryset.filter(subcategories_id__name__icontains=subcategory)
+        if variant:
+            queryset=queryset.filter(variant__variant_name__icontains=variant)
+        if name:
+            queryset=queryset.filter(name__icontains=name)
+        return queryset
+    def get_queryset(self):
+        queryset = Products.objects.all()
+        max_price = self.request.query_params.get('max_prce', None)
+        min_price = self.request.query_params.get('min_prce', None)
+        if min_price and max_price:
+            queryset=queryset.filter(price__gte=min_price, price__lte=max_price)
+        elif min_price:
+            queryset=queryset.filter(price__gte=min_price)
+        elif max_price:
+            queryset=queryset.filter(price=max_price)
+        return queryset
 
 class ProductsRetrieveView(generics.RetrieveAPIView):
     queryset = Products.objects.all()
-    serializer_class = ProductsSerializer
+    serializer_class = ProductsViewSerializer
     permission_classes = (AllowAny, )
     
 class ProductsUpdateView(APIView):    
@@ -367,18 +402,18 @@ class ProductsUpdateView(APIView):
 # Product variants views
 class VarientsPost(generics.CreateAPIView):
     queryset = ProductVariant.objects.all()
-    serializer_class = VarientsSerializer
+    serializer_class = VariantsSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
 class Varientslist(generics.ListAPIView):
     queryset = ProductVariant.objects.all()
-    serializer_class = VarientsSerializer
+    serializer_class = VariantsSerializer
     permission_classes = (AllowAny, ) 
 
 class VarientsDetails(generics.RetrieveAPIView):
     queryset = ProductVariant.objects.all()
-    serializer_class = VarientsSerializer
+    serializer_class = VariantsSerializer
     permission_classes = (AllowAny, )
 
 class VarientUpdateView(APIView):    
@@ -391,7 +426,7 @@ class VarientUpdateView(APIView):
             raise Http404
     def put(self, request, pk, format=None):
         product_variant = self.get_object(pk)
-        serializer = VarientsSerializer(product_variant, data=request.data)
+        serializer = VariantsSerializer(product_variant, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -400,43 +435,6 @@ class VarientUpdateView(APIView):
         product_variant = self.get_object(pk)
         product_variant.delete()
         return Response({'message': 'Product Variant is deleted.'}, status=status.HTTP_204_NO_CONTENT)
-
-# Product Media views
-class ProductMediaCreate(generics.CreateAPIView):
-    queryset = ProductMedia.objects.all()
-    serializer_class = ProductMediaSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-class ProductMedialist(generics.ListAPIView):
-    queryset = ProductMedia.objects.all()
-    serializer_class = ProductMediaSerializer
-    permission_classes = (AllowAny, )
-
-class ProductMediaDetails(generics.RetrieveAPIView):
-    queryset = ProductMedia.objects.all()
-    serializer_class = ProductMediaSerializer
-    permission_classes = (AllowAny, )
-
-class ProductMediaUpdateView(APIView):    
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    def get_object(self, pk):
-        try:
-            return ProductMedia.objects.get(pk=pk)
-        except ProductMedia.DoesNotExist:
-            raise Http404
-    def put(self, request, pk, format=None):
-        product_media = self.get_object(pk)
-        serializer = VarientsSerializer(product_media, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def delete(self, request, pk, format=None):
-        product_media = self.get_object(pk)
-        product_media.delete()
-        return Response({'message': 'Product Media is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 # Product Questions view
 class ProductQuestionsCreate(generics.CreateAPIView):

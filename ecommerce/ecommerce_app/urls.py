@@ -54,11 +54,6 @@ urlpatterns = [
     path('product/variant/list', Varientslist.as_view()),
     path('product/variant/<int:pk>/', VarientsDetails.as_view()),
     path('variant/update/<int:pk>/', VarientUpdateView.as_view()),
-    # API's for product media
-    path('product/media', ProductMediaCreate.as_view()),
-    path('product/media/list', ProductMedialist.as_view()),
-    path('product/media/<int:pk>/', ProductMediaDetails.as_view()),
-    path('update/pmedia/<int:pk>/', ProductMediaUpdateView.as_view()),
     # API's for product questions
     path('product/que', ProductQuestionsCreate.as_view()),
     path('product/que/list', ProductQuestionslist.as_view()),

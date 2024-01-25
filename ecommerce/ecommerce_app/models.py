@@ -111,10 +111,6 @@ class ProductVariant(models.Model):
     variant_name = models.CharField(max_length=100, unique=True)
     varient_quantity = models.PositiveIntegerField(default=0)
 
-class ProductMedia(models.Model):
-    media_content=models.FileField(upload_to='uploads/')
-
-
 class Products(models.Model):
     subcategories_id=models.ForeignKey(SubCategories,on_delete=models.CASCADE)
     variant=models.ForeignKey(ProductVariant,on_delete=models.CASCADE)
@@ -127,15 +123,19 @@ class Products(models.Model):
     ], default='amount')
     discount=models.DecimalField(max_digits=10, decimal_places=2, null = True)
     is_available = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
-    product_media= models.ManyToManyField(ProductMedia, blank=True)
+    image = models.ImageField(upload_to='product_images/', blank=True)
+    image2 = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image3 = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image4 = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image5 = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image6 = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    video = models.FileField(upload_to='product_video/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     stock = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
-
 
 class ProductQuestions(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
