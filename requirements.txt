@@ -1,0 +1,15 @@
+Django==3.2.12
+djangorestframework==3.14.0
+djangorestframework-simplejwt
+django-cors-headers
+Pillow==9.0.1
+six==1.16.0
+django-filter
+djongo
+pymongo==3.12.3
+moviepy
+razorpay
+opencv-python
+validate_email
+markdown
+# GDAL

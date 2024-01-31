@@ -364,14 +364,14 @@ class ProductsView(generics.ListAPIView):
         return queryset
     def get_queryset(self):
         queryset = Products.objects.all()
-        max_price = self.request.query_params.get('max_prce', None)
-        min_price = self.request.query_params.get('min_prce', None)
+        max_price = self.request.query_params.get('max_price', None)
+        min_price = self.request.query_params.get('min_price', None)
         if min_price and max_price:
             queryset=queryset.filter(price__gte=min_price, price__lte=max_price)
         elif min_price:
             queryset=queryset.filter(price__gte=min_price)
         elif max_price:
-            queryset=queryset.filter(price=max_price)
+            queryset=queryset.filter(price__lte=max_price)
         return queryset
 
 class ProductsRetrieveView(generics.RetrieveAPIView):
