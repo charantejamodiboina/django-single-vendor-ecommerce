@@ -103,6 +103,11 @@ class ProductsViewSerializer(serializers.ModelSerializer):
     subcategories_id=SubCategoriesViewSerializer()
     variant=VariantsSerializer()
 
+class CustProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields =('name', 'image')
+    
 
 class ProductQuestionsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -118,30 +123,67 @@ class ProductReviewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductReviews
         fields = "__all__"
-
+    
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = "__all__"
 
 class CartItemSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CartItem
         fields = "__all__"
+    
 
+class CartItemViewSerializer(serializers.ModelSerializer):
+    product=CustProductSerializer()
+    class Meta:
+        model = CartItem
+        fields = ('product', )
+    
+class CartViewSerializer(serializers.ModelSerializer):
+    items = serializers.SerializerMethodField()
+    class Meta:
+        model = Cart
+        fields = "__all__"
+    def get_items(self, obj):
+        cart_items = obj.cartitem_set.all()
+        return CartItemViewSerializer(cart_items, many=True).data
+class OrderItemsSerializer(serializers.ModelSerializer):
+    product=CustProductSerializer()
+    class Meta:
+        model = OrderItems
+        fields = ('product',)
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
+
+class OrderViewSerializer(serializers.ModelSerializer):
+    items = serializers.SerializerMethodField()
+    class Meta:
+        model = Order
+        fields = "__all__"
+    def get_items(self, obj):
+        order_items = obj.orderitems_set.all()
+        return OrderItemsSerializer(order_items, many=True).data
+
+class StatusSerializer(serializers.ModelSerializer):
+    
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('canceled', 'Canceled')
+    ])
+    class Meta:
+        model = Order
+        fields = ('status', )
 class OrderCanceledSerializer(serializers.ModelSerializer):
     class Meta:
         model = CancelOrder
-        fields = "__all__"
-
-
-class OrderItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderItem
         fields = "__all__"
 
 class PaymentSerializer(serializers.ModelSerializer):

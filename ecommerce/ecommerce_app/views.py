@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import*
+from django.db import transaction
 from .serializers import*
 from .email import*
 from django.conf import settings
@@ -27,8 +28,10 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-
+from django.shortcuts import get_object_or_404
 # from fcm_django.models import FCMDevice
+from rest_framework.decorators import api_view, permission_classes
+
 TIME_ZONE ='Asia/Kolkata'
 class UserRegistrationView(APIView):
     user=CustomUser.objects.all()
@@ -38,10 +41,8 @@ class UserRegistrationView(APIView):
         serializers = self.serializer_class(data=request.data)
         valid = serializers.is_valid(raise_exception = True)
         if valid:
-            
-            
-
-            serializers.save()
+            user=serializers.save()
+            cart = Cart.objects.create(user=user)
             email_otp(serializers.data['email'])
             
             status_code= status.HTTP_201_CREATED
@@ -59,7 +60,6 @@ class VerifyOtp(APIView):
     def post(self, request):
         otp = request.data.get('otp')
         email = request.data.get('email')
-
         if not email or not otp:
             return Response({'error': 'email and otp is required.'}, status=status.HTTP_400_BAD_REQUEST)
         # Get the user and their associated OTP from the database (assuming you have stored it during registration)
@@ -86,8 +86,7 @@ class UserLoginView(ObtainAuthToken):
         print(user)
         if user.is_verified:
             login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            
+            token, created = Token.objects.get_or_create(user=user)          
             response_data = {
                 'success': True,
                 'statusCode': status.HTTP_200_OK,
@@ -97,7 +96,6 @@ class UserLoginView(ObtainAuthToken):
                 'user_id': user.id,
                 'access': token.key,
             }
-
             return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Email not verified'}, status=status.HTTP_400_BAD_REQUEST)    
@@ -105,7 +103,6 @@ class UserLoginView(ObtainAuthToken):
 class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (AllowAny,)
-
     def get(self, request):
         user = CustomUser.objects.all()
         serializer = self.serializer_class(user, many=True)
@@ -114,7 +111,6 @@ class UserListView(APIView):
                 'status_code': status.HTTP_200_OK,
                 'message': 'Successfully fetched users',
                 'users': serializer.data
-
             }
         return Response(response, status=status.HTTP_200_OK)
     
@@ -123,8 +119,7 @@ class ForgotPasswordView(APIView):
     permission_classes = (AllowAny,)
     def post(self, request):      
         serializer = self.serializer_class(data=request.data)
-        valid = serializer.is_valid(raise_exception = True)
-        
+        valid = serializer.is_valid(raise_exception = True)        
         if valid:
             email = serializer.validated_data['email']
             try:
@@ -159,8 +154,7 @@ class ResetPasswordView(APIView):
         email = request.data.get('email')
         otp = request.data.get('otp')
         new = request.data.get('new_password')
-        confirm = request.data.get('confirm_new_password')
-        
+        confirm = request.data.get('confirm_new_password')       
         user = CustomUser.objects.all()
         if not email:
             return Response({'error': 'email is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -175,13 +169,10 @@ class ResetPasswordView(APIView):
             user = CustomUser.objects.get(email=email ,otp = otp)
         except CustomUser.DoesNotExist:
                 return Response({'error': 'User with this email does not exist. or the OTP you entered is wrong, please check the OTP'}, status=status.HTTP_404_NOT_FOUND)
-            
         user.set_password(new)
         user.save()
         update_session_auth_hash(request, user)
         status_code = status.HTTP_200_OK
-                
-
         response = {
                 'success': True,
                 'statusCode': status_code,
@@ -223,12 +214,10 @@ class BannerCreateView(generics.CreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-
 class BannersView(generics.ListAPIView):   
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
     permission_classes = (AllowAny, )
-
     
 class BannerRetrieveView(generics.RetrieveAPIView):
     queryset = Banner.objects.all()
@@ -460,12 +449,10 @@ class PostAnswer(generics.CreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-
 class Answerslist(generics.ListAPIView):
     queryset = ProductAnswer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = (AllowAny, )
-
 
 class AnswerDetails(generics.RetrieveAPIView):
     queryset = ProductAnswer.objects.all()
@@ -490,55 +477,175 @@ class RetrieveProductReview(generics.RetrieveAPIView):
     permission_classes = (AllowAny, )
 
 # Cart item  views
-class CartItemCreateView(generics.CreateAPIView):
-    queryset = CartItem.objects.all()
-    serializer_class = CartItemSerializer
-    permission_classes = (AllowAny,)
-
-class CartItemView(generics.ListAPIView):   
-    queryset = CartItem.objects.all()
+class CartItemView(generics.ListAPIView):
     serializer_class = CartItemSerializer
     permission_classes = (AllowAny, )
+    def get_queryset(self):
+        queryset = CartItem.objects.all()
+        cart=self.request.query_params.get('cart', None)
+        if cart:
+            queryset=queryset.filter(cart_id=cart)
+        return queryset
     
-class CartItemRetrieveView(generics.RetrieveAPIView):
-    queryset = CartItem.objects.all()
-    serializer_class = CartItemSerializer
-    permission_classes = (AllowAny, )
-    
-class CartItemUpdateView(APIView):    
-    authentication_classes = [TokenAuthentication]
+class CartView(APIView):
     permission_classes = [IsAuthenticated]
+    # get cart
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        cart = get_object_or_404(Cart, user=user)
+        serializer = CartSerializer(cart)  # Replace with your serializer
+        return Response(serializer.data)
+    # add product in cart
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        print(user)
+        cart = get_object_or_404(Cart, user=user)
+        product_id = request.data.get('product')
+        quantity = request.data.get('quantity', 1)
+        try:
+            product = Products.objects.get(id=product_id)
+        except Products.DoesNotExist:
+            return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+        # Check if the product is already in the cart, update quantity if so
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            cart_item.quantity += int(quantity)
+            cart_item.save()      
+        # Update the cart's total price
+        cart.update_total_price()
+        serializer = CartSerializer(cart)  # Replace with your serializer
+        return Response(serializer.data)
+    # update cart items quantity
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        cart = get_object_or_404(Cart, user=user)
+        product_id = request.data.get('product')
+        quantity = int(request.data.get('quantity', 1))
+        try:
+            product = Products.objects.get(id=product_id)
+        except Products.DoesNotExist:
+            return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+        # Remove the product quantity from the cart
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            cart_item.quantity =max(1, cart_item.quantity - quantity)
+            cart_item.save()
+        # Update the cart's total price
+        cart.update_total_price()
+        serializer = CartSerializer(cart)  # Replace with your serializer
+        return Response(serializer.data)
+    # delete cart items by product id
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        cart = get_object_or_404(Cart, user=user)
+        product_id = request.data.get('product')
+        try:
+            product = Products.objects.get(id=product_id)
+        except Products.DoesNotExist:
+            return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+        # Get the cart items before deleting them
+        cart_items = CartItem.objects.filter(cart=cart, product=product)
+        # Save the quantity of each cart item before deleting
+        quantities = [cart_item.quantity for cart_item in cart_items]
+        # Remove the product from the cart
+        cart_items.delete()
+        # Update the cart's total price
+        cart.update_total_price()
+        serializer = CartSerializer(cart)  # Replace with your serializer
+        return Response(serializer.data)
+    
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def checkout(request, *args, **kwargs):
+#     user = request.user
+#     cart = get_object_or_404(Cart, user=user)
+#     # Ensure the cart is not empty
+#     if cart.items.count() == 0:
+#         return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
+#     # Create a cart order
+#     cart_order = Order.objects.create(user=user, cart=cart, total_price=cart.total_price)
+#      # Update product stock for each item in the cart
+#     for product in cart.items.all():
+#         quantity = int(request.data.get('quantity', 1))
+#         # Check if there's enough stock to fulfill the order
+#         if product.stock < quantity:
+#             return Response({'detail': f'Not enough stock for {product.name}.'}, status=status.HTTP_400_BAD_REQUEST)
+#         # Update the product stock
+#         product.stock -= quantity
+#         product.save()
+#     # Optionally, you may want to clear the cart after checkout
+#     cart.items.clear()
+#     serializer = OrderSerializer(cart_order)  # Replace with your serializer
+#     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class Checkout(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        cart = get_object_or_404(Cart, user=user)
+        product_id = request.data.get('product')
+        # Ensure the cart is not empty
+        if cart.items.count() == 0:
+            return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create an order
+        order = Order.objects.create(user=user, total_price=cart.total_price)
+
+        # Transfer items from the cart to the order
+        for item in cart.cartitem_set.all():
+            
+            OrderItems.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                items_price=item.items_price
+            )
+            product=item.product
+
+           
+            
+            if product.stock < item.quantity:
+                return Response({'detail': f'Not enough stock for {item.product.name}.'}, status=status.HTTP_400_BAD_REQUEST)
+        # Update the product stock
+            product.stock -= item.quantity
+            product.save()
+        # Optionally, you may want to clear the cart after checkout
+        cart.items.clear()
+
+        # Additional logic for payment, shipping, etc., can be added here
+
+        serializer = OrderSerializer(order)  # Replace with your serializer
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        
+class OrderView(APIView):
+    permission_classes = [IsAuthenticated]
+    # get cart
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        order = Order.objects.filter( user=user)
+        serializer = OrderViewSerializer(order, many=True)  # Replace with your serializer
+        return Response(serializer.data)
+
+class ChangeStatus(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class =OrderSerializer
     def get_object(self, pk):
         try:
-            return CartItem.objects.get(pk=pk)
-        except CartItem.DoesNotExist:
+            return Order.objects.get(pk=pk)
+        except Order.DoesNotExist:
             raise Http404
     def put(self, request, pk, format=None):
-        cart_item = self.get_object(pk)
-        serializer = CartItemSerializer(cart_item, data=request.data)
+        order = self.get_object(pk)
+        serializer = StatusSerializer(order, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def delete(self, request, pk, format=None):
-        cart_item = self.get_object(pk)
-        cart_item.delete()
-        return Response({'message': 'CartItem is deleted.'}, status=status.HTTP_204_NO_CONTENT)
-
-# order item views
-class OrderItemListView(generics.ListCreateAPIView):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-class OrderItemDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
+        
+            
 class WishlistView(generics.ListAPIView):
     queryset = Wishlist.objects.all()
     serializer_class=GetWishlistSerializer
@@ -567,17 +674,21 @@ class Count(APIView):
             'Sub Categories': SubCategories.objects.count(),
             'Products':Products.objects.count(),
             'Users':CustomUser.objects.count(),
-
-            
+            'OrderItems':OrderItems.objects.count(),
+            'Order':Order.objects.count(),
             # Add more counts for other models as needed
         }
+        role_choices = CustomUser._meta.get_field('role').choices
+        for role, _ in role_choices:
+            count = CustomUser.objects.filter(role=role).count()
+            counts[role] = count
         return Response(counts)
 
 class UserCount(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
         counts = {}
-        for role, _ in CustomUser.ROLE_CHOICES:
+        for role, _ in CustomUser.role:
             count = CustomUser.objects.filter(role=role).count()
             counts[role] = count
         return Response(counts)
@@ -588,8 +699,7 @@ class UserCount(APIView):
 #         serializer = PushNotificationSerializer(data=request.data)
 #         if serializer.is_valid():
 #             registration_ids = serializer.validated_data['registration_ids']
-#             data = serializer.validated_data['data']
-            
+#             data = serializer.validated_data['data']           
 #             # Send the push notification to the specified devices
 #             devices = FCMDevice.objects.filter(registration_id__in=registration_ids)
 #             message = "Your push notificat0ion message"
@@ -600,11 +710,6 @@ class UserCount(APIView):
 #         else:
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     # cart views
-class CartViewSet(viewsets.ModelViewSet):
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
@@ -612,11 +717,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
 class OrderCancelViewSet(viewsets.ModelViewSet):
     queryset = CancelOrder.objects.all()
@@ -629,6 +729,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer        
+    
 class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = InventorySerializer

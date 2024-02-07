@@ -5,8 +5,7 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 routers = routers.DefaultRouter()
-routers.register('cart', views.CartViewSet, "Cart")
-routers.register('order',views.OrderViewSet , "Order")
+
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
 routers.register('payment',views.PaymentViewSet , "Payment")
 routers.register('address',views.AddressViewSet , "Address")
@@ -44,12 +43,6 @@ urlpatterns = [
     path('products', ProductsView.as_view(), name='Products List'),
     path('product/retrieve/<int:pk>/', ProductsRetrieveView.as_view(), name='Products Retrieve By Id'),
     path('product/update/<int:pk>/', ProductsUpdateView.as_view(), name='Update Products'),
-    # API's for CartItem
-    path('cart/item/create', CartItemCreateView.as_view(), name='Create CartItem'),
-    path('cart/items', CartItemView.as_view(), name='CartItems List'),
-    path('cart/item/retrieve/<int:pk>/', CartItemRetrieveView.as_view(), name='CartItem Retrieve By Id'),
-    path('cart/item/update/<int:pk>/', CartItemUpdateView.as_view(), name='Update CartItem'),
-    # API's for product varient
     path('product/variant', VarientsPost.as_view()),
     path('product/variant/list', Varientslist.as_view()),
     path('product/variant/<int:pk>/', VarientsDetails.as_view()),
@@ -66,17 +59,17 @@ urlpatterns = [
     path('review', CreateProductReview.as_view()),
     path('review/list', ListProductReview.as_view()),
     path('review/<int:pk>/', RetrieveProductReview.as_view()),
-    # API's for OrderItem
-    path('orderitems', OrderItemListView.as_view(), name='order items'),
-    path('orderitems/<int:pk>/', OrderItemDetailView.as_view(), name='order items update'),
-    # API's for count
+     # API's for count
     path('count', Count.as_view(), name='Count'),
     path('user/count', UserCount.as_view(), name='Count By Role based'),
-
     path('wishlist', WishlistView.as_view(), name='WishList'),
     path('wishlist/create/', WishlistCreateView.as_view(), name='Creating wishlist'),
     path('wishlist/<int:pk>/', WishlistUpdateView.as_view(), name='Creating wishlist'),
-    # path('push/', PushNotificationView.as_view(), name='push-notification'),
+    path('cart/', CartView.as_view()),
+    path('cartlist/', CartItemView.as_view()),
+    path('checkout/', Checkout.as_view(), name='cart-checkout'),
+    path('orders/', OrderView.as_view()),
+    path('change/status/<int:pk>/', ChangeStatus.as_view()),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

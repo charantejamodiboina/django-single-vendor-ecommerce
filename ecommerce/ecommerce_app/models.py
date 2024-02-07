@@ -109,7 +109,7 @@ class SubCategories(models.Model):
     
 class ProductVariant(models.Model):
     variant_name = models.CharField(max_length=100, unique=True)
-    varient_quantity = models.PositiveIntegerField(default=0)
+
 
 class Products(models.Model):
     subcategories_id=models.ForeignKey(SubCategories,on_delete=models.CASCADE)
@@ -163,38 +163,49 @@ class ProductReviews(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     
 class Cart(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     items = models.ManyToManyField(Products, through='CartItem')
+    total_price = models.FloatField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    def update_total_price(self):
+        # Calculate the total_price based on associated OrderItems
+        self.total_price = sum(item.items_price for item in self.cartitem_set.all())
+        self.save()
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    products = models.ForeignKey(Products, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-
-class OrderItem(models.Model):
-    products = models.ForeignKey(Products, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(default=timezone.now)
-
+    items_price = models.FloatField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+        # Calculate items_price before saving
+        self.items_price = self.product.price * self.quantity
+        super().save(*args, **kwargs)
 
 class Order(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    order_items = models.ManyToManyField(OrderItem)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Products, through='OrderItems')
+    total_price = models.FloatField()
     status = models.CharField(max_length=20, choices=[
         ('pending', 'Pending'),
         ('processing', 'Processing'),
+        ('order placed', 'Order placed'),
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered'),
-        ('canceled', 'Canceled'),
-    ])
+        ('canceled', 'Canceled')
+    ], default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
-
+    def update_total_price(self):
+        # Calculate the total_price based on associated Cart
+        self.total_price = self.cart.total_price
+        self.save()
+class OrderItems(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    items_price = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
 class CancelOrder(models.Model):
     order_id = models.PositiveSmallIntegerField()
     is_cancelled = models.BooleanField(default=True)

@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8ff0652b-e3b9-48dd-957f-58bc04ff444a",
+		"_postman_id": "331dbddf-d76a-4d82-a871-118733610fc2",
 		"name": "ecommerce",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "27553931",
-		"_collection_link": "https://crimson-resonance-208881.postman.co/workspace/My-Workspace~23fba5a4-4767-4f3e-8979-94463f896044/collection/27553931-8ff0652b-e3b9-48dd-957f-58bc04ff444a?action=share&source=collection_link&creator=27553931"
+		"_collection_link": "https://crimson-resonance-208881.postman.co/workspace/My-Workspace~23fba5a4-4767-4f3e-8979-94463f896044/collection/27553931-331dbddf-d76a-4d82-a871-118733610fc2?action=share&source=collection_link&creator=27553931"
 	},
 	"item": [
 		{
@@ -179,6 +179,149 @@
 					]
 				},
 				"url": "http://127.0.0.1:8000/reset/password"
+			},
+			"response": []
+		},
+		{
+			"name": "create profile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "gender",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "mobile",
+							"value": "8523697410",
+							"type": "text"
+						},
+						{
+							"key": "user",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/profile/"
+			},
+			"response": []
+		},
+		{
+			"name": "user profile Retrieve",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/profile/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "create banner",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "banner",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/charan/Documents/sv.jpg"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/banner/create"
+			},
+			"response": []
+		},
+		{
+			"name": "banners list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/banners"
+			},
+			"response": []
+		},
+		{
+			"name": "retrieve banner",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/banner/retrieve/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "banner update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "skill vidyalaya",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/charan/Documents/sv.jpg"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/banner/update/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "delete banner",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://127.0.0.1:8000/banner/update/1/"
 			},
 			"response": []
 		},
@@ -359,342 +502,7 @@
 			"response": []
 		},
 		{
-			"name": "user profile Retrieve",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"url": "http://127.0.0.1:8000/profile/1/"
-			},
-			"response": []
-		},
-		{
-			"name": "create profile",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "gender",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "mobile",
-							"value": "8523697410",
-							"type": "text"
-						},
-						{
-							"key": "user",
-							"value": "1",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://127.0.0.1:8000/profile/"
-			},
-			"response": []
-		},
-		{
-			"name": "retrieve banner",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/banner/retrieve/1/"
-			},
-			"response": []
-		},
-		{
-			"name": "banners list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/banners"
-			},
-			"response": []
-		},
-		{
-			"name": "create banner",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "title",
-							"value": "banner",
-							"type": "text"
-						},
-						{
-							"key": "image",
-							"type": "file",
-							"src": "/home/charan/Documents/sv.jpg"
-						},
-						{
-							"key": "",
-							"value": "",
-							"type": "text",
-							"disabled": true
-						}
-					]
-				},
-				"url": "http://127.0.0.1:8000/banner/create"
-			},
-			"response": []
-		},
-		{
-			"name": "banner update",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "title",
-							"value": "skill vidyalaya",
-							"type": "text"
-						},
-						{
-							"key": "image",
-							"type": "file",
-							"src": "/home/charan/Documents/sv.jpg"
-						}
-					]
-				},
-				"url": "http://127.0.0.1:8000/banner/update/1/"
-			},
-			"response": []
-		},
-		{
-			"name": "delete banner",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": "http://127.0.0.1:8000/banner/update/1/"
-			},
-			"response": []
-		},
-		{
-            "name": "Create product",
-            "request": {
-                "method": "POST",
-                "header": [
-			{
-				"key": "Authorization",
-				"value": "",
-				"type": "text"
-			}
-		],
-		"url": "http://127.0.0.1:8000/product/create"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve all product",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/products"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve product",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/'product/retrieve/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Update product",
-            "request": {
-                "method": "PUT",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/'product/update/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Delete product",
-            "request": {
-                "method": "DELETE",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/product/update/1/"
-			},
-			"response": []
-		},
-    
-        {
-            "name": "Create cart item",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-		],
-		"url": "http://127.0.0.1:8000/cart/item/create"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve cart items",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/cart/items"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve cart item by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/cart/item/retrieve/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Update cart item",
-            "request": {
-                "method": "PUT",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/'cart/item/update/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Delete cart item",
-            "request": {
-                "method": "DELETE",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/cart/item/update/1/"
-			},
-			"response": []
-		},
-     
-        {
-            "name": "Create product varient",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-		],
-		"url": "http://127.0.0.1:8000/product/variant"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve product varient",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/product/variant/list"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve product varient by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/product/variant/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Update product varient",
-            "request": {
-                "method": "PUT",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/'variant/update/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Delete product varient",
-            "request": {
-                "method": "DELETE",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/variant/update/1/"
-			},
-			"response": []
-		},
-    
-		{
-			"name": "Create product media",
+			"name": "Create product varient",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -704,55 +512,284 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/product/media"
-					},
-				"response": []
+				"url": "http://127.0.0.1:8000/product/variant"
+			},
+			"response": []
 		},
-        {
-			"name": "Retrieve product media",
+		{
+			"name": "Retrieve product varient",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/media/list"
+				"url": "http://127.0.0.1:8000/product/variant/list"
 			},
 			"response": []
 		},
-        {
-			"name": "Retrieve product media by id",
+		{
+			"name": "Retrieve product varient by id",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/media/1/"
+				"url": "http://127.0.0.1:8000/product/variant/1/"
 			},
 			"response": []
 		},
-        {
-            "name": "Update product media",
-            "request": {
-                "method": "PUT",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/update/pmedia/1/"
+		{
+			"name": "Update product varient",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/'variant/update/1/"
 			},
 			"response": []
 		},
-        {
-            "name": "Delete product media",
-            "request": {
-                "method": "DELETE",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/update/pmedia/1/"
+		{
+			"name": "Delete product varient",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/variant/update/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "Create product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/product/create"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve all product",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/products"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve product",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/'product/retrieve/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "Update product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/'product/update/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/product/update/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "create cart items in cart",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://127.0.0.1:8000/cart/"
+			},
+			"response": []
+		},
+		{
+			"name": "cart view",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/cart/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"cart",
+						""
+					],
+					"query": [
+						{
+							"key": "Auth",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update cart items quantity",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": "http://127.0.0.1:8000/cart/"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete cart item",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/cart/item/update/1/"
+			},
+			"response": []
+		},
+		{
+			"name": "checkout order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/checkout/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"checkout",
+						""
+					],
+					"query": [
+						{
+							"key": "Authorizatio",
+							"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "retrieve orders",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/orders/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"orders",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change order status",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "status",
+							"value": "processing",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/change/status/12/"
 			},
 			"response": []
 		},
@@ -768,28 +805,28 @@
 					}
 				],
 				"url": "http://127.0.0.1:8000/product/que"
-					},
-					"response": []
+			},
+			"response": []
 		},
-        	{
-				"name": "Retrieve product question",
-				"request": {
-					"method": "GET",
-					"header": [],
-					"url": "http://127.0.0.1:8000/product/que/list"
-				},
-				"response": []
+		{
+			"name": "Retrieve product question",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/product/que/list"
 			},
-			{
-				"name": "Retrieve product question by id",
-				"request": {
-					"method": "GET",
-					"header": [],
-					"url": "http://127.0.0.1:8000/product/que/1/"
-				},
-				"response": []
+			"response": []
+		},
+		{
+			"name": "Retrieve product question by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/product/que/1/"
 			},
-    	{
+			"response": []
+		},
+		{
 			"name": "Create answer",
 			"request": {
 				"method": "POST",
@@ -799,12 +836,12 @@
 						"value": "",
 						"type": "text"
 					}
-            ],
-            "url": "http://127.0.0.1:8000/product/ans"
+				],
+				"url": "http://127.0.0.1:8000/product/ans"
 			},
 			"response": []
 		},
-        {
+		{
 			"name": "Retrieve answer",
 			"request": {
 				"method": "GET",
@@ -813,7 +850,7 @@
 			},
 			"response": []
 		},
-        {
+		{
 			"name": "Retrieve answer by id",
 			"request": {
 				"method": "GET",
@@ -822,7 +859,7 @@
 			},
 			"response": []
 		},
-    	{
+		{
 			"name": "Create product reviews",
 			"request": {
 				"method": "POST",
@@ -834,10 +871,10 @@
 					}
 				],
 				"url": "http://127.0.0.1:8000/review"
-				},
-				"response": []
+			},
+			"response": []
 		},
-        {
+		{
 			"name": "Retrieve product reviews",
 			"request": {
 				"method": "GET",
@@ -846,7 +883,7 @@
 			},
 			"response": []
 		},
-        {
+		{
 			"name": "Retrieve product reviews by id",
 			"request": {
 				"method": "GET",
@@ -855,89 +892,16 @@
 			},
 			"response": []
 		},
-    	{
-            "name": "Create OrderItem",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-            ],
-            "url": "http://127.0.0.1:8000/orderitems"
-			},
-			"response": []
-		},
-        {
-            "name": "Retrieve OrderItem",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": "http://127.0.0.1:8000/orderitems"
-			},
-			"response": []
-		},
-        {
-			"name": "Retrieve OrderItem by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/orderitems/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Update OrderItem",
-            "request": {
-                "method": "PUT",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/orderitems/1/"
-			},
-			"response": []
-		},
-        {
-            "name": "Delete OrderItem",
-            "request": {
-                "method": "DELETE",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/orderitems/1/"
-			},
-			"response": []
-		},
-    	{
+		{
 			"name": "Retrieve count",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": "http://127.0.0.1:8000/count"
-				},
-				"response": []
-		},
-        {
-			"name": "Retrieve count by role",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://127.0.0.1:8000/user/count"
 			},
 			"response": []
 		},
-
-        {
+		{
 			"name": "Retrieve wishlist",
 			"request": {
 				"method": "GET",
@@ -946,22 +910,22 @@
 			},
 			"response": []
 		},
-        {
-            "name": "Create wishlist",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Authorization",
-                        "value": "",
-                        "type": "text"
-                    }
-                ],
-                "url": "http://127.0.0.1:8000/wishlist/create/"
+		{
+			"name": "Create wishlist",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": "http://127.0.0.1:8000/wishlist/create/"
 			},
 			"response": []
 		},
-        {
+		{
 			"name": "Retrieve wishlist",
 			"request": {
 				"method": "GET",
