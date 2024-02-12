@@ -140,7 +140,7 @@ class CartItemViewSerializer(serializers.ModelSerializer):
     product=CustProductSerializer()
     class Meta:
         model = CartItem
-        fields = ('product', )
+        fields = ('product', 'quantity')
     
 class CartViewSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()

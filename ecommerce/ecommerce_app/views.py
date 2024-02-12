@@ -486,6 +486,15 @@ class CartItemView(generics.ListAPIView):
         if cart:
             queryset=queryset.filter(cart_id=cart)
         return queryset
+
+class CartlistView(APIView):
+    permission_classes = [IsAuthenticated]
+    # get cart
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        cart = get_object_or_404(Cart, user=user)
+        serializer = CartViewSerializer(cart)  # Replace with your serializer
+        return Response(serializer.data)
     
 class CartView(APIView):
     permission_classes = [IsAuthenticated]

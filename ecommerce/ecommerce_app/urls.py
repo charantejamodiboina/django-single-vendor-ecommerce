@@ -66,7 +66,7 @@ urlpatterns = [
     path('wishlist/create/', WishlistCreateView.as_view(), name='Creating wishlist'),
     path('wishlist/<int:pk>/', WishlistUpdateView.as_view(), name='Creating wishlist'),
     path('cart/', CartView.as_view()),
-    path('cartlist/', CartItemView.as_view()),
+    path('cartlist/', CartlistView.as_view()),
     path('checkout/', Checkout.as_view(), name='cart-checkout'),
     path('orders/', OrderView.as_view()),
     path('change/status/<int:pk>/', ChangeStatus.as_view()),
