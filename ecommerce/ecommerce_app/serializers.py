@@ -106,7 +106,7 @@ class ProductsViewSerializer(serializers.ModelSerializer):
 class CustProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
-        fields =('name', 'image')
+        fields =('name', 'image', 'price')
     
 
 class ProductQuestionsSerializer(serializers.ModelSerializer):
