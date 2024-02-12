@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "331dbddf-d76a-4d82-a871-118733610fc2",
 		"name": "ecommerce",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27553931",
 		"_collection_link": "https://crimson-resonance-208881.postman.co/workspace/My-Workspace~23fba5a4-4767-4f3e-8979-94463f896044/collection/27553931-331dbddf-d76a-4d82-a871-118733610fc2?action=share&source=collection_link&creator=27553931"
 	},
@@ -43,7 +43,20 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/register"
+				"url": {
+					"raw": "http://127.0.0.1:8000/register",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
 			},
 			"response": []
 		},
@@ -101,7 +114,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/list"
+				"url": {
+					"raw": "http://127.0.0.1:8000/list",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"list"
+					]
+				}
 			},
 			"response": []
 		},
@@ -125,7 +151,20 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/login"
+				"url": {
+					"raw": "http://127.0.0.1:8000/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
@@ -144,7 +183,21 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/forgot/password"
+				"url": {
+					"raw": "http://127.0.0.1:8000/forgot/password",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"forgot",
+						"password"
+					]
+				}
 			},
 			"response": []
 		},
@@ -178,7 +231,21 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/reset/password"
+				"url": {
+					"raw": "http://127.0.0.1:8000/reset/password",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"reset",
+						"password"
+					]
+				}
 			},
 			"response": []
 		},
@@ -213,7 +280,21 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/profile/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/profile/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"profile",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -228,7 +309,22 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/profile/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/profile/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"profile",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -264,7 +360,21 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/banner/create"
+				"url": {
+					"raw": "http://127.0.0.1:8000/banner/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"banner",
+						"create"
+					]
+				}
 			},
 			"response": []
 		},
@@ -273,7 +383,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/banners"
+				"url": {
+					"raw": "http://127.0.0.1:8000/banners",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"banners"
+					]
+				}
 			},
 			"response": []
 		},
@@ -282,7 +405,23 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/banner/retrieve/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/banner/retrieve/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"banner",
+						"retrieve",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -312,7 +451,23 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/banner/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/banner/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"banner",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -321,7 +476,23 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"url": "http://127.0.0.1:8000/banner/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/banner/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"banner",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -346,7 +517,21 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/category/create"
+				"url": {
+					"raw": "http://127.0.0.1:8000/category/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"category",
+						"create"
+					]
+				}
 			},
 			"response": []
 		},
@@ -355,7 +540,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/categories"
+				"url": {
+					"raw": "http://127.0.0.1:8000/categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"categories"
+					]
+				}
 			},
 			"response": []
 		},
@@ -364,7 +562,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/category/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/category/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"category",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -389,7 +602,23 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/category/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/category/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"category",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -404,7 +633,23 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/category/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/category/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"category",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -434,7 +679,21 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/subcategory/create"
+				"url": {
+					"raw": "http://127.0.0.1:8000/subcategory/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"subcategory",
+						"create"
+					]
+				}
 			},
 			"response": []
 		},
@@ -443,7 +702,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/subcategories"
+				"url": {
+					"raw": "http://127.0.0.1:8000/subcategories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"subcategories"
+					]
+				}
 			},
 			"response": []
 		},
@@ -452,7 +724,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/subcategory/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/subcategory/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"subcategory",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -482,7 +769,23 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/subcategory/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/subcategory/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"subcategory",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -497,7 +800,23 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/subcategory/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/subcategory/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"subcategory",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -512,7 +831,21 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/product/variant"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/variant",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"variant"
+					]
+				}
 			},
 			"response": []
 		},
@@ -521,7 +854,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/variant/list"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/variant/list",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"variant",
+						"list"
+					]
+				}
 			},
 			"response": []
 		},
@@ -530,7 +878,23 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/variant/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/variant/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"variant",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -545,7 +909,23 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/'variant/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/'variant/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"'variant",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -560,7 +940,23 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/variant/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/variant/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"variant",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -575,7 +971,21 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/product/create"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"create"
+					]
+				}
 			},
 			"response": []
 		},
@@ -584,7 +994,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/products"
+				"url": {
+					"raw": "http://127.0.0.1:8000/products",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					]
+				}
 			},
 			"response": []
 		},
@@ -593,7 +1016,23 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/'product/retrieve/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/'product/retrieve/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"'product",
+						"retrieve",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -608,7 +1047,23 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/'product/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/'product/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"'product",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -623,7 +1078,23 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/product/update/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/update/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"update",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -631,15 +1102,6 @@
 			"name": "create cart items in cart",
 			"request": {
 				"method": "POST",
-				"header": [],
-				"url": "http://127.0.0.1:8000/cart/"
-			},
-			"response": []
-		},
-		{
-			"name": "cart view",
-			"request": {
-				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
@@ -647,6 +1109,22 @@
 						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "user",
+							"value": "2",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
 				"url": {
 					"raw": "http://127.0.0.1:8000/cart/",
 					"protocol": "http",
@@ -660,13 +1138,35 @@
 					"path": [
 						"cart",
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cart",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/cartlist/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
 					],
-					"query": [
-						{
-							"key": "Auth",
-							"value": "",
-							"disabled": true
-						}
+					"port": "8000",
+					"path": [
+						"cartlist",
+						""
 					]
 				}
 			},
@@ -676,8 +1176,38 @@
 			"name": "update cart items quantity",
 			"request": {
 				"method": "PUT",
-				"header": [],
-				"url": "http://127.0.0.1:8000/cart/"
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/cart/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"cart",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -688,11 +1218,35 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/cart/item/update/1/"
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/cart/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"cart",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -707,6 +1261,17 @@
 						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "1",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
 				"url": {
 					"raw": "http://127.0.0.1:8000/checkout/",
 					"protocol": "http",
@@ -789,7 +1354,23 @@
 						}
 					]
 				},
-				"url": "http://127.0.0.1:8000/change/status/12/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/change/status/12/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"change",
+						"status",
+						"12",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -804,7 +1385,21 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/product/que"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/que",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"que"
+					]
+				}
 			},
 			"response": []
 		},
@@ -813,7 +1408,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/que/list"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/que/list",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"que",
+						"list"
+					]
+				}
 			},
 			"response": []
 		},
@@ -822,7 +1432,23 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/que/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/que/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"que",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -837,7 +1463,21 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/product/ans"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/ans",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"ans"
+					]
+				}
 			},
 			"response": []
 		},
@@ -846,7 +1486,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/ans/list"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/ans/list",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"ans",
+						"list"
+					]
+				}
 			},
 			"response": []
 		},
@@ -855,7 +1510,23 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/product/ans/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/product/ans/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						"ans",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -870,7 +1541,20 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/review"
+				"url": {
+					"raw": "http://127.0.0.1:8000/review",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"review"
+					]
+				}
 			},
 			"response": []
 		},
@@ -879,7 +1563,21 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/review/list"
+				"url": {
+					"raw": "http://127.0.0.1:8000/review/list",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"review",
+						"list"
+					]
+				}
 			},
 			"response": []
 		},
@@ -888,7 +1586,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/review/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/review/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"review",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -897,7 +1610,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/count"
+				"url": {
+					"raw": "http://127.0.0.1:8000/count",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"count"
+					]
+				}
 			},
 			"response": []
 		},
@@ -906,7 +1632,20 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/wishlist"
+				"url": {
+					"raw": "http://127.0.0.1:8000/wishlist",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"wishlist"
+					]
+				}
 			},
 			"response": []
 		},
@@ -921,7 +1660,22 @@
 						"type": "text"
 					}
 				],
-				"url": "http://127.0.0.1:8000/wishlist/create/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/wishlist/create/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"wishlist",
+						"create",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -930,7 +1684,22 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:8000/wishlist/1/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/wishlist/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"wishlist",
+						"1",
+						""
+					]
+				}
 			},
 			"response": []
 		}
