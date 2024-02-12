@@ -2,6 +2,4 @@ venv/
 **__pycache__/
 ecommerce/static/admin/
 ecommerce/media/
-ecommerce_app/migrations/
-migrations/
 ecommerce_app/media/
