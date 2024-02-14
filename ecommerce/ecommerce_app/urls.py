@@ -7,7 +7,7 @@ from rest_framework import routers
 routers = routers.DefaultRouter()
 
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
-routers.register('payment',views.PaymentViewSet , "Payment")
+# routers.register('payment',views.PaymentViewSet , "Payment")
 routers.register('address',views.AddressViewSet , "Address")
 routers.register('inventory',views.InventoryViewSet , "Inventory")
 routers.register('profile',views.UserProfileViewSet)
@@ -62,14 +62,16 @@ urlpatterns = [
      # API's for count
     path('count', Count.as_view(), name='Count'),
     path('user/count', UserCount.as_view(), name='Count By Role based'),
-    path('wishlist', WishlistView.as_view(), name='WishList'),
-    path('wishlist/create/', WishlistCreateView.as_view(), name='Creating wishlist'),
-    path('wishlist/<int:pk>/', WishlistUpdateView.as_view(), name='Creating wishlist'),
+    path('wishlist', WishListView.as_view(), name='WishList'),
+    # path('wishlist/create/', WishlistCreateView.as_view(), name='Creating wishlist'),
+    # path('wishlist/<int:pk>/', WishlistUpdateView.as_view(), name='Creating wishlist'),
     path('cart/', CartView.as_view()),
     path('cartlist/', CartlistView.as_view()),
     path('checkout/', Checkout.as_view(), name='cart-checkout'),
     path('orders/', OrderView.as_view()),
     path('change/status/<int:pk>/', ChangeStatus.as_view()),
+    # path("payment/", OrderPayment.as_view(), name="payment"),
+    path("razorpay/callback/", RazorpayCallback.as_view(), name="callback"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

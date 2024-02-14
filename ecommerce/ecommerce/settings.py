@@ -13,6 +13,13 @@ import os
 from pathlib import Path
 from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import sys
+import environ
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
+
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,6 +27,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
 AUTH_USER_MODEL = 'ecommerce_app.CustomUser'
+
+base = environ.Path(__file__) - 4
+environ.Env.read_env(env_file=base("venv"))
+env = environ.Env()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -193,3 +204,5 @@ EMAIL_USE_SSL = False
 STATIC_ROOT = BASE_DIR/'static'
 
 
+RAZORPAY_KEY_ID = "rzp_test_PMLM1CKXCyafyM"
+RAZORPAY_KEY_SECRET = "pFsMp2sIKNw9lo8OPUENbvT2"

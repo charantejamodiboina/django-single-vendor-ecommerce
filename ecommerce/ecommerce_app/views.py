@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Q
 from rest_framework import status
+from django.http import HttpResponse, HttpResponseNotAllowed
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -8,8 +9,9 @@ from .models import*
 from django.db import transaction
 from .serializers import*
 from .email import*
-from django.conf import settings
+# from django.conf import settings
 from django.core.mail import send_mail
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import random
 from django.http import Http404
 from rest_framework import viewsets, filters
@@ -30,6 +32,12 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 # from fcm_django.models import FCMDevice
+from django.views.decorators.csrf import csrf_exempt
+import razorpay
+from ecommerce.settings import (
+    RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET,
+)
 from rest_framework.decorators import api_view, permission_classes
 
 TIME_ZONE ='Asia/Kolkata'
@@ -43,6 +51,7 @@ class UserRegistrationView(APIView):
         if valid:
             user=serializers.save()
             cart = Cart.objects.create(user=user)
+            wishlist = WishList.objects.create(user=user)
             email_otp(serializers.data['email'])
             
             status_code= status.HTTP_201_CREATED
@@ -563,30 +572,7 @@ class CartView(APIView):
         cart.update_total_price()
         serializer = CartSerializer(cart)  # Replace with your serializer
         return Response(serializer.data)
-    
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def checkout(request, *args, **kwargs):
-#     user = request.user
-#     cart = get_object_or_404(Cart, user=user)
-#     # Ensure the cart is not empty
-#     if cart.items.count() == 0:
-#         return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
-#     # Create a cart order
-#     cart_order = Order.objects.create(user=user, cart=cart, total_price=cart.total_price)
-#      # Update product stock for each item in the cart
-#     for product in cart.items.all():
-#         quantity = int(request.data.get('quantity', 1))
-#         # Check if there's enough stock to fulfill the order
-#         if product.stock < quantity:
-#             return Response({'detail': f'Not enough stock for {product.name}.'}, status=status.HTTP_400_BAD_REQUEST)
-#         # Update the product stock
-#         product.stock -= quantity
-#         product.save()
-#     # Optionally, you may want to clear the cart after checkout
-#     cart.items.clear()
-#     serializer = OrderSerializer(cart_order)  # Replace with your serializer
-#     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class Checkout(APIView):
     permission_classes = [IsAuthenticated]
@@ -624,11 +610,63 @@ class Checkout(APIView):
         cart.items.clear()
 
         # Additional logic for payment, shipping, etc., can be added here
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        amount_in_paise = int(cart.total_price * 100)  # Amount in paise
+        razorpay_order = client.order.create({"amount": amount_in_paise, "currency": "INR", "payment_capture": "1"})
 
-        serializer = OrderSerializer(order)  # Replace with your serializer
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # Update the order with Razorpay order ID
+        order.provider_order_id = razorpay_order["id"]
+        order.save()
 
-        
+        # Construct the response data
+        response_data = {
+            "order_id": order.id,
+            "amount": amount_in_paise,
+            "currency": "INR",
+            "razorpay_order_id": razorpay_order["id"],
+            "callback_url": "http://127.0.0.1:8000/razorpay/callback/",  # Replace with your callback URL
+            "razorpay_key": settings.RAZORPAY_KEY_ID,
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
+        # serializer = OrderSerializer(order)  # Replace with your serializer
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class RazorpayCallback(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        # Verify the Razorpay signature to ensure the callback is legitimate
+        data = request.data
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_signature = data.get('razorpay_signature')
+
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+        try:
+            # Verify the signature
+            client.utility.verify_payment_signature({
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': razorpay_payment_id,
+                'razorpay_signature': razorpay_signature,
+            })
+        except razorpay.errors.SignatureVerificationError:
+            return Response({'detail': 'Invalid Razorpay signature.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the order based on Razorpay order ID
+        order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
+
+        # Update the order payment status
+        order.payment_status = 'success'
+        order.provider_order_id = razorpay_order_id
+        order.payment_id = razorpay_payment_id
+        order.signature_id = razorpay_signature
+        order.save()
+
+        # Additional logic for updating other aspects of the order can be added here
+
+        return Response({'detail': 'Payment successful.'}, status=status.HTTP_200_OK)
+ 
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
     # get cart
@@ -653,26 +691,6 @@ class ChangeStatus(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-            
-class WishlistView(generics.ListAPIView):
-    queryset = Wishlist.objects.all()
-    serializer_class=GetWishlistSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-class WishlistCreateView(generics.CreateAPIView):
-    queryset = Wishlist.objects.all()
-    serializer_class=CreateWishlistSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-class WishlistUpdateView(generics.RetrieveDestroyAPIView):
-    queryset = Wishlist.objects.all()
-    serializer_class=CreateWishlistSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
 
 class Count(APIView):
@@ -720,12 +738,6 @@ class UserCount(APIView):
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     # cart views
 
-class PaymentViewSet(viewsets.ModelViewSet):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
 
 class OrderCancelViewSet(viewsets.ModelViewSet):
     queryset = CancelOrder.objects.all()
@@ -744,3 +756,33 @@ class InventoryViewSet(viewsets.ModelViewSet):
     serializer_class = InventorySerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+class WishListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        wishlist = get_object_or_404(WishList, user=user)
+        serializer = GetWishlistSerializer(wishlist)  # Replace with your serializer
+        return Response(serializer.data)
+    # add product in cart
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        print(user)
+        wishlist = get_object_or_404(WishList, user=user)
+        serializer = CreateWishlistSerializer(wishlist)
+        product_id = request.data.get('product')
+        try:
+            product = Products.objects.get(id=product_id)
+        except Products.DoesNotExist:
+            return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+        # Check if the product is already in the cart, update quantity if so
+        if WishlistItem.objects.filter(wishlist=wishlist, product=product).exists():
+            WishlistItem.objects.filter(wishlist=wishlist, product=product).delete()
+            return Response({'detail':f'you removed {product.name} from your wishlist'})
+        else:
+            WishlistItem.objects.create(wishlist=wishlist, product=product)
+            serializer = CreateWishlistSerializer(wishlist)  # Replace with your serializer
+            return Response({'detail':f'you added {product.name} in your wishlist'})
+
+    # update cart items quantity

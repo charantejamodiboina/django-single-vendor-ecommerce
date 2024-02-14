@@ -12,4 +12,6 @@ razorpay
 opencv-python
 validate_email
 markdown
+django-environ
+
 # GDAL

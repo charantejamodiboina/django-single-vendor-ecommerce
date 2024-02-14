@@ -4,10 +4,12 @@ from django.core.validators import *
 # from ecomerce.settings import DATE_TIME_FORMATS
 # from ecomerce import settings
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 import uuid
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from .managers import CustomUserManager
+from django.db.models.fields import CharField
 # from .signals import*
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
@@ -196,6 +198,20 @@ class Order(models.Model):
         ('canceled', 'Canceled')
     ], default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('success', 'Completed'),
+        ('failed', 'Failed'),
+    ], default='pending', blank=False, null=False)
+    provider_order_id = models.CharField(
+        _("Order ID"), max_length=40, null=False, blank=False
+    )
+    payment_id = models.CharField(
+        _("Payment ID"), max_length=36, null=False, blank=False
+    )
+    signature_id = models.CharField(
+        _("Signature ID"), max_length=128, null=False, blank=False
+    )
     def update_total_price(self):
         # Calculate the total_price based on associated Cart
         self.total_price = self.cart.total_price
@@ -217,27 +233,7 @@ class CancelOrder(models.Model):
     ])
     others = models.TextField(null=True)
 
-class Payment(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment_method = models.CharField(max_length=20, choices=[
-        ('cod', 'Cash On Delivery'),
-        ('digital payment', 'Digital Payment'),
-    ])
-    payment_status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
-        ('completed', 'Completed'),
-        ('failed', 'Failed'),
-    ])
-    Transaction_id = models.CharField(max_length=30, unique=True, blank=True, null=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_date = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return f"Payment for Order {self.order} - {self.user.first_name} - {self.amount}"
-from .signals import*
-
+    
 class Banner(models.Model):
     title = models.CharField(max_length=255, unique=True)
     image = models.ImageField(upload_to='uploads/')
@@ -248,6 +244,14 @@ class Banner(models.Model):
     def __str__(self):
         return self.title
 
-class Wishlist(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='wishlist')
+class WishList(models.Model):
+    user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Products, through='WishlistItem')
+    
+    
+
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(WishList, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    
+    

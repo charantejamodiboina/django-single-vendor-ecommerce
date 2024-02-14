@@ -186,10 +186,10 @@ class OrderCanceledSerializer(serializers.ModelSerializer):
         model = CancelOrder
         fields = "__all__"
 
-class PaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payment
-        fields = "__all__"
+# class PaymentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Payment
+#         fields = "__all__"
 
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -203,18 +203,24 @@ class CustomUserField(serializers.RelatedField):
     def to_representation(self, value):
         user_serializer = UserListSerializer(value)
         return (user_serializer.data)
-    
-class GetWishlistSerializer(serializers.ModelSerializer):
-    product =ProductsSerializer()
-    user =UserListSerializer()
+class WishlistItemsSerializer(serializers.ModelSerializer):
+    product=CustProductSerializer()
     class Meta:
 
-        model = Wishlist
-        fields = "__all__"
+        model = WishlistItem
+        fields = ('id', 'product',)
+class GetWishlistSerializer(serializers.ModelSerializer):
+    items=serializers.SerializerMethodField()
+    class Meta:
 
+        model = WishList
+        fields = "__all__"
+    def get_items(self, obj):
+        wishlist_item = obj.wishlistitem_set.all()
+        return WishlistItemsSerializer(wishlist_item, many=True).data
 class CreateWishlistSerializer(serializers.ModelSerializer):
     class Meta:
 
-        model = Wishlist
+        model = WishList
         fields = "__all__"
-
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
