@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework_bulk import BulkCreateAPIView
 from django.db.models import Q
 from rest_framework import status
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -113,15 +114,31 @@ class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (AllowAny,)
     def get(self, request):
-        user = CustomUser.objects.all()
-        serializer = self.serializer_class(user, many=True)
-        response = {
+        try:
+            role = request.query_params.get('role', None)
+
+            if role:
+                # Filter users based on role
+                users = CustomUser.objects.filter(role=role)
+            else:
+                # If no role is specified, retrieve all users
+                users = CustomUser.objects.all()
+
+            serializer = self.serializer_class(users, many=True)
+
+            response = {
                 'success': True,
                 'status_code': status.HTTP_200_OK,
                 'message': 'Successfully fetched users',
                 'users': serializer.data
             }
-        return Response(response, status=status.HTTP_200_OK)
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            # Log the exception for debugging purposes
+            print(f"Exception in UserListView: {e}")
+            return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class ForgotPasswordView(APIView):
     serializer_class = ForgotPasswordSerializer
@@ -352,18 +369,14 @@ class ProductsView(generics.ListAPIView):
         subcategory = self.request.query_params.get('subcategory', None)
         variant = self.request.query_params.get('variant', None)
         name = self.request.query_params.get('name', None)
-        
+        max_price = self.request.query_params.get('max_price', None)
+        min_price = self.request.query_params.get('min_price', None)
         if subcategory:
             queryset=queryset.filter(subcategories_id__name__icontains=subcategory)
         if variant:
             queryset=queryset.filter(variant__variant_name__icontains=variant)
         if name:
             queryset=queryset.filter(name__icontains=name)
-        return queryset
-    def get_queryset(self):
-        queryset = Products.objects.all()
-        max_price = self.request.query_params.get('max_price', None)
-        min_price = self.request.query_params.get('min_price', None)
         if min_price and max_price:
             queryset=queryset.filter(price__gte=min_price, price__lte=max_price)
         elif min_price:
@@ -399,6 +412,12 @@ class ProductsUpdateView(APIView):
 
 # Product variants views
 class VarientsPost(generics.CreateAPIView):
+    queryset = ProductVariant.objects.all()
+    serializer_class = VariantsSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class CreateBulkVariants(BulkCreateAPIView):
     queryset = ProductVariant.objects.all()
     serializer_class = VariantsSerializer
     authentication_classes = [TokenAuthentication]

@@ -132,6 +132,34 @@
 			"response": []
 		},
 		{
+			"name": "role base users list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/list?role=customer",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"list"
+					],
+					"query": [
+						{
+							"key": "role",
+							"value": "customer"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "user login",
 			"request": {
 				"method": "POST",
@@ -990,6 +1018,188 @@
 			"response": []
 		},
 		{
+			"name": "from min to max price filter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/products?min_price=100&max_price=14000",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "min_price",
+							"value": "100"
+						},
+						{
+							"key": "max_price",
+							"value": "14000"
+						},
+						{
+							"key": "subcategory",
+							"value": "8",
+							"disabled": true
+						},
+						{
+							"key": "variant",
+							"value": "r",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "max price filter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/products?max_price=14000",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "max_price",
+							"value": "14000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "min price filter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/products?min_price=16000",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "min_price",
+							"value": "16000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product name filter ",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/products?name=",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products filters (subcategory name)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/products?subcategory=",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "subcategory",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products filter (variant name)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/products?variant=",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "variant",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Retrieve all product",
 			"request": {
 				"method": "GET",
@@ -1017,7 +1227,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8000/'product/retrieve/1/",
+					"raw": "http://127.0.0.1:8000/product/retrieve/1/",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1027,7 +1237,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"'product",
+						"product",
 						"retrieve",
 						"1",
 						""
@@ -1043,12 +1253,42 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "",
+						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
 						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "santoor",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "150",
+							"type": "text"
+						},
+						{
+							"key": "subcategories_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "variant",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/charan/Desktop/download.jpeg"
+						}
+					]
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/'product/update/1/",
+					"raw": "http://127.0.0.1:8000/product/update/1/",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1058,7 +1298,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"'product",
+						"product",
 						"update",
 						"1",
 						""
@@ -1631,7 +1871,13 @@
 			"name": "Retrieve wishlist",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://127.0.0.1:8000/wishlist",
 					"protocol": "http",
@@ -1656,36 +1902,22 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "",
+						"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
 						"type": "text"
 					}
 				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/wishlist/create/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"wishlist",
-						"create",
-						""
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product",
+							"value": "",
+							"type": "text"
+						}
 					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve wishlist",
-			"request": {
-				"method": "GET",
-				"header": [],
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/wishlist/1/",
+					"raw": "http://127.0.0.1:8000/wishlist",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1695,9 +1927,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"wishlist",
-						"1",
-						""
+						"wishlist"
 					]
 				}
 			},

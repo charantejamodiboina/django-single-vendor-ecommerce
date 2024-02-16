@@ -46,6 +46,7 @@ urlpatterns = [
     path('product/variant', VarientsPost.as_view()),
     path('product/variant/list', Varientslist.as_view()),
     path('product/variant/<int:pk>/', VarientsDetails.as_view()),
+    path('variant/bulk/', CreateBulkVariants.as_view()),
     path('variant/update/<int:pk>/', VarientUpdateView.as_view()),
     # API's for product questions
     path('product/que', ProductQuestionsCreate.as_view()),
