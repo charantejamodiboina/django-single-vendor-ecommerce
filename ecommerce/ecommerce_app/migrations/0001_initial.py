@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(default=' ')),
                 ('price', models.FloatField()),
                 ('discount_type', models.CharField(choices=[('percentage', 'Percentage'), ('amount', 'Amount')], default='amount', max_length=200)),
-                ('discount', models.DecimalField(decimal_places=2, max_digits=10, null=True)),
+                ('discount', models.FloatField()),
                 ('is_available', models.BooleanField(default=True)),
                 ('image', models.ImageField(blank=True, upload_to='product_images/')),
                 ('image2', models.ImageField(blank=True, null=True, upload_to='product_images/')),

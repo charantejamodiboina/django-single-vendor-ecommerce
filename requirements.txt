@@ -13,5 +13,7 @@ opencv-python
 validate_email
 markdown
 django-environ
+pandas
+openpyxl
 
 # GDAL

@@ -35,6 +35,8 @@ from django.shortcuts import get_object_or_404
 # from fcm_django.models import FCMDevice
 from django.views.decorators.csrf import csrf_exempt
 import razorpay
+from rest_framework.parsers import MultiPartParser
+import pandas as pd
 from ecommerce.settings import (
     RAZORPAY_KEY_ID,
     RAZORPAY_KEY_SECRET,
@@ -42,6 +44,8 @@ from ecommerce.settings import (
 from rest_framework.decorators import api_view, permission_classes
 
 TIME_ZONE ='Asia/Kolkata'
+
+# Registration APIView
 class UserRegistrationView(APIView):
     user=CustomUser.objects.all()
     serializer_class = UserRegistrationSerializer
@@ -63,7 +67,8 @@ class UserRegistrationView(APIView):
                 'user': serializers.data
            }
             return Response( response, status=status_code)
-    
+
+# Email OTP verification API view
 class VerifyOtp(APIView):
     serializer_class = VerifyAccountSerializer
     permission_classes = (AllowAny,)
@@ -84,7 +89,7 @@ class VerifyOtp(APIView):
         else:
             return Response({'error': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
             
-            
+# Login API view
 class UserLoginView(ObtainAuthToken):
     permission_classes = (AllowAny, )
     user=CustomUser.objects.all()
@@ -110,6 +115,7 @@ class UserLoginView(ObtainAuthToken):
         else:
             return Response({'error': 'Email not verified'}, status=status.HTTP_400_BAD_REQUEST)    
     
+# Registered user list API view
 class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (AllowAny,)
@@ -139,7 +145,8 @@ class UserListView(APIView):
             # Log the exception for debugging purposes
             print(f"Exception in UserListView: {e}")
             return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+#OTP sent API view for forgot password 
 class ForgotPasswordView(APIView):
     serializer_class = ForgotPasswordSerializer
     permission_classes = (AllowAny,)
@@ -152,6 +159,7 @@ class ForgotPasswordView(APIView):
                 user = CustomUser.objects.get(email=email)
             except CustomUser.DoesNotExist:
                 return Response({'error': 'User with this email does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            # here this code sent the random OTP to registered email and save that OTP in db
             def email_otp(email):
                 subject = "Otp for Forgot Passwod"
                 otp = random.randint(100000, 999999)
@@ -172,7 +180,7 @@ class ForgotPasswordView(APIView):
            }
             return Response( response, status=status_code)
         
-
+# Reset password API view
 class ResetPasswordView(APIView):
     serializer_class = ResetPasswordSerializer
     permission_classes = (AllowAny,)
@@ -205,7 +213,8 @@ class ResetPasswordView(APIView):
                 'message': 'Your password is updated succesfully',
             }
         return Response(response, status_code)
-    
+
+#User account delete API view 
 class DeleteAccountView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -218,7 +227,8 @@ class DeleteAccountView(APIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
+# Address API view
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = ShippingAddress.objects.all()
     serializer_class = AddressSerializer
@@ -233,6 +243,7 @@ class AddressViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response({'message': 'Please provide a user parameter in the query.'}, status=400)
+
 #Banner Views
 class BannerCreateView(generics.CreateAPIView):  
     queryset = Banner.objects.all()
@@ -270,12 +281,67 @@ class BannerUpdateView(APIView):
         banner.delete()
         return Response({'message': f'banner is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
-# Categories code
+# Categories API Views 
+# create, retrieve, update, delete, bulk upload(JSON & Excel), bulk delete
 class CategoryCreateView(generics.CreateAPIView):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+class BulkCategoryCreateView(BulkCreateAPIView):
+    queryset = Categories.objects.all()
+    serializer_class = CategoriesSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class CategoryBulkUploadView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+    def post(self, request, *args, **kwargs):
+        file = request.data.get('file')
+
+        if not file:
+            return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            df = pd.read_excel(file, engine='openpyxl')
+
+            # Validate the structure of the DataFrame if needed
+
+            data_to_create = df.to_dict(orient='records')
+
+            serializer = CategoriesSerializer(data=data_to_create, many=True)
+            serializer.is_valid(raise_exception=True)
+
+            self.perform_bulk_create(serializer)
+
+            return Response({'message': 'Data uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+        except pd.errors.EmptyDataError:
+            return Response({'error': 'Empty file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_bulk_create(self, serializer):
+        Categories.objects.bulk_create([Categories(**item) for item in serializer.validated_data])
+
+class BulkCategoryDelete(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        category_ids = request.data.get('category_ids', [])
+        if not category_ids:
+            return Response({'detail': 'category_ids are not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            categories=Categories.objects.filter(id__in=category_ids)
+            categories.delete()
+            return Response({'detail':'provided categories are deleted'}, status=status.HTTP_200_OK)
+        except Categories.DoesNotExist:
+            return Response({'detail':'one or more category_ids are not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'detail':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CategoriesView(generics.ListAPIView):
     queryset = Categories.objects.all()
@@ -308,11 +374,67 @@ class CategoryUpdateView(APIView):
         return Response({'message': f'category is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 #Subcategory Views
+# create, retrieve, update, delete, bulk upload(JSON & Excel), bulk delete
 class SubcategoryCreateView(generics.CreateAPIView):  
     queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+class BulkSubcategoryCreateView(BulkCreateAPIView):  
+    queryset = SubCategories.objects.all()
+    serializer_class = SubCategoriesSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class SubcategoryBulkUploadView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+    def post(self, request, *args, **kwargs):
+        file = request.data.get('file')
+
+        if not file:
+            return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            df = pd.read_excel(file, engine='openpyxl')
+
+            # Validate the structure of the DataFrame if needed
+
+            data_to_create = df.to_dict(orient='records')
+
+            serializer = SubCategoriesSerializer(data=data_to_create, many=True)
+            serializer.is_valid(raise_exception=True)
+
+            self.perform_bulk_create(serializer)
+
+            return Response({'message': 'Data uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+        except pd.errors.EmptyDataError:
+            return Response({'error': 'Empty file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_bulk_create(self, serializer):
+        SubCategories.objects.bulk_create([SubCategories(**item) for item in serializer.validated_data])
+
+class BulkSubcategoryDelete(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        subcategory_ids = request.data.get('subcategory_ids', [])
+
+        if not subcategory_ids:
+            return Response({'detail':'subcategory ids are not provided'}, status=status.HTTP_400_BAD_REQUEST )
+        try:
+            subcategories = SubCategories.objects.filter(id__in=subcategory_ids)
+            subcategories.delete()
+            return Response({'details': 'Provided subcategory ids are deleted Successfully'}, status=status.HTTP_200_OK)
+        except SubCategories.DoesNotExist:
+            return Response({'detail':'one or more provided subcategory ids is not exist'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'detail':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SubcategoriesView(generics.ListAPIView):   
     # queryset = SubCategories.objects.all()
@@ -355,6 +477,44 @@ class SubcategoryUpdateView(APIView):
         return Response({'message': 'subcategory is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 #Products Views
+# create, retrieve, update, delete, bulk upload(JSON & Excel), bulk delete
+class BulkProductsCreateView(BulkCreateAPIView):  
+    queryset = Products.objects.all()
+    serializer_class = ProductsSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+class ProductBulkUploadView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+    def post(self, request, *args, **kwargs):
+        file = request.data.get('file')
+
+        if not file:
+            return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            df = pd.read_excel(file, engine='openpyxl')
+
+            # Validate the structure of the DataFrame if needed
+
+            data_to_create = df.to_dict(orient='records')
+
+            serializer = ProductsSerializer(data=data_to_create, many=True)
+            serializer.is_valid(raise_exception=True)
+
+            self.perform_bulk_create(serializer)
+
+            return Response({'message': 'Data uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+        except pd.errors.EmptyDataError:
+            return Response({'error': 'Empty file provided'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_bulk_create(self, serializer):
+        Products.objects.bulk_create([Products(**item) for item in serializer.validated_data])
+
 class ProductsCreateView(generics.CreateAPIView):  
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
@@ -410,6 +570,22 @@ class ProductsUpdateView(APIView):
         product.delete()
         return Response({'message': 'Product is deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
+class BulkProductDelete(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **Kwargs):
+        product_ids = request.data.get('product_ids', [])
+        if not product_ids:
+            return Response({'detail':'product_ids are not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            products=Products.objects.filter(id__in=product_ids)
+            products.delete()
+            return Response({'detail':'provided products are deleted'}, status=status.HTTP_200_OK)
+        except Products.DoesNotExist:
+            return Response({'detail':'one or more provided product_ids are not found'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+
 # Product variants views
 class VarientsPost(generics.CreateAPIView):
     queryset = ProductVariant.objects.all()
@@ -422,6 +598,37 @@ class CreateBulkVariants(BulkCreateAPIView):
     serializer_class = VariantsSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+class VarientBulkUploadView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+    def post(self, request, *args, **kwargs):
+        file = request.data.get('file')
+
+        if not file:
+            return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            df = pd.read_excel(file, engine='openpyxl')
+
+            # Validate the structure of the DataFrame if needed
+
+            data_to_create = df.to_dict(orient='records')
+
+            serializer = ProductsSerializer(data=data_to_create, many=True)
+            serializer.is_valid(raise_exception=True)
+
+            self.perform_bulk_create(serializer)
+
+            return Response({'message': 'Data uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+        except pd.errors.EmptyDataError:
+            return Response({'error': 'Empty file provided'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_bulk_create(self, serializer):
+        Products.objects.bulk_create([Products(**item) for item in serializer.validated_data])
 
 class Varientslist(generics.ListAPIView):
     queryset = ProductVariant.objects.all()
@@ -755,8 +962,6 @@ class UserCount(APIView):
 #             return Response({"message": "Push notifications sent successfully"}, status=status.HTTP_200_OK)
 #         else:
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # cart views
-
 
 class OrderCancelViewSet(viewsets.ModelViewSet):
     queryset = CancelOrder.objects.all()
@@ -784,7 +989,6 @@ class WishListView(APIView):
         wishlist = get_object_or_404(WishList, user=user)
         serializer = GetWishlistSerializer(wishlist)  # Replace with your serializer
         return Response(serializer.data)
-    # add product in cart
     def post(self, request, *args, **kwargs):
         user = request.user
         print(user)
@@ -795,7 +999,6 @@ class WishListView(APIView):
             product = Products.objects.get(id=product_id)
         except Products.DoesNotExist:
             return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
-        # Check if the product is already in the cart, update quantity if so
         if WishlistItem.objects.filter(wishlist=wishlist, product=product).exists():
             WishlistItem.objects.filter(wishlist=wishlist, product=product).delete()
             return Response({'detail':f'you removed {product.name} from your wishlist'})
@@ -803,5 +1006,5 @@ class WishListView(APIView):
             WishlistItem.objects.create(wishlist=wishlist, product=product)
             serializer = CreateWishlistSerializer(wishlist)  # Replace with your serializer
             return Response({'detail':f'you added {product.name} in your wishlist'})
+    
 
-    # update cart items quantity

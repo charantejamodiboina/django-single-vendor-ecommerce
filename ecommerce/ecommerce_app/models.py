@@ -123,7 +123,9 @@ class Products(models.Model):
         ('percentage', 'Percentage'),
         ('amount', 'Amount'),
     ], default='amount')
-    discount=models.DecimalField(max_digits=10, decimal_places=2, null = True)
+    discount=models.FloatField(default=0)
+    you_save = models.FloatField(default=0)
+    final_price = models.FloatField(default=0)
     is_available = models.BooleanField(default=True)
     image = models.ImageField(upload_to='product_images/', blank=True)
     image2 = models.ImageField(upload_to='product_images/', null=True, blank=True)
@@ -138,6 +140,13 @@ class Products(models.Model):
 
     def __str__(self):
         return self.name
+    def save(self, *args, **kwargs):
+        if self.discount_type == 'percentage':
+            self.you_save = (self.price*self.discount)/100     
+        elif self.discount_type == 'amount':
+            self.you_save = self.discount
+        self.final_price = self.price-self.you_save
+        super().save(*args, **kwargs)
 
 class ProductQuestions(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
@@ -182,7 +191,7 @@ class CartItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     def save(self, *args, **kwargs):
         # Calculate items_price before saving
-        self.items_price = self.product.price * self.quantity
+        self.items_price = self.product.final_price * self.quantity
         super().save(*args, **kwargs)
 
 class Order(models.Model):
