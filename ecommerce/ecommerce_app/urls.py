@@ -68,7 +68,7 @@ urlpatterns = [
     path('review', CreateProductReview.as_view()),
     path('review/list', ListProductReview.as_view()),
     path('review/<int:pk>/', RetrieveProductReview.as_view()),
-
+    path('product/review/<int:pk>/', ProductReview.as_view()),
     # API's for count
     path('count', Count.as_view(), name='Count'),
     path('user/count', UserCount.as_view(), name='Count By Role based'),

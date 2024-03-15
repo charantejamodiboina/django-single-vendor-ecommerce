@@ -165,10 +165,14 @@ class ProductAnswer(models.Model):
 class ProductReviews(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
     user_id=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    review_image=models.FileField()
+    review_image1=models.FileField(null=True)
+    review_image2=models.FileField(null=True)
+    review_image3=models.FileField(null=True)
+    review_image4=models.FileField(null=True)
+    review_image5=models.FileField(null=True)
     rating=models.FloatField(validators=[
-            MaxValueValidator(5.0),
-            MinValueValidator(0.5)
+            MaxValueValidator(1),
+            MinValueValidator(5)
         ],)
     review=models.TextField(default="")
     created_at=models.DateTimeField(auto_now_add=True)

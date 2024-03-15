@@ -527,12 +527,15 @@ class ProductsView(generics.ListAPIView):
     def get_queryset(self):
         queryset = Products.objects.all()
         subcategory = self.request.query_params.get('subcategory', None)
+        category = self.request.query_params.get('category', None)
         variant = self.request.query_params.get('variant', None)
         name = self.request.query_params.get('name', None)
         max_price = self.request.query_params.get('max_price', None)
         min_price = self.request.query_params.get('min_price', None)
         if subcategory:
             queryset=queryset.filter(subcategories_id__name__icontains=subcategory)
+        if category:
+            queryset=queryset.filter(subcategories_id__category__name__icontains=category)
         if variant:
             queryset=queryset.filter(variant__variant_name__icontains=variant)
         if name:
@@ -711,6 +714,19 @@ class RetrieveProductReview(generics.RetrieveAPIView):
     serializer_class = ProductReviewsSerializer
     permission_classes = (AllowAny, )
 
+class ProductReview(APIView):
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return ProductReviews.objects.filter(product_id=pk)
+        except ProductReviews.DoesNotExist:
+            raise Http404
+    # get cart
+    def get(self, request, pk, format=None):
+        product = self.get_object(pk)
+        # review = ProductReviews.objects.filter( product_id=product)
+        serializer = ProductReviewsSerializer(product, many=True)  # Replace with your serializer
+        return Response(serializer.data)
 # Cart item  views
 class CartItemView(generics.ListAPIView):
     serializer_class = CartItemSerializer
