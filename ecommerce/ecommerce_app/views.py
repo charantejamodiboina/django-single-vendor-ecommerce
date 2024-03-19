@@ -437,7 +437,6 @@ class BulkSubcategoryDelete(APIView):
             return Response({'detail':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SubcategoriesView(generics.ListAPIView):   
-    # queryset = SubCategories.objects.all()
     serializer_class = SubCategoriesViewSerializer
     permission_classes = (AllowAny, )
     def get_queryset(self):
@@ -674,13 +673,33 @@ class ProductQuestionslist(generics.ListAPIView):
     queryset = ProductQuestions.objects.all()
     serializer_class = ProductQuestionsSerializer
     permission_classes = (AllowAny,)
-
+class ProductQuestionsView(APIView):
+    def get_object(self, pk):
+        try:
+            ProductQuestions.objects.filter(product_id=pk)
+        except ProductQuestions.DoesNotExist:
+            return Response({"detail": "product doesnt exist"}, status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, pk, format=None):
+        question=self.get_object(pk)
+        serializer = ProductQuestionsSerializer(question, many=True)
+        return Response(serializer.data)
+        
 class ProductQuestionsDetails(generics.RetrieveAPIView):
     queryset = ProductQuestions.objects.all()
     serializer_class = ProductQuestionsSerializer
     permission_classes = (AllowAny,)
 
 # product answer view
+class ProductAnswersView(APIView):
+    def get_object(self, pk):
+        try:
+            ProductAnswer.objects.filter(question_id=pk)
+        except ProductAnswer.DoesNotExist:
+            return Response({"detail":"Question doesn't exist"})
+    def get(self, request, pk, format=None):
+        answer=self.get_object(pk)
+        serializer=AnswerSerializer(answer, many=True)
+        return Response(serializer.data)
 class PostAnswer(generics.CreateAPIView):   
     queryset = ProductAnswer.objects.all()
     serializer_class = AnswerSerializer

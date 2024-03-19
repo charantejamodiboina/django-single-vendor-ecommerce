@@ -11,6 +11,12 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from .managers import CustomUserManager
 from django.db.models.fields import CharField
 # from .signals import*
+
+class Subscription(models.Model):
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    is_subscribed = models.BooleanField(default=True)
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'user'
@@ -33,8 +39,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-
-    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -42,11 +46,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.first_name+self.last_name
-
-class Subscription(models.Model):
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    is_subscribed = models.BooleanField(default=True)
 
 class ShippingAddress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -77,15 +76,72 @@ class UserProfile(models.Model):
 
 class Store(models.Model):
     name=models.CharField(max_length=255)
-    profile=models.ImageField(upload_to='uploads/', null=True, blank=True)
     description=models.TextField(null=True)
-    mobile = models.BigIntegerField(unique=True, validators=[
+    vat=models.CharField(max_length=255)
+    gstin=models.CharField(max_length=255)
+    contact_No= models.BigIntegerField(unique=True, validators=[
             MaxValueValidator(9999999999),
             MinValueValidator(1000000000)
         ])
-    email=models.EmailField(max_length=250)
-    vat=models.CharField(max_length=255)
-    gstin=models.CharField(max_length=255)
+    email_ID =models.EmailField(max_length=250)
+    Address = models.TextField(max_length = 500)
+    City = models.CharField(max_length=100)
+    State = models.CharField(max_length=100)
+    ZIP = models.CharField(max_length=100)
+    Country_Name = models.CharField(max_length=100)
+    Allow_Distance = models.IntegerField()
+    Default_City =models.CharField(max_length=100)
+    Default_ZIP =models.CharField(max_length=100)
+    Delivery_Charge = models.FloatField()
+    Tax_Charge = models.FloatField()
+    Delivery_Type = models.CharField(max_length=100, choices=[
+        ('fixed', 'Fixed'),
+        ('km', 'KM')
+    ])
+    Have_Shop= models.CharField(max_length=100, choices=[
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ])
+    Search_Result_Kind =models.CharField(max_length=100, choices=[
+        ('km', 'KM'),
+        ('miles', 'Miles')
+    ])
+    Search_Radius = models.IntegerField()
+    Currency_Symbol= models.CharField(max_length=100)
+    Currency_Side =models.CharField(max_length=100, choices=[
+        ('left', 'Left'),
+        ('right', 'Right')
+    ])
+    Currency_Code = models.CharField(max_length=100)
+    App_Direction = models.CharField(max_length=100, choices=[
+        ('ltr', 'LTR'),
+        ('rtl', 'RTL')
+    ])
+    SMS_Gateway = models.CharField(max_length=100, choices=[
+        ('twilio', 'Twilio'),
+        ('msg91', 'MSG91'),
+        ('firebase', 'Firebase')
+    ])
+    User_Login= models.CharField(max_length=100, choices=[
+        ('email & password', 'Email & Password'),
+        ('phone & password', 'Phone & Password'),
+        ('phone & OTP', 'Phone & OTP')
+    ])
+    User_Verify_With= models.CharField(max_length=100, choices=[
+        ('email verification', 'Email verification'),
+        ('phone verification', 'Phone verification')
+    ])
+    App_Color = models.CharField(max_length=100)
+    App_Status = models.CharField(max_length=100, choices=[
+        ('email verification', 'Email verification'),
+        ('phone verification', 'Phone verification')
+    ])
+    Default_Country_Code_without_plus_=models.IntegerField()
+    Countries=models.CharField(max_length=100)
+    FCM_Token=models.TextField(max_length=1000)
+    Logo= models.ImageField(upload_to='uploads/', null=True, blank=True)
+    Facebook_URL=models.CharField(max_length=100)
+    Instagram_URL= models.CharField(max_length=100)
 
 
     def __str__(self):
