@@ -136,7 +136,7 @@ class Store(models.Model):
         ('email verification', 'Email verification'),
         ('phone verification', 'Phone verification')
     ])
-    Default_Country_Code_without_plus_=models.IntegerField()
+    Default_Country_Code_without_plus=models.IntegerField()
     Countries=models.CharField(max_length=100)
     FCM_Token=models.TextField(max_length=1000)
     Logo= models.ImageField(upload_to='uploads/', null=True, blank=True)

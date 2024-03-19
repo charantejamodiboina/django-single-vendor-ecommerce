@@ -525,6 +525,7 @@ class ProductsView(generics.ListAPIView):
     permission_classes = (AllowAny, )
     def get_queryset(self):
         queryset = Products.objects.all()
+        product = self.request.query_params.get('product', None)
         subcategory = self.request.query_params.get('subcategory', None)
         category = self.request.query_params.get('category', None)
         variant = self.request.query_params.get('variant', None)
