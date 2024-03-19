@@ -532,6 +532,11 @@ class ProductsView(generics.ListAPIView):
         name = self.request.query_params.get('name', None)
         max_price = self.request.query_params.get('max_price', None)
         min_price = self.request.query_params.get('min_price', None)
+        if product:
+            queryset=queryset.filter(subcategories_id__name__icontains=product)        
+            queryset=queryset.filter(subcategories_id__category__name__icontains=product)       
+            queryset=queryset.filter(variant__variant_name__icontains=product)
+            queryset=queryset.filter(name__icontains=product)
         if subcategory:
             queryset=queryset.filter(subcategories_id__name__icontains=subcategory)
         if category:
