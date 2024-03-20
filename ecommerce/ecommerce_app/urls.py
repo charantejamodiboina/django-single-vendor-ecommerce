@@ -58,11 +58,14 @@ urlpatterns = [
     path('product/que', ProductQuestionsCreate.as_view()),
     path('product/que/list', ProductQuestionslist.as_view()),
     path('product/que/<int:pk>/', ProductQuestionsDetails.as_view()),
+    path('product/question/<int:pk>/', ProductQuestionsView.as_view()),
+
 
     # API's for product answers
     path('product/ans', PostAnswer.as_view()),
     path('product/ans/list', Answerslist.as_view()),
     path('product/ans/<int:pk>/', AnswerDetails.as_view()),
+    path('product/answers/<int:pk>/', ProductAnswersView.as_view()),
 
     # API's for product reviews
     path('review', CreateProductReview.as_view()),
@@ -88,14 +91,15 @@ urlpatterns = [
 
     # all excel bulk upload APIs
     path('category/excel/bulk', CategoryBulkUploadView.as_view()),
-    path('subcat/excel/bulk', CategoryBulkUploadView.as_view()),
-    path('product/excel/bulk', CategoryBulkUploadView.as_view()),
+    path('subcat/xl/bulk', SubcategoryBulkUploadView.as_view()),
+    path('product/xl/bulk', ProductBulkUploadView.as_view()),
+    path('variant/xl/bulk', VarientBulkUploadView.as_view()),
     
     # all json bulk upload APIs
     path('category/bulk', BulkCategoryCreateView.as_view(), name='Create bulk Category'),
     path('subcategory/bulk', BulkSubcategoryCreateView.as_view(), name='Create bulk Subcategory'),
     path('product/bulk', BulkProductsCreateView.as_view(), name='Create Bulk Products'),
-    path('variant/bulk/', CreateBulkVariants.as_view()),
+    path('variant/bulk', CreateBulkVariants.as_view()),
     
     # all bulk delete APIs
     path("subcate/bulk/delete/", BulkSubcategoryDelete.as_view()),

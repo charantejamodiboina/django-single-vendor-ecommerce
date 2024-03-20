@@ -624,7 +624,7 @@ class VarientBulkUploadView(APIView):
 
             data_to_create = df.to_dict(orient='records')
 
-            serializer = ProductsSerializer(data=data_to_create, many=True)
+            serializer = VariantsSerializer(data=data_to_create, many=True)
             serializer.is_valid(raise_exception=True)
 
             self.perform_bulk_create(serializer)
@@ -636,7 +636,7 @@ class VarientBulkUploadView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     def perform_bulk_create(self, serializer):
-        Products.objects.bulk_create([Products(**item) for item in serializer.validated_data])
+        ProductVariant.objects.bulk_create([ProductVariant(**item) for item in serializer.validated_data])
 
 class Varientslist(generics.ListAPIView):
     queryset = ProductVariant.objects.all()
@@ -680,14 +680,16 @@ class ProductQuestionslist(generics.ListAPIView):
     serializer_class = ProductQuestionsSerializer
     permission_classes = (AllowAny,)
 class ProductQuestionsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, pk):
         try:
-            ProductQuestions.objects.filter(product_id=pk)
+            return ProductQuestions.objects.filter(product_id=pk)
         except ProductQuestions.DoesNotExist:
-            return Response({"detail": "product doesnt exist"}, status=status.HTTP_404_NOT_FOUND)
+            raise Http404
     def get(self, request, pk, format=None):
-        question=self.get_object(pk)
-        serializer = ProductQuestionsSerializer(question, many=True)
+        product=self.get_object(pk)
+        serializer = ProductQuestionsSerializer(product, many=True)
         return Response(serializer.data)
         
 class ProductQuestionsDetails(generics.RetrieveAPIView):
@@ -697,11 +699,14 @@ class ProductQuestionsDetails(generics.RetrieveAPIView):
 
 # product answer view
 class ProductAnswersView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, pk):
         try:
-            ProductAnswer.objects.filter(question_id=pk)
+            return ProductAnswer.objects.filter(question_id=pk)
         except ProductAnswer.DoesNotExist:
-            return Response({"detail":"Question doesn't exist"})
+            raise Http404
     def get(self, request, pk, format=None):
         answer=self.get_object(pk)
         serializer=AnswerSerializer(answer, many=True)
@@ -746,7 +751,6 @@ class ProductReview(APIView):
             return ProductReviews.objects.filter(product_id=pk)
         except ProductReviews.DoesNotExist:
             raise Http404
-    # get cart
     def get(self, request, pk, format=None):
         product = self.get_object(pk)
         # review = ProductReviews.objects.filter( product_id=product)
@@ -847,14 +851,15 @@ class Checkout(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user
         cart = get_object_or_404(Cart, user=user)
+        address = get_object_or_404(ShippingAddress, user=user)
         product_id = request.data.get('product')
         # Ensure the cart is not empty
         if cart.items.count() == 0:
             return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create an order
-        order = Order.objects.create(user=user, total_price=cart.total_price)
-
+        order = Order.objects.create(user=user, total_price=cart.total_price, address=address)
+        order.generate_order_id()
         # Transfer items from the cart to the order
         for item in cart.cartitem_set.all():
             
@@ -865,9 +870,6 @@ class Checkout(APIView):
                 items_price=item.items_price
             )
             product=item.product
-
-           
-            
             if product.stock < item.quantity:
                 return Response({'detail': f'Not enough stock for {item.product.name}.'}, status=status.HTTP_400_BAD_REQUEST)
         # Update the product stock
@@ -875,15 +877,31 @@ class Checkout(APIView):
             product.save()
         # Optionally, you may want to clear the cart after checkout
         cart.items.clear()
-
         # Additional logic for payment, shipping, etc., can be added here
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-        amount_in_paise = int(cart.total_price * 100)  # Amount in paise
-        razorpay_order = client.order.create({"amount": amount_in_paise, "currency": "INR", "payment_capture": "1"})
+        order.save()
+        # Construct the response data
+        serializer = OrderSerializer(order)  # Replace with your serializer
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class PaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args,  **kwargs):
+        user=request.user
+
+        order=request.data.get('order')
+        payment = RazorpayPayment.objects.create(user=user, order=order, total_price=order.total_price)
+
+                # Additional logic for payment, shipping, etc., can be added here
+        razorpay_instance = Razorpay.get_instance()
+
+        # Create the Razorpay client
+        client = razorpay.Client(auth=(razorpay_instance.RAZORPAY_KEY, razorpay_instance.RAZORPAY_SECRET))
+        amount_in_paise = int(payment.total_price * 1.00)  # Amount in paise
+        razorpay_order = client.payment.create({"total_price": amount_in_paise, "currency": "INR", "payment_capture": "1"})
 
         # Update the order with Razorpay order ID
-        order.provider_order_id = razorpay_order["id"]
-        order.save()
+        payment.provider_order_id = razorpay_order["id"]
+        payment.save()
 
         # Construct the response data
         response_data = {
@@ -892,13 +910,10 @@ class Checkout(APIView):
             "currency": "INR",
             "razorpay_order_id": razorpay_order["id"],
             "callback_url": "http://127.0.0.1:8000/razorpay/callback/",  # Replace with your callback URL
-            "razorpay_key": settings.RAZORPAY_KEY_ID,
+            "razorpay_key": razorpay_instance.RAZORPAY_KEY,
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
-        # serializer = OrderSerializer(order)  # Replace with your serializer
-        # return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 class RazorpayCallback(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
@@ -907,8 +922,13 @@ class RazorpayCallback(APIView):
         razorpay_order_id = data.get('razorpay_order_id')
         razorpay_payment_id = data.get('razorpay_payment_id')
         razorpay_signature = data.get('razorpay_signature')
+        # Get the Razorpay instance
 
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        razorpay_instance = Razorpay.get_instance()
+
+        # Create the Razorpay client
+        client = razorpay.Client(auth=(razorpay_instance.RAZORPAY_KEY, razorpay_instance.RAZORPAY_SECRET))
+
 
         try:
             # Verify the signature
@@ -921,14 +941,14 @@ class RazorpayCallback(APIView):
             return Response({'detail': 'Invalid Razorpay signature.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Fetch the order based on Razorpay order ID
-        order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
+        payment = get_object_or_404(RazorpayPayment, razorpay_order_id=razorpay_order_id)
 
         # Update the order payment status
-        order.payment_status = 'success'
-        order.provider_order_id = razorpay_order_id
-        order.payment_id = razorpay_payment_id
-        order.signature_id = razorpay_signature
-        order.save()
+        payment.payment_status = 'success'
+        payment.provider_order_id = razorpay_order_id
+        payment.payment_id = razorpay_payment_id
+        payment.signature_id = razorpay_signature
+        payment.save()
 
         # Additional logic for updating other aspects of the order can be added here
 

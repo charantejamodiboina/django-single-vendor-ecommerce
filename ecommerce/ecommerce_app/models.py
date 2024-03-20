@@ -10,6 +10,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from .managers import CustomUserManager
 from django.db.models.fields import CharField
+import random
 # from .signals import*
 
 class Subscription(models.Model):
@@ -50,6 +51,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class ShippingAddress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     address = models.TextField(max_length=500)
+    name = models.CharField(max_length=100)
+    mobile = models.BigIntegerField(unique=True, validators=[
+            MaxValueValidator(9999999999),
+            MinValueValidator(1000000000)
+        ])
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
@@ -79,70 +85,84 @@ class Store(models.Model):
     description=models.TextField(null=True)
     vat=models.CharField(max_length=255)
     gstin=models.CharField(max_length=255)
-    contact_No= models.BigIntegerField(unique=True, validators=[
+    contact_no= models.BigIntegerField(unique=True, validators=[
             MaxValueValidator(9999999999),
             MinValueValidator(1000000000)
         ])
-    email_ID =models.EmailField(max_length=250)
-    Address = models.TextField(max_length = 500)
-    City = models.CharField(max_length=100)
-    State = models.CharField(max_length=100)
+    email =models.EmailField(max_length=250)
+    address = models.TextField(max_length = 500)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
     ZIP = models.CharField(max_length=100)
-    Country_Name = models.CharField(max_length=100)
-    Allow_Distance = models.IntegerField()
-    Default_City =models.CharField(max_length=100)
-    Default_ZIP =models.CharField(max_length=100)
-    Delivery_Charge = models.FloatField()
-    Tax_Charge = models.FloatField()
-    Delivery_Type = models.CharField(max_length=100, choices=[
+    country_name = models.CharField(max_length=100)
+    allow_distance = models.IntegerField()
+    default_city =models.CharField(max_length=100)
+    default_ZIP =models.CharField(max_length=100)
+    delivery_charge = models.FloatField()
+    tax_charge = models.FloatField()
+    delivery_type = models.CharField(max_length=100, choices=[
         ('fixed', 'Fixed'),
         ('km', 'KM')
     ])
-    Have_Shop= models.CharField(max_length=100, choices=[
+    have_shop= models.CharField(max_length=100, choices=[
         ('yes', 'Yes'),
         ('no', 'No')
     ])
-    Search_Result_Kind =models.CharField(max_length=100, choices=[
+    search_result_kind =models.CharField(max_length=100, choices=[
         ('km', 'KM'),
         ('miles', 'Miles')
     ])
-    Search_Radius = models.IntegerField()
-    Currency_Symbol= models.CharField(max_length=100)
-    Currency_Side =models.CharField(max_length=100, choices=[
+    search_radius = models.IntegerField()
+    currency_symbol= models.CharField(max_length=100)
+    currency_side =models.CharField(max_length=100, choices=[
         ('left', 'Left'),
         ('right', 'Right')
     ])
-    Currency_Code = models.CharField(max_length=100)
-    App_Direction = models.CharField(max_length=100, choices=[
+    currency_code = models.CharField(max_length=100)
+    app_direction = models.CharField(max_length=100, choices=[
         ('ltr', 'LTR'),
         ('rtl', 'RTL')
     ])
-    SMS_Gateway = models.CharField(max_length=100, choices=[
+    SMS_gateway = models.CharField(max_length=100, choices=[
         ('twilio', 'Twilio'),
         ('msg91', 'MSG91'),
         ('firebase', 'Firebase')
     ])
-    User_Login= models.CharField(max_length=100, choices=[
+    user_login= models.CharField(max_length=100, choices=[
         ('email & password', 'Email & Password'),
         ('phone & password', 'Phone & Password'),
         ('phone & OTP', 'Phone & OTP')
     ])
-    User_Verify_With= models.CharField(max_length=100, choices=[
+    user_verify_with= models.CharField(max_length=100, choices=[
         ('email verification', 'Email verification'),
         ('phone verification', 'Phone verification')
     ])
-    App_Color = models.CharField(max_length=100)
-    App_Status = models.CharField(max_length=100, choices=[
+    app_color = models.CharField(max_length=100)
+    app_status = models.CharField(max_length=100, choices=[
         ('email verification', 'Email verification'),
         ('phone verification', 'Phone verification')
     ])
-    Default_Country_Code_without_plus=models.IntegerField()
-    Countries=models.CharField(max_length=100)
-    FCM_Token=models.TextField(max_length=1000)
-    Logo= models.ImageField(upload_to='uploads/', null=True, blank=True)
-    Facebook_URL=models.CharField(max_length=100)
-    Instagram_URL= models.CharField(max_length=100)
+    default_country_code_without_plus=models.IntegerField()
+    countries=models.CharField(max_length=100)
+    FCM_token=models.TextField(max_length=1000)
+    logo= models.ImageField(upload_to='uploads/', null=True, blank=True)
+    facebook_URL=models.CharField(max_length=100)
+    instagram_URL= models.CharField(max_length=100)
 
+
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -255,6 +275,7 @@ class CartItem(models.Model):
         super().save(*args, **kwargs)
 
 class Order(models.Model):
+    order_id = models.CharField(max_length=20, unique=True, null=True)
     user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     items = models.ManyToManyField(Products, through='OrderItems')
     total_price = models.FloatField()
@@ -267,24 +288,24 @@ class Order(models.Model):
         ('canceled', 'Canceled')
     ], default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    payment_status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
-        ('success', 'Completed'),
-        ('failed', 'Failed'),
-    ], default='pending', blank=False, null=False)
-    provider_order_id = models.CharField(
-        _("Order ID"), max_length=40, null=False, blank=False
-    )
-    payment_id = models.CharField(
-        _("Payment ID"), max_length=36, null=False, blank=False
-    )
-    signature_id = models.CharField(
-        _("Signature ID"), max_length=128, null=False, blank=False
-    )
+    def generate_order_id(self):
+        self.order_id = 'ODID'+str(random.randint(1000000000, 9999999999))
+        self.save()
+    def address_options(self):
+        return self.user.shippingaddress_set.all()  # Query all addresses for the user
+    
+    @property
+    def selected_address(self):
+        return self.address
+
+    @selected_address.setter
+    def selected_address(self, address_id):
+        self.address = ShippingAddress.objects.get(id=address_id)
     def update_total_price(self):
         # Calculate the total_price based on associated Cart
         self.total_price = self.cart.total_price
         self.save()
+
 class OrderItems(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
@@ -302,7 +323,48 @@ class CancelOrder(models.Model):
     ])
     others = models.TextField(null=True)
 
-    
+class RazorpayPayment(models.Model):
+    order=models.OneToOneField(Order, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
+    total_price = models.FloatField()
+    payment_status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('success', 'Completed'),
+        ('failed', 'Failed'),
+    ], default='pending', blank=False, null=False)
+    provider_order_id = models.CharField(
+        _("Order ID"), max_length=40, null=False, blank=False
+    )
+    payment_id = models.CharField(
+        _("Payment ID"), max_length=36, null=False, blank=False
+    )
+    signature_id = models.CharField(
+        _("Signature ID"), max_length=128, null=False, blank=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    def update_total_price(self):
+        # Calculate the total_price based on associated Cart
+        self.total_price = self.order.total_price
+        self.save()
+class Razorpay(models.Model):
+    currency_code = models.CharField(max_length=100, default="INR")
+    RAZORPAY_KEY = models.CharField(max_length=1000)
+    RAZORPAY_SECRET = models.CharField(max_length=1000)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+
 class Banner(models.Model):
     title = models.CharField(max_length=255, unique=True)
     image = models.ImageField(upload_to='uploads/')
