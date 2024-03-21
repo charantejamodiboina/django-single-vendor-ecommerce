@@ -139,8 +139,8 @@ class Store(models.Model):
     ])
     app_color = models.CharField(max_length=100)
     app_status = models.CharField(max_length=100, choices=[
-        ('email verification', 'Email verification'),
-        ('phone verification', 'Phone verification')
+        ('active', 'Active'),
+        ('deactive', 'Deactive')
     ])
     default_country_code_without_plus=models.IntegerField()
     countries=models.CharField(max_length=100)
@@ -198,8 +198,8 @@ class Products(models.Model):
     discount_type = models.CharField(max_length=200, choices=[
         ('percentage', 'Percentage'),
         ('amount', 'Amount'),
-    ], default='amount')
-    discount=models.FloatField(default=0)
+    ])
+    discount=models.FloatField()
     you_save = models.FloatField(default=0)
     final_price = models.FloatField(default=0)
     is_available = models.BooleanField(default=True)
@@ -212,7 +212,7 @@ class Products(models.Model):
     video = models.FileField(upload_to='product_video/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    stock = models.SmallIntegerField(default=0)
+    stock = models.SmallIntegerField()
 
     def __str__(self):
         return self.name
@@ -247,8 +247,8 @@ class ProductReviews(models.Model):
     review_image4=models.FileField(null=True)
     review_image5=models.FileField(null=True)
     rating=models.FloatField(validators=[
-            MaxValueValidator(1),
-            MinValueValidator(5)
+            MaxValueValidator(5),
+            MinValueValidator(1)
         ],)
     review=models.TextField(default="")
     created_at=models.DateTimeField(auto_now_add=True)

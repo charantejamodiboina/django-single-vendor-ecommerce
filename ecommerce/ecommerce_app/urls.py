@@ -9,7 +9,6 @@ routers = routers.DefaultRouter()
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
 # routers.register('payment',views.PaymentViewSet , "Payment")
 routers.register('address',views.AddressViewSet , "Address")
-routers.register('inventory',views.InventoryViewSet , "Inventory")
 routers.register('profile',views.UserProfileViewSet)
 
 
@@ -24,6 +23,7 @@ urlpatterns = [
     path('reset/password', ResetPasswordView.as_view(), name='Reset Password'),
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
 
+    path('store', StoreView.as_view()),
     # API's for Banners
     path('banner/create', BannerCreateView.as_view(), name='Create Banner'),
     path('banners', BannersView.as_view(), name='Banner List'),

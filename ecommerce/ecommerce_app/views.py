@@ -566,9 +566,9 @@ class ProductsUpdateView(APIView):
             return Products.objects.get(pk=pk)
         except Products.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         product = self.get_object(pk)
-        serializer = ProductsSerializer(product, data=request.data)
+        serializer = ProductsSerializer(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -1036,12 +1036,19 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer        
     
-class InventoryViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
-    serializer_class = InventorySerializer
+
+class StoreView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
+    def post(self, request, *args, **kwargs):
+        store_exist=Store.objects.first()
+        if store_exist:
+            return Response({'detail': 'Store already exist, you cant create a new one'})
+        serializer=InventorySerializer(data=request.data)
+        if serializer.is_valid:
+            serializer.save()
+            return Response({'detail':'Store created successfully'}, status=status.HTTP_201_CREATED)
+        
 class WishListView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
