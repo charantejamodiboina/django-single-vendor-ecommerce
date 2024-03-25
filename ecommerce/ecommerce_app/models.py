@@ -149,7 +149,7 @@ class Store(models.Model):
     facebook_URL=models.CharField(max_length=100)
     instagram_URL= models.CharField(max_length=100)
     shipping_amount=models.FloatField(default=40)
-    returns_accepte=models.BooleanField(default=False)
+    returns_accepted=models.BooleanField(default=False)
 
 
 
@@ -536,10 +536,10 @@ class Flutterwave(models.Model):
         super().save(*args, **kwargs)
 
 class Content(models.Model):
-    free_delivery=models.TextField(max__length=1000)  
-    safe_payment=models.TextField(max__length=1000)
-    secure_payment=models.TextField(max__length=1000)  
-    Back_Guarantee=models.TextField(max__length=1000)
+    free_delivery=models.TextField(max_length=1000)  
+    safe_payment=models.TextField(max_length=1000)
+    secure_payment=models.TextField(max_length=1000)  
+    Back_Guarantee=models.TextField(max_length=1000)
     @classmethod
     def get_instance(cls):
         # This method retrieves the instance of the Store model.
@@ -556,4 +556,4 @@ class Content(models.Model):
 class Page(models.Model):
     page_name=models.CharField(max_length=500)
     page_image=models.FileField(upload_to='uploads/', null=True, blank=True)
-    Page_content=models.TextField(max__length=3000)
+    Page_content=models.TextField(max_length=3000)
