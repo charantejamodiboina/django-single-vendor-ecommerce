@@ -148,6 +148,9 @@ class Store(models.Model):
     logo= models.ImageField(upload_to='uploads/', null=True, blank=True)
     facebook_URL=models.CharField(max_length=100)
     instagram_URL= models.CharField(max_length=100)
+    shipping_amount=models.FloatField(default=40)
+    returns_accepte=models.BooleanField(default=False)
+
 
 
     @classmethod
@@ -279,6 +282,7 @@ class Order(models.Model):
     user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     items = models.ManyToManyField(Products, through='OrderItems')
     total_price = models.FloatField()
+    address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=[
         ('pending', 'Pending'),
         ('processing', 'Processing'),
@@ -385,4 +389,171 @@ class WishlistItem(models.Model):
     wishlist = models.ForeignKey(WishList, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     
-    
+class Twilio(models.Model):
+    twilio_SID = models.CharField(max_length=500)
+    twilio_auth_token = models.CharField(max_length=500)
+    twilio_from_number = models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class Msg91(models.Model):
+    msg91_auth_key=models.CharField(max_length=500)
+    msg91_sender_id=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class Stripe(models.Model):
+    currency_code=models.CharField(max_length=500)
+    stripe_key=models.CharField(max_length=500)
+    stripe_secret=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class Paypal(models.Model):
+    currency_code=models.CharField(max_length=500)
+    paypal_client_key=models.CharField(max_length=500)
+    paypal_client_secret=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class PayTM(models.Model):
+    currency_code=models.CharField(max_length=500)
+    paytm_environment=models.CharField(max_length=500)
+    paytm_merchant_key=models.CharField(max_length=500)
+    paytm_merchant_MID=models.CharField(max_length=500)
+    paytm_merchant_website=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class InstaMOJO(models.Model):
+    currency_code=models.CharField(max_length=500)
+    instamojo_environment=models.CharField(max_length=500)
+    instamojo_key=models.CharField(max_length=500)
+    instamojo_token=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class PayStack(models.Model):
+    currency_code=models.CharField(max_length=500)
+    paystack_sk=models.CharField(max_length=500)
+    paystack_pk=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class Flutterwave(models.Model):
+    currency_code=models.CharField(max_length=500)
+    flutterwave_key=models.CharField(max_length=500)
+    flutterwave_secret_key=models.CharField(max_length=500)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+class Content(models.Model):
+    free_delivery=models.TextField(max__length=1000)  
+    safe_payment=models.TextField(max__length=1000)
+    secure_payment=models.TextField(max__length=1000)  
+    Back_Guarantee=models.TextField(max__length=1000)
+    @classmethod
+    def get_instance(cls):
+        # This method retrieves the instance of the Store model.
+        # If no instance exists, it creates one with default values.
+        instance, created = cls.objects.get_or_create(pk=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        # Override the save method to ensure only one instance exists.
+        self.pk = 1
+        super().save(*args, **kwargs)
+class Page(models.Model):
+    page_name=models.CharField(max_length=500)
+    page_image=models.FileField(upload_to='uploads/', null=True, blank=True)
+    Page_content=models.TextField(max__length=3000)

@@ -7,7 +7,6 @@ from rest_framework import routers
 routers = routers.DefaultRouter()
 
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
-# routers.register('payment',views.PaymentViewSet , "Payment")
 routers.register('address',views.AddressViewSet , "Address")
 routers.register('profile',views.UserProfileViewSet)
 
@@ -22,14 +21,18 @@ urlpatterns = [
     path('forgot/password', ForgotPasswordView.as_view(), name='Forgot Password'),
     path('reset/password', ResetPasswordView.as_view(), name='Reset Password'),
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
-
-    path('store', StoreView.as_view()),
+    #API's for store/settings 
+    path('store', StoreView.as_view()),#store create and get
+    path('store/1/', StoreUpdate.as_view()), # store update
     # API's for Banners
     path('banner/create', BannerCreateView.as_view(), name='Create Banner'),
     path('banners', BannersView.as_view(), name='Banner List'),
     path('banner/retrieve/<int:pk>/', BannerRetrieveView.as_view(), name='Banner Retrieve By Id'),
     path('banner/update/<int:pk>/', BannerUpdateView.as_view(), name='Update Banner'),
-
+    # API's for Subscription
+    path('subscription', PlanSubscription.as_view()),#create and list
+    path('subscription/update/<int:pk>/', PlanSubscriptionUpdate.as_view()), #update
+    path('subscription/<int:pk>/', PlanSubscriptioRetrieveDelete.as_view()), #get & delete
     # API's for Category
     path('category/create', CategoryCreateView.as_view(), name='Create Category'),
     path('categories', CategoriesView.as_view(), name='Categories List'),
@@ -49,10 +52,10 @@ urlpatterns = [
     path('product/update/<int:pk>/', ProductsUpdateView.as_view(), name='Update Products'),
 
     # Product variant APIs
-    path('product/variant', VarientsPost.as_view()),
-    path('product/variant/list', Varientslist.as_view()),
-    path('product/variant/<int:pk>/', VarientsDetails.as_view()),
-    path('variant/update/<int:pk>/', VarientUpdateView.as_view()),
+    path('product/variant', VarientsPost.as_view()),# create
+    path('product/variant/list', Varientslist.as_view()),# list
+    path('product/variant/<int:pk>/', VarientsDetails.as_view()),# retrive / get
+    path('variant/update/<int:pk>/', VarientUpdateView.as_view()),# update and delete
 
     # API's for product questions
     path('product/que', ProductQuestionsCreate.as_view()),
@@ -84,9 +87,12 @@ urlpatterns = [
     path('cartlist/', CartlistView.as_view()),
 
     # checkout APIs
-    path('checkout/', Checkout.as_view(), name='cart-checkout'),
-    path('orders/', OrderView.as_view()),
-    path('change/status/<int:pk>/', ChangeStatus.as_view()),
+    path('checkout/', Checkout.as_view(), name='cart-checkout'), # order placed
+    path('orders/', OrderView.as_view()),# retrieve user orders
+    path('change/status/<int:pk>/', ChangeStatus.as_view()), # change order status
+    path('order/address/<int:pk>/', ChangeOrderAddress.as_view()),# change address
+    path('razorpay', RazorpayView.as_view()),# razorpay settings
+    path('payment', PaymentView.as_view()),# razorpay payment
     path("razorpay/callback/", RazorpayCallback.as_view(), name="callback"),
 
     # all excel bulk upload APIs
@@ -104,7 +110,7 @@ urlpatterns = [
     # all bulk delete APIs
     path("subcate/bulk/delete/", BulkSubcategoryDelete.as_view()),
     path("cate/bulk/delete/", BulkCategoryDelete.as_view()),
-    path("product/bulk/delete/", BulkProductDelete.as_view()),
+    path("product/bulk/delete/", BulkProductDelete.as_view()), 
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

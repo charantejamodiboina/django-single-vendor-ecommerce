@@ -1,8 +1,6 @@
 from django.shortcuts import render
 from rest_framework_bulk import BulkCreateAPIView
-from django.db.models import Q
 from rest_framework import status
-from django.http import HttpResponse, HttpResponseNotAllowed
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -15,13 +13,10 @@ from django.core.mail import send_mail
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import random
 from django.http import Http404
-from rest_framework import viewsets, filters
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import viewsets
 from django.contrib.auth import authenticate, login
 from rest_framework import generics
 from rest_framework.decorators import action
-from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
@@ -37,10 +32,6 @@ from django.views.decorators.csrf import csrf_exempt
 import razorpay
 from rest_framework.parsers import MultiPartParser
 import pandas as pd
-from ecommerce.settings import (
-    RAZORPAY_KEY_ID,
-    RAZORPAY_KEY_SECRET,
-)
 from rest_framework.decorators import api_view, permission_classes
 
 TIME_ZONE ='Asia/Kolkata'
@@ -228,6 +219,32 @@ class DeleteAccountView(APIView):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# Plan Subscription Views
+class PlanSubscription(generics.ListCreateAPIView):
+    permission_classes=(AllowAny, )
+    queryset=Subscription.objects.all()
+    serializer_class=SubscriptionSerializer
+
+class PlanSubscriptioRetrieveDelete(generics.RetrieveDestroyAPIView):
+    permission_classes=(AllowAny, )
+    queryset=Subscription.objects.all()
+    serializer_class=SubscriptionSerializer
+
+class PlanSubscriptionUpdate(APIView):
+    permission_classes=(AllowAny)
+    def get_object(self, pk):
+        try:
+            return Subscription.objects.get(pk=pk)
+        except Subscription.DoesNotExist:
+            raise Http404
+    def patch(self, request, pk, format=None):
+        subscription=self.get_object(pk)
+        serializer=SubscriptionSerializer(subscription, data=request.data, partial=True)
+        if serializer.is_valid:
+            serializer.save()
+            return Response({'detail':'Subscription updated successfully'}, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
 # Address API view
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = ShippingAddress.objects.all()
@@ -269,9 +286,9 @@ class BannerUpdateView(APIView):
             return Banner.objects.get(pk=pk)
         except Banner.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         banner = self.get_object(pk)
-        serializer = BannerSerializer(banner, data=request.data)
+        serializer = BannerSerializer(banner, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -361,9 +378,9 @@ class CategoryUpdateView(APIView):
             return Categories.objects.get(pk=pk)
         except Categories.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         category = self.get_object(pk)
-        serializer = CategoriesSerializer(category, data=request.data)
+        serializer = CategoriesSerializer(category, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -463,9 +480,9 @@ class SubcategoryUpdateView(APIView):
             return SubCategories.objects.get(pk=pk)
         except SubCategories.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         subcategory = self.get_object(pk)
-        serializer = SubCategoriesSerializer(subcategory, data=request.data)
+        serializer = SubCategoriesSerializer(subcategory, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -656,9 +673,9 @@ class VarientUpdateView(APIView):
             return ProductVariant.objects.get(pk=pk)
         except ProductVariant.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         product_variant = self.get_object(pk)
-        serializer = VariantsSerializer(product_variant, data=request.data)
+        serializer = VariantsSerializer(product_variant, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -721,7 +738,7 @@ class Answerslist(generics.ListAPIView):
     queryset = ProductAnswer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = (AllowAny, )
-
+    
 class AnswerDetails(generics.RetrieveAPIView):
     queryset = ProductAnswer.objects.all()
     serializer_class = AnswerSerializer
@@ -746,6 +763,7 @@ class RetrieveProductReview(generics.RetrieveAPIView):
 
 class ProductReview(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     def get_object(self, pk):
         try:
             return ProductReviews.objects.filter(product_id=pk)
@@ -769,6 +787,7 @@ class CartItemView(generics.ListAPIView):
 
 class CartlistView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     # get cart
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -778,6 +797,7 @@ class CartlistView(APIView):
     
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     # get cart
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -847,11 +867,11 @@ class CartView(APIView):
 
 class Checkout(APIView):
     permission_classes = [IsAuthenticated]
-
+    authentication_classes = [TokenAuthentication]
     def post(self, request, *args, **kwargs):
         user = request.user
         cart = get_object_or_404(Cart, user=user)
-        address = get_object_or_404(ShippingAddress, user=user)
+        address = user.shippingaddress_set.first()
         product_id = request.data.get('product')
         # Ensure the cart is not empty
         if cart.items.count() == 0:
@@ -884,29 +904,38 @@ class Checkout(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]
-
+    authentication_classes = [TokenAuthentication]
     def post(self, request, *args,  **kwargs):
         user=request.user
+        
+        order_id = request.data.get('order')
+        order = get_object_or_404(Order, id=order_id, user=user)
 
-        order=request.data.get('order')
-        payment = RazorpayPayment.objects.create(user=user, order=order, total_price=order.total_price)
+
+        
 
                 # Additional logic for payment, shipping, etc., can be added here
         razorpay_instance = Razorpay.get_instance()
 
         # Create the Razorpay client
         client = razorpay.Client(auth=(razorpay_instance.RAZORPAY_KEY, razorpay_instance.RAZORPAY_SECRET))
-        amount_in_paise = int(payment.total_price * 1.00)  # Amount in paise
-        razorpay_order = client.payment.create({"total_price": amount_in_paise, "currency": "INR", "payment_capture": "1"})
-
+        print(razorpay_instance.RAZORPAY_KEY, razorpay_instance.RAZORPAY_SECRET)
+        razorpay_order = client.order.create({"amount": int(order.total_price * 100), "currency": "INR", "payment_capture": "1"})
+        
+        payment = RazorpayPayment.objects.create(
+            user=user,
+            order=order,
+            total_price=order.total_price,
+            provider_order_id = razorpay_order["id"] # Assign the total price from the order
+        )
         # Update the order with Razorpay order ID
-        payment.provider_order_id = razorpay_order["id"]
+        
         payment.save()
 
         # Construct the response data
         response_data = {
             "order_id": order.id,
-            "amount": amount_in_paise,
+            "amount": int(payment.total_price * 1),
             "currency": "INR",
             "razorpay_order_id": razorpay_order["id"],
             "callback_url": "http://127.0.0.1:8000/razorpay/callback/",  # Replace with your callback URL
@@ -915,7 +944,7 @@ class PaymentView(APIView):
 
         return Response(response_data, status=status.HTTP_201_CREATED)
 class RazorpayCallback(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (AllowAny,)
     def post(self, request, *args, **kwargs):
         # Verify the Razorpay signature to ensure the callback is legitimate
         data = request.data
@@ -956,7 +985,7 @@ class RazorpayCallback(APIView):
  
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
-    # get cart
+    authentication_classes = [TokenAuthentication]
     def get(self, request, *args, **kwargs):
         user = request.user
         order = Order.objects.filter( user=user)
@@ -971,15 +1000,28 @@ class ChangeStatus(APIView):
             return Order.objects.get(pk=pk)
         except Order.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         order = self.get_object(pk)
-        serializer = StatusSerializer(order, data=request.data)
+        serializer = StatusSerializer(order, data=request.data, patch=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+class ChangeOrderAddress(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    def get_object(self, pk):
+        try:
+            return Order.objects.get(pk=pk)
+        except Order.DoesNotExist:
+            raise Http404
+    def patch(self, request, pk, format=None):
+        order = self.get_object(pk)
+        serializer = ChangeOrderAddressSerializer(order, data=request.data, patch=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+    
 class Count(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
@@ -1045,10 +1087,23 @@ class StoreView(APIView):
         if store_exist:
             return Response({'detail': 'Store already exist, you cant create a new one'})
         serializer=InventorySerializer(data=request.data)
-        if serializer.is_valid:
+        if serializer.is_valid():
             serializer.save()
             return Response({'detail':'Store created successfully'}, status=status.HTTP_201_CREATED)
-        
+
+class StoreUpdate(APIView):
+    def get_object(self, pk):
+        try:
+            return Store.objects.get(pk=pk)
+        except Store.DoesNotExist:
+            raise Http404
+    def patch(self, request, pk, format=None):
+        store = self.get_object()
+        serializer = InventorySerializer(store, partial=True, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'Store settings are succesfully updated'})
+
 class WishListView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -1075,4 +1130,15 @@ class WishListView(APIView):
             serializer = CreateWishlistSerializer(wishlist)  # Replace with your serializer
             return Response({'detail':f'you added {product.name} in your wishlist'})
     
-
+class RazorpayView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        razorpay_exists =Razorpay.objects.first()
+        if razorpay_exists:
+            return Response({'detail':'razorpay credentials already exists'})
+        serializer= RazorpaySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'Razorpay credential created Succesfully'})
+        return Response(status=status.HTTP_400_BAD_REQUEST) 

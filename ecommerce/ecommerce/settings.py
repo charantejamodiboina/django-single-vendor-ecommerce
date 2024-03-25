@@ -203,6 +203,3 @@ EMAIL_USE_SSL = False
 # Backend Deployment
 STATIC_ROOT = BASE_DIR/'static'
 
-
-RAZORPAY_KEY_ID = "rzp_test_PMLM1CKXCyafyM"
-RAZORPAY_KEY_SECRET = "pFsMp2sIKNw9lo8OPUENbvT2"

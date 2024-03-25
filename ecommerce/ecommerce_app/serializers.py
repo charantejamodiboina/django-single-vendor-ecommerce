@@ -224,3 +224,13 @@ class CreateWishlistSerializer(serializers.ModelSerializer):
         model = WishList
         fields = "__all__"
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+class RazorpaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Razorpay
+        fields="__all__"
+
+class ChangeOrderAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Order
+        fields=('address')
