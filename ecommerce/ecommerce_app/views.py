@@ -33,7 +33,7 @@ import razorpay
 from rest_framework.parsers import MultiPartParser
 import pandas as pd
 from rest_framework.decorators import api_view, permission_classes
-
+from django.db.models import Sum
 TIME_ZONE ='Asia/Kolkata'
 
 # Registration APIView
@@ -246,20 +246,49 @@ class PlanSubscriptionUpdate(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
 # Address API view
-class AddressViewSet(viewsets.ModelViewSet):
-    queryset = ShippingAddress.objects.all()
-    serializer_class = AddressSerializer
+class AddressByUserId(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            addresses=ShippingAddress.objects.filter(user=pk)
+            serializer=AddressSerializer(addresses, many=True)
+            return Response(serializer.data)
+        except ShippingAddress.DoesNotExist:
+            return Response({'detail':'Shipping addresses doesnt exist'}, status=status.HTTP_404_NOT_FOUND)
+class AddressView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    @action(detail=False, methods=['GET'])
-    def get_addresses_by_user(self, request):
-        user = request.query_params.get('user')
-        if user:
-            addresses = ShippingAddress.objects.filter(user_id=user)
-            serializer = AddressSerializer(addresses, many=True)
+    def get(self, request, format=None):
+        all_address=ShippingAddress.objects.all()
+        serializer=AddressSerializer(all_address, many=True)
+        return Response(serializer.data)
+    def post(self, request, format=None):
+        serializer=AddressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data)
-        else:
-            return Response({'message': 'Please provide a user parameter in the query.'}, status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AddressById(APIView):
+    def get_object(self, pk):
+        try:
+            return ShippingAddress.objects.all(pk=pk)
+        except ShippingAddress.DoesNotExist:
+            raise Http404
+    def get(self, request, pk, format=None):
+        address=self.get_object(pk)
+        serializer=AddressSerializer(address)
+        return (serializer.data)
+    def patch(self, request, pk, format=None):
+        address=self.get_object(pk)
+        serializer=AddressSerializer(address, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'Shipping address updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        address=self.get_object(pk)
+        address.delete()
+        return Response({'detail':'Shipping address deleted successfully'})
 
 #Banner Views
 class BannerCreateView(generics.CreateAPIView):  
@@ -762,8 +791,7 @@ class RetrieveProductReview(generics.RetrieveAPIView):
     permission_classes = (AllowAny, )
 
 class ProductReview(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    permission_classes = (AllowAny ,)
     def get_object(self, pk):
         try:
             return ProductReviews.objects.filter(product_id=pk)
@@ -772,8 +800,15 @@ class ProductReview(APIView):
     def get(self, request, pk, format=None):
         product = self.get_object(pk)
         # review = ProductReviews.objects.filter( product_id=product)
-        serializer = ProductReviewsSerializer(product, many=True)  # Replace with your serializer
-        return Response(serializer.data)
+        serializer = ProductReviewsSerializer(product, many=True) 
+        total_rating=product.aggregate(total_rating=Sum('rating'))['total_rating']
+        
+        rating_count=product.count()
+        print(rating_count)
+        Average_rating=total_rating/rating_count
+            # Replace with your serializer
+        return Response({'reviews':serializer.data, 'Average Rating of a product':Average_rating}, status=status.HTTP_200_OK)
+
 # Cart item  views
 class CartItemView(generics.ListAPIView):
     serializer_class = CartItemSerializer
@@ -1133,6 +1168,16 @@ class WishListView(APIView):
 class RazorpayView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    def get_object(self):
+        razorpay_instance = Razorpay.get_instance()
+        if not razorpay_instance:
+            raise Http404("Razorpay credentials do not exist")
+        return razorpay_instance
+
+    def get(self, request, *args, **kwargs):
+        razorpay_instance = self.get_object()
+        serializer = RazorpaySerializer(razorpay_instance)
+        return Response(serializer.data)
     def post(self, request, *args, **kwargs):
         razorpay_exists =Razorpay.objects.first()
         if razorpay_exists:
@@ -1142,3 +1187,163 @@ class RazorpayView(APIView):
             serializer.save()
             return Response({'detail':'Razorpay credential created Succesfully'})
         return Response(status=status.HTTP_400_BAD_REQUEST) 
+    def patch(self, request, *args, **kwargs):
+        razorpay_instance = self.get_object()
+        serializer = RazorpaySerializer(razorpay_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'Razorpay credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TwilioView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        Twilio_instance = Twilio.get_instance()
+        if not Twilio_instance:
+            raise Http404("Twilio credentials do not exist")
+        return Twilio_instance
+
+    def get(self, request, *args, **kwargs):
+        Twilio_instance = self.get_object()
+        serializer = TwilioSerializer(Twilio_instance)
+        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        Twilio_exists =Twilio.objects.first()
+        if Twilio_exists:
+            return Response({'detail':'Twilio credentials already exists'})
+        serializer= TwilioSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'Twilio credential created Succesfully'})
+        return Response(status=status.HTTP_400_BAD_REQUEST) 
+    def patch(self, request, *args, **kwargs):
+        Twilio_instance = self.get_object()
+        serializer = TwilioSerializer(Twilio_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'Twilio credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Msg91View(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        Msg91_instance = Msg91.get_instance()
+        if not Msg91_instance:
+            raise Http404("Msg91 credentials do not exist")
+        return Msg91_instance
+
+    def get(self, request, *args, **kwargs):
+        Msg91_instance = self.get_object()
+        serializer = Msg91Serializer(Msg91_instance)
+        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        Msg91_exists =Msg91.objects.first()
+        if Msg91_exists:
+            return Response({'detail':'Msg91 credentials already exists'})
+        serializer= Msg91Serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'Msg91 credential created Succesfully'})
+        return Response(status=status.HTTP_400_BAD_REQUEST) 
+    def patch(self, request, *args, **kwargs):
+        Msg91_instance = self.get_object()
+        serializer = Msg91Serializer(Msg91_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'Msg91 credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PayTMView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        PayTM_instance = PayTM.get_instance()
+        if not PayTM_instance:
+            raise Http404("PayTM credentials do not exist")
+        return PayTM_instance
+
+    def get(self, request, *args, **kwargs):
+        PayTM_instance = self.get_object()
+        serializer = PayTMSerializer(PayTM_instance)
+        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        PayTM_exists =PayTM.objects.first()
+        if PayTM_exists:
+            return Response({'detail':'PayTM credentials already exists'})
+        serializer= PayTMSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'PayTM credential created Succesfully'})
+        return Response(status=status.HTTP_400_BAD_REQUEST) 
+    def patch(self, request, *args, **kwargs):
+        PayTM_instance = self.get_object()
+        serializer = PayTMSerializer(PayTM_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'PayTM credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class InstaMOJOView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        InstaMOJO_instance = InstaMOJO.get_instance()
+        if not InstaMOJO_instance:
+            raise Http404("InstaMOJO credentials do not exist")
+        return InstaMOJO_instance
+
+    def get(self, request, *args, **kwargs):
+        InstaMOJO_instance = self.get_object()
+        serializer = InstaMOJOSerializer(InstaMOJO_instance)
+        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        InstaMOJO_exists =InstaMOJO.objects.first()
+        if InstaMOJO_exists:
+            return Response({'detail':'InstaMOJO credentials already exists'})
+        serializer= InstaMOJOSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'InstaMOJO credential created Succesfully'})
+        return Response(status=status.HTTP_400_BAD_REQUEST) 
+    def patch(self, request, *args, **kwargs):
+        InstaMOJO_instance = self.get_object()
+        serializer = InstaMOJOSerializer(InstaMOJO_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'InstaMOJO credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ContentView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        Content_instance = Content.get_instance()
+        if not Content_instance:
+            raise Http404("Content credentials do not exist")
+        return Content_instance
+
+    def get(self, request, *args, **kwargs):
+        Content_instance = self.get_object()
+        serializer = ContentSerializer(Content_instance)
+        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        Content_exists =Content.objects.first()
+        if Content_exists:
+            return Response({'detail':'Content credentials already exists'})
+        serializer= ContentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'Content credential created Succesfully'})
+        return Response(status=status.HTTP_400_BAD_REQUEST) 
+    def patch(self, request, *args, **kwargs):
+        Content_instance = self.get_object()
+        serializer = ContentSerializer(Content_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'Content credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    

@@ -234,3 +234,28 @@ class ChangeOrderAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model=Order
         fields=('address')
+
+class TwilioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Twilio
+        fields="__all__"
+
+class Msg91Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=Msg91
+        Fields="__all__"
+
+class ContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Content
+        Fields="__all__"
+
+class InstaMOJOSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=InstaMOJO
+        Fields="__all__"
+
+class PayTMSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=PayTM
+        Fields="__all__"

@@ -7,7 +7,6 @@ from rest_framework import routers
 routers = routers.DefaultRouter()
 
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
-routers.register('address',views.AddressViewSet , "Address")
 routers.register('profile',views.UserProfileViewSet)
 
 
@@ -21,18 +20,30 @@ urlpatterns = [
     path('forgot/password', ForgotPasswordView.as_view(), name='Forgot Password'),
     path('reset/password', ResetPasswordView.as_view(), name='Reset Password'),
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
+
+    #API's for addresses
+    path('address/', AddressView.as_view()),#create and list 
+    path('address/<int:pk>/', AddressById.as_view()),# retrieve, update and delete 
+    path('user/address/<int:pk>/', AddressByUserId.as_view()),# retrieve by user id
+
     #API's for store/settings 
     path('store', StoreView.as_view()),#store create and get
     path('store/1/', StoreUpdate.as_view()), # store update
+    path('twilio', TwilioView.as_view()),
+    path('msg91', Msg91View.as_view()),
+    path('content', ContentView.as_view()),
+
     # API's for Banners
     path('banner/create', BannerCreateView.as_view(), name='Create Banner'),
     path('banners', BannersView.as_view(), name='Banner List'),
     path('banner/retrieve/<int:pk>/', BannerRetrieveView.as_view(), name='Banner Retrieve By Id'),
     path('banner/update/<int:pk>/', BannerUpdateView.as_view(), name='Update Banner'),
+
     # API's for Subscription
     path('subscription', PlanSubscription.as_view()),#create and list
     path('subscription/update/<int:pk>/', PlanSubscriptionUpdate.as_view()), #update
     path('subscription/<int:pk>/', PlanSubscriptioRetrieveDelete.as_view()), #get & delete
+
     # API's for Category
     path('category/create', CategoryCreateView.as_view(), name='Create Category'),
     path('categories', CategoriesView.as_view(), name='Categories List'),
@@ -94,6 +105,8 @@ urlpatterns = [
     path('razorpay', RazorpayView.as_view()),# razorpay settings
     path('payment', PaymentView.as_view()),# razorpay payment
     path("razorpay/callback/", RazorpayCallback.as_view(), name="callback"),
+    path('instamojo', InstaMOJOView.as_view()),
+    path('paytm', PayTMView.as_view()),
 
     # all excel bulk upload APIs
     path('category/excel/bulk', CategoryBulkUploadView.as_view()),
@@ -111,6 +124,8 @@ urlpatterns = [
     path("subcate/bulk/delete/", BulkSubcategoryDelete.as_view()),
     path("cate/bulk/delete/", BulkCategoryDelete.as_view()),
     path("product/bulk/delete/", BulkProductDelete.as_view()), 
+
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
