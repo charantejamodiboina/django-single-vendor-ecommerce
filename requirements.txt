@@ -15,5 +15,6 @@ markdown
 django-environ
 pandas
 openpyxl
+djangorestframework-bulk
 
 # GDAL

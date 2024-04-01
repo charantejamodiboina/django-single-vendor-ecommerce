@@ -96,17 +96,11 @@ class ProductsSerializer(serializers.ModelSerializer):
         model = Products
         fields = "__all__"
     
-class ProductsViewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Products
-        fields = "__all__"
-    subcategories_id=SubCategoriesViewSerializer()
-    variant=VariantsSerializer()
 
 class CustProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
-        fields =('id', 'name', 'image', 'price')
+        fields =('id', 'name', 'image', 'final_price')
     
 
 class ProductQuestionsSerializer(serializers.ModelSerializer):
@@ -123,7 +117,21 @@ class ProductReviewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductReviews
         fields = "__all__"
-    
+class CustomProductReviewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductReviews
+        fields = ('product_id','rating')
+class ProductsViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields =('id', 'subcategories_id', 'variant', 'name', 'description', 'price', 'discount_type',
+                  'discount', 'you_save', 'final_price', 'is_available', 'image', 'image2', 'image3',
+                  'image4', 'image5', 'image6', 'video', 'created_at', 'updated_at', 'stock', 'reviews')
+
+    subcategories_id=SubCategoriesViewSerializer()
+    variant=VariantsSerializer()
+    reviews = CustomProductReviewsSerializer(many=True, read_only=True, source='product_reviews')
+
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
@@ -156,9 +164,15 @@ class OrderItemsSerializer(serializers.ModelSerializer):
         model = OrderItems
         fields = ('product',)
 class OrderSerializer(serializers.ModelSerializer):
+    items=CustProductSerializer(many=True)
+    
     class Meta:
         model = Order
         fields = "__all__"
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['address']=AddressSerializer(instance.address).data
+        return response
 
 class OrderViewSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()

@@ -242,7 +242,7 @@ class ProductAnswer(models.Model):
     
 
 class ProductReviews(models.Model):
-    product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
+    product_id=models.ForeignKey(Products,on_delete=models.CASCADE, related_name='product_reviews')
     user_id=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     review_image1=models.FileField(null=True)
     review_image2=models.FileField(null=True)
@@ -553,6 +553,7 @@ class Content(models.Model):
         # Override the save method to ensure only one instance exists.
         self.pk = 1
         super().save(*args, **kwargs)
+
 class Page(models.Model):
     page_name=models.CharField(max_length=500)
     page_image=models.FileField(upload_to='uploads/', null=True, blank=True)

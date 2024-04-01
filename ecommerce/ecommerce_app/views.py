@@ -5,8 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import*
+import requests
 from django.db import transaction
 from .serializers import*
+from django.db.models import Avg
+from django.conf import settings
 from .email import*
 # from django.conf import settings
 from django.core.mail import send_mail
@@ -35,6 +38,7 @@ import pandas as pd
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Sum
 TIME_ZONE ='Asia/Kolkata'
+from datetime import datetime, timedelta
 
 # Registration APIView
 class UserRegistrationView(APIView):
@@ -578,11 +582,7 @@ class ProductsView(generics.ListAPIView):
         name = self.request.query_params.get('name', None)
         max_price = self.request.query_params.get('max_price', None)
         min_price = self.request.query_params.get('min_price', None)
-        if product:
-            queryset=queryset.filter(subcategories_id__name__icontains=product)        
-            queryset=queryset.filter(subcategories_id__category__name__icontains=product)       
-            queryset=queryset.filter(variant__variant_name__icontains=product)
-            queryset=queryset.filter(name__icontains=product)
+        new_arrival = self.request.query_params.get('new_arrival', None)
         if subcategory:
             queryset=queryset.filter(subcategories_id__name__icontains=subcategory)
         if category:
@@ -590,7 +590,11 @@ class ProductsView(generics.ListAPIView):
         if variant:
             queryset=queryset.filter(variant__variant_name__icontains=variant)
         if name:
-            queryset=queryset.filter(name__icontains=name)
+            queryset=queryset.filter(name__icontains=name)        
+        if new_arrival:
+            cutoff=timezone.now()-timedelta(days=int(new_arrival))
+            queryset=queryset.filter(created_at__gte=cutoff)
+        
         if min_price and max_price:
             queryset=queryset.filter(price__gte=min_price, price__lte=max_price)
         elif min_price:
@@ -599,11 +603,46 @@ class ProductsView(generics.ListAPIView):
             queryset=queryset.filter(price__lte=max_price)
         return queryset
 
-class ProductsRetrieveView(generics.RetrieveAPIView):
-    queryset = Products.objects.all()
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        for product_data in serializer.data:
+            product_id = product_data['id']
+            reviews = ProductReviews.objects.filter(product_id=product_id)
+            avg_rating = reviews.aggregate(avg_rating=Avg('rating'))['avg_rating']
+            product_data['average_rating'] = avg_rating
+
+        return Response(serializer.data)
+
+class ProductAgregatedData(APIView):
+    permission_classes = (AllowAny, )
+    def get(self, request):
+        host=settings.ALLOWED_HOSTS[0]
+        base_url = f'http://{host}:8000'
+        response1=requests.get(f'{base_url}/products?new_arrival=7')
+        response2=requests.get(f'{base_url}/product/discount')
+        new_arrivals=response1.json()
+        big_discount=response2.json()
+        agregated_data={
+            'New_Arrivals':new_arrivals,
+            'Big_Discounts':big_discount
+        }
+        return Response(agregated_data)
+    
+class BigDiscount(generics.ListAPIView):   
     serializer_class = ProductsViewSerializer
     permission_classes = (AllowAny, )
-    
+    def get_queryset(self):
+        queryset=Products.objects.all()
+        queryset=queryset.filter(discount_type='percentage').filter(discount__gte=40, discount__lte=100)
+        return queryset
+
+
+class ProductRetrieve(generics.RetrieveAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductsViewSerializer
+    permission_classes=(AllowAny ,)
+
 class ProductsUpdateView(APIView):    
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -807,7 +846,7 @@ class ProductReview(APIView):
         print(rating_count)
         Average_rating=total_rating/rating_count
             # Replace with your serializer
-        return Response({'reviews':serializer.data, 'Average Rating of a product':Average_rating}, status=status.HTTP_200_OK)
+        return Response(serializer.data, Average_rating, status=status.HTTP_200_OK)
 
 # Cart item  views
 class CartItemView(generics.ListAPIView):
@@ -935,7 +974,7 @@ class Checkout(APIView):
         # Additional logic for payment, shipping, etc., can be added here
         order.save()
         # Construct the response data
-        serializer = OrderSerializer(order)  # Replace with your serializer
+        serializer = OrderSerializer(order, context={'request': request})  # Replace with your serializer
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]
