@@ -29,8 +29,8 @@ urlpatterns = [
     #API's for store/settings 
     path('store', StoreView.as_view()),#store create and get
     path('store/1/', StoreUpdate.as_view()), # store update
-    path('twilio', TwilioView.as_view()),
-    path('msg91', Msg91View.as_view()),
+    path('twilio', TwilioView.as_view()),# twilio crdentials
+    path('msg91', Msg91View.as_view()),# Msg91 crdentials
     path('content', ContentView.as_view()),
 
     # API's for Banners

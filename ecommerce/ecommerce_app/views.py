@@ -634,9 +634,26 @@ class BigDiscount(generics.ListAPIView):
     permission_classes = (AllowAny, )
     def get_queryset(self):
         queryset=Products.objects.all()
-        queryset=queryset.filter(discount_type='percentage').filter(discount__gte=40, discount__lte=100)
-        return queryset
+        big_discount = queryset.filter(discount_type='percentage', discount__gte=40, discount__lte=100)
 
+        # Filter new arrivals
+        cutoff = timezone.now() - timedelta(days=7)
+        new_arrivals = queryset.filter(created_at__gte=cutoff)
+
+        # Concatenate the two querysets
+        return big_discount, new_arrivals
+
+         
+
+    def list(self, request, *args, **kwargs):
+        big_discount, new_arrivals = self.get_queryset()
+        big_discount_serializer = self.serializer_class(big_discount, many=True)
+        new_arrivals_serializer = self.serializer_class(new_arrivals, many=True)
+        response={
+            'big_discount': big_discount_serializer.data,
+            'new_arrivals': new_arrivals_serializer.data
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 class ProductRetrieve(generics.RetrieveAPIView):
     queryset = Products.objects.all()
@@ -1242,7 +1259,6 @@ class TwilioView(APIView):
         if not Twilio_instance:
             raise Http404("Twilio credentials do not exist")
         return Twilio_instance
-
     def get(self, request, *args, **kwargs):
         Twilio_instance = self.get_object()
         serializer = TwilioSerializer(Twilio_instance)
