@@ -247,7 +247,7 @@ class RazorpaySerializer(serializers.ModelSerializer):
 class ChangeOrderAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model=Order
-        fields=('address')
+        fields=('id', 'address')
 
 class TwilioSerializer(serializers.ModelSerializer):
     class Meta:

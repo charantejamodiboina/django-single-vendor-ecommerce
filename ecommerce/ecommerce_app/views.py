@@ -1108,7 +1108,7 @@ class ChangeOrderAddress(APIView):
             raise Http404
     def patch(self, request, pk, format=None):
         order = self.get_object(pk)
-        serializer = ChangeOrderAddressSerializer(order, data=request.data, patch=True)
+        serializer = ChangeOrderAddressSerializer(order, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
