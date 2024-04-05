@@ -273,15 +273,22 @@ class AddressView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AddressById(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method in ['PATCH', 'DELETE']:
+            return [IsAuthenticated()]
+        else:
+            return [IsAuthenticated()]
     def get_object(self, pk):
         try:
-            return ShippingAddress.objects.all(pk=pk)
+            return ShippingAddress.objects.get(pk=pk)
         except ShippingAddress.DoesNotExist:
             raise Http404
     def get(self, request, pk, format=None):
         address=self.get_object(pk)
         serializer=AddressSerializer(address)
-        return (serializer.data)
+        return Response(serializer.data)
     def patch(self, request, pk, format=None):
         address=self.get_object(pk)
         serializer=AddressSerializer(address, data=request.data, partial=True)
