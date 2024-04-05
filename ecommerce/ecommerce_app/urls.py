@@ -105,8 +105,6 @@ urlpatterns = [
     path('change/status/<int:pk>/', ChangeStatus.as_view()), # change order status
     path('order/address/<int:pk>/', ChangeOrderAddress.as_view()),# change address
     path('razorpay', RazorpayView.as_view()),# razorpay settings
-    path('payment', PaymentView.as_view()),# razorpay payment
-    path("razorpay/callback/", RazorpayCallback.as_view(), name="callback"),
     path('instamojo', InstaMOJOView.as_view()),
     path('paytm', PayTMView.as_view()),
 

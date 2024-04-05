@@ -39,6 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     modified_date = models.DateTimeField(default=timezone.now)
     is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -327,29 +328,16 @@ class CancelOrder(models.Model):
     ])
     others = models.TextField(null=True)
 
-class RazorpayPayment(models.Model):
+class Payment(models.Model):
     order=models.OneToOneField(Order, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
-    total_price = models.FloatField()
+    payment_title= models.CharField(max_length=50)
+    payment_response= models.TextField(max_length=3000)
     payment_status = models.CharField(max_length=20, choices=[
         ('pending', 'Pending'),
         ('success', 'Completed'),
         ('failed', 'Failed'),
     ], default='pending', blank=False, null=False)
-    provider_order_id = models.CharField(
-        _("Order ID"), max_length=40, null=False, blank=False
-    )
-    payment_id = models.CharField(
-        _("Payment ID"), max_length=36, null=False, blank=False
-    )
-    signature_id = models.CharField(
-        _("Signature ID"), max_length=128, null=False, blank=False
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    def update_total_price(self):
-        # Calculate the total_price based on associated Cart
-        self.total_price = self.order.total_price
-        self.save()
+    
 class Razorpay(models.Model):
     currency_code = models.CharField(max_length=100, default="INR")
     RAZORPAY_KEY = models.CharField(max_length=1000)
@@ -382,8 +370,6 @@ class Banner(models.Model):
 class WishList(models.Model):
     user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     items = models.ManyToManyField(Products, through='WishlistItem')
-    
-    
 
 class WishlistItem(models.Model):
     wishlist = models.ForeignKey(WishList, on_delete=models.CASCADE)
