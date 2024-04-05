@@ -1101,17 +1101,41 @@ class ChangeStatus(APIView):
 class ChangeOrderAddress(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+
     def get_object(self, pk):
         try:
             return Order.objects.get(pk=pk)
         except Order.DoesNotExist:
             raise Http404
+
     def patch(self, request, pk, format=None):
         order = self.get_object(pk)
-        serializer = ChangeOrderAddressSerializer(order, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        user = request.user
+        print("User:", user.id)
+        
+        # Retrieve the user's addresses
+        user_addresses = user.shippingaddress_set.all()
+        print("User Addresses:", user_addresses)
+
+        # Ensure the selected address belongs to the user
+        address_id = request.data.get('address_id')
+        print("Address ID:", address_id)
+        
+        try:
+            address_id = int(address_id)
+        except ValueError:
+            return Response({'detail': 'Invalid address ID format.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if address_id not in user_addresses.values_list('id', flat=True):
+            print("Invalid Address ID or Unauthorized")
+            return Response({'detail': 'Invalid address ID or unauthorized to change this address.'}, status=status.HTTP_400_BAD_REQUEST)
+                # Update the order's address
+        order.address_id = address_id
+        order.save()
+
+        # Return updated order data
+        serializer = OrderSerializer(order, context={'request': request})
+        return Response(serializer.data)
     
 class Count(APIView):
     permission_classes = (AllowAny,)
