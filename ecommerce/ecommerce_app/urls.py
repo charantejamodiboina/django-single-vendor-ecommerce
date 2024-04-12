@@ -62,7 +62,6 @@ urlpatterns = [
     path('product/retrieve/<int:pk>/', ProductRetrieve.as_view(), name='Products Retrieve By Id'),
     path('product/update/<int:pk>/', ProductsUpdateView.as_view(), name='Update Products'),
     path('product/discount', BigDiscount.as_view()),#filter. This api is applicable only if the discount_type is percentage.
-    path('product/data', ProductAgregatedData.as_view()),#big discount & new arrivals 
 
     # Product variant APIs
     path('product/variant', VarientsPost.as_view()),# create

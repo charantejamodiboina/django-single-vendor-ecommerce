@@ -73,16 +73,17 @@ class VerifyOtp(APIView):
         if not email or not otp:
             return Response({'error': 'email and otp is required.'}, status=status.HTTP_400_BAD_REQUEST)
         # Get the user and their associated OTP from the database (assuming you have stored it during registration)
-        user = CustomUser.objects.get(email=email) 
-        if email != user.email:
-            return Response({'error': 'Invalid email.'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = CustomUser.objects.get(email=email) 
+        except CustomUser.DoesNotExist:
+            raise Http404
+        if otp != user.otp:
+            return Response({'error': 'Invalid otp'}, status=status.HTTP_400_BAD_REQUEST)
         # Compare the received OTP with the one in the database
-        if otp == user.otp:
-            user.is_verified = True
-            user.save()
-            return Response({'message': 'OTP verified successfully.'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.is_verified = True
+        user.save()
+        return Response({'message': 'OTP verified successfully.'}, status=status.HTTP_200_OK)
             
 # Login API view
 class UserLoginView(ObtainAuthToken):
@@ -273,13 +274,8 @@ class AddressView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AddressById(APIView):
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        elif self.request.method in ['PATCH', 'DELETE']:
-            return [IsAuthenticated()]
-        else:
-            return [IsAuthenticated()]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def get_object(self, pk):
         try:
             return ShippingAddress.objects.get(pk=pk)
@@ -621,20 +617,20 @@ class ProductsView(generics.ListAPIView):
 
         return Response(serializer.data)
 
-class ProductAgregatedData(APIView):
-    permission_classes = (AllowAny, )
-    def get(self, request):
-        host=settings.ALLOWED_HOSTS[0]
-        base_url = f'http://{host}:8000'
-        response1=requests.get(f'{base_url}/products?new_arrival=7')
-        response2=requests.get(f'{base_url}/product/discount')
-        new_arrivals=response1.json()
-        big_discount=response2.json()
-        agregated_data={
-            'New_Arrivals':new_arrivals,
-            'Big_Discounts':big_discount
-        }
-        return Response(agregated_data)
+# class ProductAgregatedData(APIView):
+#     permission_classes = (AllowAny, )
+#     def get(self, request):
+#         host=settings.ALLOWED_HOSTS[0]
+#         base_url = f'http://{host}:8000'
+#         response1=requests.get(f'{base_url}/products?new_arrival=7')
+#         response2=requests.get(f'{base_url}/product/discount')
+#         new_arrivals=response1.json()
+#         big_discount=response2.json()
+#         agregated_data={
+#             'New_Arrivals':new_arrivals,
+#             'Big_Discounts':big_discount
+#         }
+#         return Response(agregated_data)
     
 class BigDiscount(generics.ListAPIView):   
     serializer_class = ProductsViewSerializer
@@ -643,30 +639,22 @@ class BigDiscount(generics.ListAPIView):
         queryset=Products.objects.all()
         big_discount = queryset.filter(discount_type='percentage', discount__gte=40, discount__lte=100)
 
-        # Filter new arrivals
-        cutoff = timezone.now() - timedelta(days=7)
-        new_arrivals = queryset.filter(created_at__gte=cutoff)
-
         # Concatenate the two querysets
-        return big_discount, new_arrivals
-
-         
-
+        return big_discount
     def list(self, request, *args, **kwargs):
-        big_discount, new_arrivals = self.get_queryset()
-        big_discount_serializer = self.serializer_class(big_discount, many=True)
-        new_arrivals_serializer = self.serializer_class(new_arrivals, many=True)
-        response={
-            'big_discount': big_discount_serializer.data,
-            'new_arrivals': new_arrivals_serializer.data
-        }
-        return Response(response, status=status.HTTP_200_OK)
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        for product_data in serializer.data:
+            product_id = product_data['id']
+            reviews = ProductReviews.objects.filter(product_id=product_id)
+            avg_rating = reviews.aggregate(avg_rating=Avg('rating'))['avg_rating']
+            product_data['average_rating'] = avg_rating
 
 class ProductRetrieve(generics.RetrieveAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductsViewSerializer
     permission_classes=(AllowAny ,)
-
+        
 class ProductsUpdateView(APIView):    
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -861,16 +849,23 @@ class ProductReview(APIView):
         except ProductReviews.DoesNotExist:
             raise Http404
     def get(self, request, pk, format=None):
-        product = self.get_object(pk)
-        # review = ProductReviews.objects.filter( product_id=product)
-        serializer = ProductReviewsSerializer(product, many=True) 
-        total_rating=product.aggregate(total_rating=Sum('rating'))['total_rating']
-        
-        rating_count=product.count()
-        print(rating_count)
-        Average_rating=total_rating/rating_count
-            # Replace with your serializer
-        return Response(serializer.data, Average_rating, status=status.HTTP_200_OK)
+        try:
+            product = self.get_object(pk)
+            # review = ProductReviews.objects.filter( product_id=product)
+            serializer = ProductReviewsSerializer(product, many=True) 
+            average_rating = product.aggregate(average_rating=Avg('rating'))['average_rating'] or 0
+
+            rating_count = product.count()
+
+            response_data = {
+                'reviews': serializer.data,
+                'average_rating': average_rating,
+                'rating_count': rating_count
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Cart item  views
 class CartItemView(generics.ListAPIView):

@@ -544,3 +544,12 @@ class Page(models.Model):
     page_name=models.CharField(max_length=500)
     page_image=models.FileField(upload_to='uploads/', null=True, blank=True)
     Page_content=models.TextField(max_length=3000)
+
+class DeliveryProfile(models.Model):
+    deliveryman_image=models.ImageField(upload_to='uploads/', null=True, blank=True)
+    vehicle=models.CharField(max_length=245)
+    identity_type=models.CharField(max_length=245)
+    identity_image=models.ImageField(upload_to='uploads/', null=True, blank=True)
+    identity_number=models.CharField(max_length=245)
+
+    
