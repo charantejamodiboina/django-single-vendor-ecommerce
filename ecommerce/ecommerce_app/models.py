@@ -317,6 +317,7 @@ class OrderItems(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     items_price = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
+    
 class CancelOrder(models.Model):
     order_id = models.PositiveSmallIntegerField()
     is_cancelled = models.BooleanField(default=True)

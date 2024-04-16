@@ -252,6 +252,9 @@ class PlanSubscriptionUpdate(APIView):
     
 # Address API view
 class AddressByUserId(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, pk, *args, **kwargs):
         try:
             addresses=ShippingAddress.objects.filter(user=pk)
@@ -649,6 +652,7 @@ class BigDiscount(generics.ListAPIView):
             reviews = ProductReviews.objects.filter(product_id=product_id)
             avg_rating = reviews.aggregate(avg_rating=Avg('rating'))['avg_rating']
             product_data['average_rating'] = avg_rating
+        return Response(serializer.data)
 
 class ProductRetrieve(generics.RetrieveAPIView):
     queryset = Products.objects.all()
@@ -964,13 +968,16 @@ class Checkout(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user
         cart = get_object_or_404(Cart, user=user)
-        address = user.shippingaddress_set.first()
         product_id = request.data.get('product')
         # Ensure the cart is not empty
         if cart.items.count() == 0:
             return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
-
+        #check the address is added or not
+        address = user.shippingaddress_set.first()
+        if not address:
+            return Response({'detail':'Please add shipping address before checkout order'}, status=status.HTTP_400_BAD_REQUEST)
         # Create an order
+        
         order = Order.objects.create(user=user, total_price=cart.total_price, address=address)
         order.generate_order_id()
         # Transfer items from the cart to the order
@@ -993,7 +1000,7 @@ class Checkout(APIView):
         # Additional logic for payment, shipping, etc., can be added here
         order.save()
         # Construct the response data
-        serializer = OrderSerializer(order, context={'request': request})  # Replace with your serializer
+        serializer = OrderSerializer(order, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class OrderView(APIView):
@@ -1040,7 +1047,7 @@ class ChangeOrderAddress(APIView):
         print("User Addresses:", user_addresses)
 
         # Ensure the selected address belongs to the user
-        address_id = request.data.get('address_id')
+        address_id = request.data.get('address')
         print("Address ID:", address_id)
         
         try:
