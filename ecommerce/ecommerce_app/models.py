@@ -62,19 +62,12 @@ class ShippingAddress(models.Model):
     postal_code = models.CharField(max_length=20)
 
 class UserProfile(models.Model):
-
-    MALE = 1
-    FEMALE = 2
-    OTHERS = 3
-
-    GENDER_CHOICES = (
-        (MALE, 'Male'),
-        (FEMALE, 'Female'),
-        (OTHERS, 'Others')
-    )
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     date_of_birth = models.DateField(null=True)
-    gender = models.PositiveSmallIntegerField(choices=GENDER_CHOICES)
+    gender = models.CharField(max_length =100, choices=[
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('others', 'Others')])
     mobile = models.BigIntegerField(unique=True, validators=[
             MaxValueValidator(9999999999),
             MinValueValidator(1000000000)
@@ -317,7 +310,7 @@ class OrderItems(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     items_price = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
 class CancelOrder(models.Model):
     order_id = models.PositiveSmallIntegerField()
     is_cancelled = models.BooleanField(default=True)
@@ -363,6 +356,7 @@ class Banner(models.Model):
     image = models.ImageField(upload_to='uploads/')
     link = models.CharField(max_length=200, null=True)
     is_active = models.BooleanField(default=True)
+    product=models.ForeignKey(Products, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

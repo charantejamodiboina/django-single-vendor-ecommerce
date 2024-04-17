@@ -21,6 +21,9 @@ urlpatterns = [
     path('reset/password', ResetPasswordView.as_view(), name='Reset Password'),
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
 
+    #API's for profile
+    path('profile/patch/', ProfilePatch.as_view()),
+
     #API's for addresses
     path('address/', AddressView.as_view()),#create and list 
     path('address/<int:pk>/', AddressById.as_view()),# retrieve, update and delete 
@@ -28,7 +31,6 @@ urlpatterns = [
 
     #API's for store/settings 
     path('store', StoreView.as_view()),#store create and get
-    path('store/1/', StoreUpdate.as_view()), # store update
     path('twilio', TwilioView.as_view()),# twilio crdentials
     path('msg91', Msg91View.as_view()),# Msg91 crdentials
     path('content', ContentView.as_view()),
@@ -74,7 +76,6 @@ urlpatterns = [
     path('product/que/list', ProductQuestionslist.as_view()),
     path('product/que/<int:pk>/', ProductQuestionsDetails.as_view()),
     path('product/question/<int:pk>/', ProductQuestionsView.as_view()),
-
 
     # API's for product answers
     path('product/ans', PostAnswer.as_view()),

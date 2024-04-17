@@ -1022,7 +1022,7 @@ class ChangeStatus(APIView):
             raise Http404
     def patch(self, request, pk, format=None):
         order = self.get_object(pk)
-        serializer = StatusSerializer(order, data=request.data, patch=True)
+        serializer = StatusSerializer(order, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -1122,10 +1122,32 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer        
     
-
+class ProfilePatch(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        return self.request.user.userprofile
+    def patch(self, request, format=None):
+        userprofile = self.get_object()
+        serializer = UserProfileSerializer(userprofile, partial=True, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':' succesfully updated'})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 class StoreView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    def get_object(self):
+        store = Store.get_instance()
+        if not store:
+            raise Http404("store credentials do not exist")
+        return store
+    def get(self, request, *args, **kwargs):
+        store = self.get_object()
+        serializer = InventorySerializer(store)
+        return Response(serializer.data)
     def post(self, request, *args, **kwargs):
         store_exist=Store.objects.first()
         if store_exist:
@@ -1134,19 +1156,15 @@ class StoreView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'detail':'Store created successfully'}, status=status.HTTP_201_CREATED)
-
-class StoreUpdate(APIView):
-    def get_object(self, pk):
-        try:
-            return Store.objects.get(pk=pk)
-        except Store.DoesNotExist:
-            raise Http404
-    def patch(self, request, pk, format=None):
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, *args, **kwargs):
         store = self.get_object()
-        serializer = InventorySerializer(store, partial=True, many=True)
+        serializer = InventorySerializer(store, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({'detail':'Store settings are succesfully updated'})
+            return Response({'detail': 'store credentials updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class WishListView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -1321,7 +1339,7 @@ class InstaMOJOView(APIView):
         serializer = InstaMOJOSerializer(InstaMOJO_instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({'detail': 'InstaMOJO credentials updated successfully'})
+            return Response({'detail': 'InstaMOJO credentials updated '})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
