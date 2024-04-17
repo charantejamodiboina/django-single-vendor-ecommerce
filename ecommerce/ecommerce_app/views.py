@@ -209,7 +209,40 @@ class ResetPasswordView(APIView):
                 'message': 'Your password is updated succesfully',
             }
         return Response(response, status_code)
-
+    
+# Change password 
+class ChangePasswordView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+    def get_object(self):
+        return self.request.user
+    def post(self, request, format=None):
+        user=self.get_object()
+        old = request.data.get('old_password')
+        new = request.data.get('new_password')
+        #it checks the old password is entered or not
+        if not old:
+            return Response({'detail': 'old_password is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        #it checks the old password with your entered old password
+        if not user.check_password(old):
+            print(user.check_password)
+            return Response({'detail':'The old password you entered is incorrect.'}, status=status.HTTP_401_UNAUTHORIZED)
+        #it checks the new password is entered or not
+        if not new:
+            return Response({'detail': 'new_password is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        # it check if new password and old password are same
+        if new==old:
+            return Response({'detail':"Sorry, your new password can't be the same as your old one. Choose a different password."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer=self.serializer_class(user, data=request.data)
+        if serializer.is_valid():
+            user.set_password(new)
+            user.save()
+            print(user)
+            update_session_auth_hash(request, user)
+            status_code = status.HTTP_200_OK
+            return Response({'detail': 'Your password is updated succesfully'}, status_code)
+        
 #User account delete API view 
 class DeleteAccountView(APIView):
     authentication_classes = [TokenAuthentication]

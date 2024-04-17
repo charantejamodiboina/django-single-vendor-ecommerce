@@ -51,6 +51,11 @@ class ResetPasswordSerializer(serializers.Serializer):
         def create(self, validated_data):
             auth_user = CustomUser.objects.create_user(**validated_data)
             return auth_user
+        
+class ChangePasswordSerializer(serializers.Serializer):
+    class Meta:
+        old_password=serializers.CharField(max_length=20, write_only=True)
+        new_password = serializers.CharField(max_length=20, write_only=True)
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

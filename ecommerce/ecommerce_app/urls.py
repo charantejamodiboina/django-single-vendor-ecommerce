@@ -19,6 +19,7 @@ urlpatterns = [
     path('list', UserListView.as_view(), name='Users'),
     path('forgot/password', ForgotPasswordView.as_view(), name='Forgot Password'),
     path('reset/password', ResetPasswordView.as_view(), name='Reset Password'),
+    path('change/password', ChangePasswordView.as_view(), name='change Password'),
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
 
     #API's for profile
