@@ -24,7 +24,7 @@ urlpatterns = [
 
     #API's for profile
     path('profile/patch/', ProfilePatch.as_view()),
-
+    path('delivery/profile/', DeliverymanProfile.as_view()),
     #API's for addresses
     path('address/', AddressView.as_view()),#create and list 
     path('address/<int:pk>/', AddressById.as_view()),# retrieve, update and delete 

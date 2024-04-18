@@ -1168,7 +1168,23 @@ class ProfilePatch(APIView):
             return Response({'detail':' succesfully updated'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+class DeliverymanProfile(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset=DeliveryProfile.objects.all()
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    def post(self, request, *args, **kwargs):
+        serializer=DeliveryProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            user=serializer.validated_data['user']
+            if user.role=='delivery':
+                self.perform_create(serializer)
+                return Response({'detail':'your profile is created successfully'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'detail':'You have no access to create a profile'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class StoreView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

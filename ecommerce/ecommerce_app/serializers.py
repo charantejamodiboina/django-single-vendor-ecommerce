@@ -278,3 +278,8 @@ class PayTMSerializer(serializers.ModelSerializer):
     class Meta:
         model=PayTM
         Fields="__all__"
+
+class DeliveryProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=DeliveryProfile
+        Fields="__all__"

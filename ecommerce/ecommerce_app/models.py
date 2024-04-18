@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import *
 # from ecomerce.settings import DATE_TIME_FORMATS
-# from ecomerce import settings
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid
@@ -64,7 +64,7 @@ class ShippingAddress(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     date_of_birth = models.DateField(null=True)
-    gender = models.CharField(max_length =100, choices=[
+    sex = models.CharField(max_length =100, choices=[
         ('male', 'Male'),
         ('female', 'Female'),
         ('others', 'Others')])
@@ -546,5 +546,6 @@ class DeliveryProfile(models.Model):
     identity_type=models.CharField(max_length=245)
     identity_image=models.ImageField(upload_to='uploads/', null=True, blank=True)
     identity_number=models.CharField(max_length=245)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
 
     
