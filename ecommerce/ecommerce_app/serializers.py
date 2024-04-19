@@ -262,24 +262,24 @@ class TwilioSerializer(serializers.ModelSerializer):
 class Msg91Serializer(serializers.ModelSerializer):
     class Meta:
         model=Msg91
-        Fields="__all__"
+        fields="__all__"
 
 class ContentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Content
-        Fields="__all__"
+        fields="__all__"
 
 class InstaMOJOSerializer(serializers.ModelSerializer):
     class Meta:
         model=InstaMOJO
-        Fields="__all__"
+        fields="__all__"
 
 class PayTMSerializer(serializers.ModelSerializer):
     class Meta:
         model=PayTM
-        Fields="__all__"
+        fields="__all__"
 
 class DeliveryProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=DeliveryProfile
-        Fields="__all__"
+        fields = ['id', 'deliveryman_image', 'vehicle', 'identity_type', 'identity_image', 'identity_number', 'user']

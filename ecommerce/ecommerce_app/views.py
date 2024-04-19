@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import*
 import requests
-from django.db import transaction
+from django.db import transaction, DatabaseError
 from .serializers import*
 from django.db.models import Avg
 from django.conf import settings
@@ -1149,17 +1149,34 @@ class OrderCancelViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-class UserProfileViewSet(viewsets.ModelViewSet):
+class ProfileList(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer        
+    def get(self, format=None):
+        queryset = UserProfile.objects.all()
+        serializer= UserProfileSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)   
     
-class ProfilePatch(APIView):
+class ProfileView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    def post(self, request, *args, **kwargs):
+        serializer=UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                self.perform_create(serializer)
+                return Response({'detail':'your profile is created successfully'}, status=status.HTTP_200_OK)
+            except DatabaseError:
+                return Response({'detail':'your profile has been already created'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def get_object(self):
         return self.request.user.userprofile
+    def get(self, request, format=None):
+        userprofile = self.get_object()
+        serializer = UserProfileSerializer(userprofile)
+        return Response(serializer.data)
     def patch(self, request, format=None):
         userprofile = self.get_object()
         serializer = UserProfileSerializer(userprofile, partial=True, data=request.data)
@@ -1168,6 +1185,15 @@ class ProfilePatch(APIView):
             return Response({'detail':' succesfully updated'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class DeliveryProfileList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, format=None):
+        queryset = DeliveryProfile.objects.all()
+        serializer= DeliveryProfileSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)   
+
 class DeliverymanProfile(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -1177,12 +1203,29 @@ class DeliverymanProfile(APIView):
     def post(self, request, *args, **kwargs):
         serializer=DeliveryProfileSerializer(data=request.data)
         if serializer.is_valid():
-            user=serializer.validated_data['user']
+            user=request.user
             if user.role=='delivery':
-                self.perform_create(serializer)
-                return Response({'detail':'your profile is created successfully'}, status=status.HTTP_200_OK)
+                try:
+                    self.perform_create(serializer)
+                    return Response({'detail':'your profile is created successfully'}, status=status.HTTP_200_OK)
+                except DatabaseError:
+                    return Response({'detail':'your profile has been already created'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return Response({'detail':'You have no access to create a profile'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get_object(self):
+        return self.request.user.deliveryprofile
+    def get(self, request, format=None):
+        profile=self.get_object()
+        serializer=DeliveryProfileSerializer(profile)
+        return Response(serializer.data)
+    def patch(self, request, format=None):
+        profile=self.get_object()
+        serializer=DeliveryProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()     
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class StoreView(APIView):

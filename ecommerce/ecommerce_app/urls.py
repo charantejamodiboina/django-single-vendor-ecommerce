@@ -7,7 +7,6 @@ from rest_framework import routers
 routers = routers.DefaultRouter()
 
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
-routers.register('profile',views.UserProfileViewSet)
 
 
 urlpatterns = [
@@ -23,8 +22,11 @@ urlpatterns = [
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
 
     #API's for profile
-    path('profile/patch/', ProfilePatch.as_view()),
+    path('profile', ProfileView.as_view()),
+    path('profile/list', ProfileList.as_view()),
     path('delivery/profile/', DeliverymanProfile.as_view()),
+    path('delivery/profile/list', DeliveryProfileList.as_view()),
+    
     #API's for addresses
     path('address/', AddressView.as_view()),#create and list 
     path('address/<int:pk>/', AddressById.as_view()),# retrieve, update and delete 
