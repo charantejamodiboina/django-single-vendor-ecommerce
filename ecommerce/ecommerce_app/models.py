@@ -90,17 +90,11 @@ class Store(models.Model):
     ZIP = models.CharField(max_length=100)
     country_name = models.CharField(max_length=100)
     allow_distance = models.IntegerField()
-    default_city =models.CharField(max_length=100)
-    default_ZIP =models.CharField(max_length=100)
     delivery_charge = models.FloatField()
     tax_charge = models.FloatField()
     delivery_type = models.CharField(max_length=100, choices=[
         ('fixed', 'Fixed'),
         ('km', 'KM')
-    ])
-    have_shop= models.CharField(max_length=100, choices=[
-        ('yes', 'Yes'),
-        ('no', 'No')
     ])
     search_result_kind =models.CharField(max_length=100, choices=[
         ('km', 'KM'),
@@ -142,8 +136,11 @@ class Store(models.Model):
     logo= models.ImageField(upload_to='uploads/', null=True, blank=True)
     facebook_URL=models.CharField(max_length=100)
     instagram_URL= models.CharField(max_length=100)
+    twitter= models.CharField(max_length=100, null=True)
     shipping_amount=models.FloatField(default=40)
     returns_accepted=models.BooleanField(default=False)
+    app_store=models.CharField(max_length=100, null=True)
+    play_store=models.CharField(max_length=100, null=True)
 
 
 

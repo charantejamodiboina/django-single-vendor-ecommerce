@@ -57,11 +57,15 @@ class ChangePasswordSerializer(serializers.Serializer):
         old_password=serializers.CharField(max_length=20, write_only=True)
         new_password = serializers.CharField(max_length=20, write_only=True)
 
+class UserProfileListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = '__all__'
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = "__all__"
-    
+        fields = ('date_of_birth', 'sex', 'mobile')
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
