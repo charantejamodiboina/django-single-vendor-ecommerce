@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import *
-# from ecomerce.settings import DATE_TIME_FORMATS
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +10,6 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from .managers import CustomUserManager
 from django.db.models.fields import CharField
 import random
-# from .signals import*
 
 class Subscription(models.Model):
     start_date = models.DateTimeField()
@@ -89,7 +87,7 @@ class Store(models.Model):
     state = models.CharField(max_length=100)
     ZIP = models.CharField(max_length=100)
     country_name = models.CharField(max_length=100)
-    allow_distance = models.IntegerField()
+    allow_radius = models.IntegerField()
     delivery_charge = models.FloatField()
     tax_charge = models.FloatField()
     delivery_type = models.CharField(max_length=100, choices=[
@@ -100,7 +98,6 @@ class Store(models.Model):
         ('km', 'KM'),
         ('miles', 'Miles')
     ])
-    search_radius = models.IntegerField()
     currency_symbol= models.CharField(max_length=100)
     currency_side =models.CharField(max_length=100, choices=[
         ('left', 'Left'),
@@ -131,13 +128,11 @@ class Store(models.Model):
         ('deactive', 'Deactive')
     ])
     default_country_code_without_plus=models.IntegerField()
-    countries=models.CharField(max_length=100)
     FCM_token=models.TextField(max_length=1000)
     logo= models.ImageField(upload_to='uploads/', null=True, blank=True)
     facebook_URL=models.CharField(max_length=100)
     instagram_URL= models.CharField(max_length=100)
     twitter= models.CharField(max_length=100, null=True)
-    shipping_amount=models.FloatField(default=40)
     returns_accepted=models.BooleanField(default=False)
     app_store=models.CharField(max_length=100, null=True)
     play_store=models.CharField(max_length=100, null=True)
