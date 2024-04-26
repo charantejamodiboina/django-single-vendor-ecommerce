@@ -209,10 +209,6 @@ class OrderCanceledSerializer(serializers.ModelSerializer):
         model = CancelOrder
         fields = "__all__"
 
-# class PaymentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Payment
-#         fields = "__all__"
 
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -287,3 +283,8 @@ class DeliveryProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=DeliveryProfile
         fields = ['id', 'deliveryman_image', 'vehicle', 'identity_type', 'identity_image', 'identity_number', 'user']
+
+class PageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Page
+        fields = '__all__'

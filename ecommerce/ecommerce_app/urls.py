@@ -128,6 +128,10 @@ urlpatterns = [
     path("cate/bulk/delete/", BulkCategoryDelete.as_view()),
     path("product/bulk/delete/", BulkProductDelete.as_view()), 
 
+    # page CRUD
+    path('page', PageView.as_view()),
+    path('page/<int:pk>/', PageDetail.as_view()),
+
     
 ]
 if settings.DEBUG:

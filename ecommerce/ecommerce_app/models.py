@@ -270,13 +270,11 @@ class Order(models.Model):
     total_price = models.FloatField()
     address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
-        ('processing', 'Processing'),
         ('order placed', 'Order placed'),
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered'),
         ('canceled', 'Canceled')
-    ], default='pending')
+    ], default='order placed')
     created_at = models.DateTimeField(auto_now_add=True)
     def generate_order_id(self):
         self.order_id = 'ODID'+str(random.randint(1000000000, 9999999999))
@@ -530,7 +528,7 @@ class Content(models.Model):
 class Page(models.Model):
     page_name=models.CharField(max_length=500)
     page_image=models.FileField(upload_to='uploads/', null=True, blank=True)
-    Page_content=models.TextField(max_length=3000)
+    Page_content=models.TextField(max_length=10000)
 
 class DeliveryProfile(models.Model):
     deliveryman_image=models.ImageField(upload_to='uploads/', null=True, blank=True)
@@ -540,4 +538,11 @@ class DeliveryProfile(models.Model):
     identity_number=models.CharField(max_length=245)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
 
-    
+class Delivery(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'delivery'}, related_name='deliveries')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, limit_choices_to={'status': 'order placed'}, related_name='deliveries')
+    assigned_datetime = models.DateTimeField(default=timezone.now)
+    is_delivered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Deliveryman: {self.user.first_name} {self.user.last_name}"

@@ -1472,3 +1472,49 @@ class ContentView(APIView):
             return Response({'detail': 'Content credentials updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class PageView(APIView):
+    authentication_classes = [TokenAuthentication]
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        elif self.request.method in 'POST':
+            return [IsAuthenticated()]
+    def get(self, request, format=None):
+        queryset=Page.objects.all()
+        serializer=PageSerializer(queryset, many=True)
+        return Response(serializer.data)
+    def post(self, request, format=None):
+        serializer=PageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'created successfully'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PageDetail(APIView):
+    authentication_classes = [TokenAuthentication]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        elif self.request.method in ['PATCH', 'DELETE']:
+            return [IsAuthenticated()]
+    def get_object(self, pk):
+        try:
+            return Page.object.get(pk=pk)
+        except Page.DoesNotExist:
+            raise Http404
+    def get(self, request, pk, format=None):
+        page=self.get_object(pk)
+        serializer=PageSerializer(page)
+        return Response(serializer.data)
+    def patch(self, request, pk, format=None):
+        page=self.get_object(pk)
+        serializer=PageSerializer(page, request=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail':'updted successfully'}, serializer.data)
+        return Response(serializer.errors)
+    def delete(self, request, pk, format=None):
+        page=self.get_object(pk)
+        page.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
