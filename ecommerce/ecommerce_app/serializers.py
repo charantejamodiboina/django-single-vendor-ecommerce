@@ -288,3 +288,9 @@ class PageSerializer(serializers.ModelSerializer):
     class Meta:
         model=Page
         fields = '__all__'
+
+class DeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Delivery
+        fields = '__all__'
+

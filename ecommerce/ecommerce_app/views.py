@@ -1518,3 +1518,48 @@ class PageDetail(APIView):
         page=self.get_object(pk)
         page.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class AssigningOrder(APIView):
+    authentication_classes = [TokenAuthentication]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        elif self.request.method in 'POST':
+            return [IsAuthenticated()]
+    def get(self, request, format=None):
+        queryset=Delivery.objects.all()
+        serializer=DeliverySerializer(queryset, many=True)
+        return Response(serializer.data)
+    def post(self, request, format=True):
+        serializer=DeliverySerializer(data=request.data)
+        if serializer.is_valid():
+            user=request.user
+            if user.role == 'store admin':
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'detail': 'you dont have permission to do this action'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response (serializer.errors)
+class AssignedOrdersUpdateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        elif self.request.method in 'POST':
+            return [IsAuthenticated()]
+    def get_object(sel, pk):
+        try:
+            return Delivery.objects.get(pk=pk)
+        except Delivery.DoesNotExist:
+            raise Http404
+    def get(self, request, pk, format=None):
+        delivery=self.get_object(pk)
+        serializer=DeliverySerializer(delivery)
+        return Response(serializer.data)
+    def post(self, request, pk, format=None):
+        delivery=self.get_object(pk)
+        serializer=DeliverySerializer(delivery)
+        delivery.is_delivered = True
+        delivery.save()
+        serializer=DeliverySerializer(delivery)
+        return Response(serializer.data)

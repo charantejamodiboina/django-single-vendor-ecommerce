@@ -19,13 +19,15 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'admin')
-
+        extra_fields.setdefault('otp', 0)
+        extra_fields.setdefault('first_name', 'admin')
+        extra_fields.setdefault('last_name', '')
 
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        # Ensure there is no existing superuser
-        if self.filter(is_superuser=True).exists():
-            raise ValueError('A superuser already exists.')
+        # # Ensure there is no existing superuser
+        # if self.filter(is_superuser=True).exists():
+        #     raise ValueError('A superuser already exists.')
 
         return self.create_user(email, password, **extra_fields)

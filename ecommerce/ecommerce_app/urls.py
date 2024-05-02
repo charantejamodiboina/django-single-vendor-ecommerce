@@ -5,7 +5,6 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 routers = routers.DefaultRouter()
-
 routers.register('cancel/order',views.OrderCancelViewSet , "Cancel Order")
 
 
@@ -131,6 +130,10 @@ urlpatterns = [
     # page CRUD
     path('page', PageView.as_view()),
     path('page/<int:pk>/', PageDetail.as_view()),
+
+    # delivery
+    path('deliveries', AssigningOrder.as_view()),
+    path('delivery/<int:pk>/', AssignedOrdersUpdateView.as_view()),
 
     
 ]
