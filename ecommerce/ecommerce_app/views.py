@@ -1500,7 +1500,7 @@ class PageDetail(APIView):
             return [IsAuthenticated()]
     def get_object(self, pk):
         try:
-            return Page.object.get(pk=pk)
+            return Page.objects.get(pk=pk)
         except Page.DoesNotExist:
             raise Http404
     def get(self, request, pk, format=None):
