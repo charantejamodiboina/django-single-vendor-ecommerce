@@ -90,9 +90,11 @@ urlpatterns = [
     path('review/list', ListProductReview.as_view()),
     path('review/<int:pk>/', RetrieveProductReview.as_view()),
     path('product/review/<int:pk>/', ProductReview.as_view()),
+
     # API's for count
     path('count', Count.as_view(), name='Count'),
     path('user/count', UserCount.as_view(), name='Count By Role based'),
+    # path('revenue', CalculateRevenue.as_view()),
 
     # wishlist APIs
     path('wishlist', WishListView.as_view(), name='WishList'),
@@ -104,6 +106,7 @@ urlpatterns = [
     # checkout APIs
     path('checkout/', Checkout.as_view(), name='cart-checkout'), # order placed
     path('orders/', OrderView.as_view()),# retrieve user orders
+    path('orders/list', OrderList.as_view()),
     path('change/status/<int:pk>/', ChangeStatus.as_view()), # change order status
     path('order/address/<int:pk>/', ChangeOrderAddress.as_view()),# change address
     path('razorpay', RazorpayView.as_view()),# razorpay settings

@@ -1036,7 +1036,13 @@ class Checkout(APIView):
         # Construct the response data
         serializer = OrderSerializer(order, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+class OrderList(APIView):
+    permission_classes = (AllowAny, )
+    def get(self, request, format=None):
+        orders=Order.objects.all()
+        serializer=OrderViewSerializer(orders, many=True)
+        return Response(serializer.data)
+    
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
@@ -1103,6 +1109,8 @@ class ChangeOrderAddress(APIView):
 class Count(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
+        delivered_order_items = Order.objects.filter(status='delivered')
+        revenue = delivered_order_items.aggregate(total_revenue=Sum('total_price'))['total_revenue'] or 0
         counts = {
             'Categories': Categories.objects.count(),
             'Sub Categories': SubCategories.objects.count(),
@@ -1110,12 +1118,13 @@ class Count(APIView):
             'Users':CustomUser.objects.count(),
             'OrderItems':OrderItems.objects.count(),
             'Order':Order.objects.count(),
+            'Total Revenue': revenue
             # Add more counts for other models as needed
         }
         role_choices = CustomUser._meta.get_field('role').choices
         for role, _ in role_choices:
             count = CustomUser.objects.filter(role=role).count()
-            counts[role] = count
+            counts[role] = count       
         return Response(counts)
 
 class UserCount(APIView):
@@ -1563,3 +1572,10 @@ class AssignedOrdersUpdateView(APIView):
         delivery.save()
         serializer=DeliverySerializer(delivery)
         return Response(serializer.data)
+    
+# class CalculateRevenue(APIView):
+#     permission_classes=(AllowAny, )
+#     def get(self, request, *args, **kwargs):
+#         delivered_order_items = Order.objects.filter(status='delivered')
+#         revenue = delivered_order_items.aggregate(total_revenue=Sum('total_price'))['total_revenue'] or 0
+#         return Response(revenue)
