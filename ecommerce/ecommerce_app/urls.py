@@ -20,22 +20,25 @@ urlpatterns = [
     path('change/password', ChangePasswordView.as_view(), name='change Password'),
     path('delete/<int:pk>/', DeleteAccountView.as_view(), name='delete account'),
 
-    #API's for profile
-    path('profile', ProfileView.as_view()),
-    path('profile/list', ProfileList.as_view()),
-    path('delivery/profile/', DeliverymanProfile.as_view()),
-    path('delivery/profile/list', DeliveryProfileList.as_view()),
+    #API's for profile & delivery man's profile
+    path('profile', ProfileView.as_view()), #Create, Retrieve, Update
+    path('profile/list', ProfileList.as_view()), #List
+    path('delivery/profile', DeliverymanProfile.as_view()), #Create, Retrieve, Update
+    path('delivery/profile/list', DeliveryProfileList.as_view()), #List
     
     #API's for addresses
-    path('address/', AddressView.as_view()),#create and list 
-    path('address/<int:pk>/', AddressById.as_view()),# retrieve, update and delete 
-    path('user/address/<int:pk>/', AddressByUserId.as_view()),# retrieve by user id
+    path('address/', AddressView.as_view()), #Create and List 
+    path('address/<int:pk>/', AddressById.as_view()), #retrieve, update and delete 
+    path('user/address/<int:pk>/', AddressByUserId.as_view()), #retrieve by user id
 
     #API's for store/settings 
-    path('store', StoreView.as_view()),#store create and get
-    path('twilio', TwilioView.as_view()),# twilio crdentials
-    path('msg91', Msg91View.as_view()),# Msg91 crdentials
+    path('store', StoreView.as_view()), #Create, Retrieve, Update (store settings)
+    path('twilio', TwilioView.as_view()), #Create, Retrieve, Update (twilio crdentials)
+    path('msg91', Msg91View.as_view()), #Create, Retrieve, Update (Msg91 crdentials)
     path('content', ContentView.as_view()),
+    path('razorpay', RazorpayView.as_view()),# razorpay settings
+    path('instamojo', InstaMOJOView.as_view()),
+    path('paytm', PayTMView.as_view()),
 
     # API's for Banners
     path('banner/create', BannerCreateView.as_view(), name='Create Banner'),
@@ -109,9 +112,6 @@ urlpatterns = [
     path('orders/list', OrderList.as_view()),
     path('change/status/<int:pk>/', ChangeStatus.as_view()), # change order status
     path('order/address/<int:pk>/', ChangeOrderAddress.as_view()),# change address
-    path('razorpay', RazorpayView.as_view()),# razorpay settings
-    path('instamojo', InstaMOJOView.as_view()),
-    path('paytm', PayTMView.as_view()),
 
     # all excel bulk upload APIs
     path('category/excel/bulk', CategoryBulkUploadView.as_view()),

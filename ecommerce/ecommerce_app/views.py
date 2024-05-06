@@ -1113,12 +1113,12 @@ class Count(APIView):
         revenue = delivered_order_items.aggregate(total_revenue=Sum('total_price'))['total_revenue'] or 0
         counts = {
             'Categories': Categories.objects.count(),
-            'Sub Categories': SubCategories.objects.count(),
+            'SubCategories': SubCategories.objects.count(),
             'Products':Products.objects.count(),
             'Users':CustomUser.objects.count(),
             'OrderItems':OrderItems.objects.count(),
             'Order':Order.objects.count(),
-            'Total Revenue': revenue
+            'Total_Revenue': revenue
             # Add more counts for other models as needed
         }
         role_choices = CustomUser._meta.get_field('role').choices
