@@ -8,1930 +8,3643 @@
 	},
 	"item": [
 		{
-			"name": "User registration",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "first_name",
-							"value": "customer",
-							"type": "text"
+			"name": "User",
+			"item": [
+				{
+					"name": "User registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "chanti",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "customer2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "customer",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "delivery",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "last_name",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "customer@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "cusomer1",
-							"type": "text"
-						},
-						{
-							"key": "role",
-							"value": "This field is required.",
-							"type": "text",
-							"disabled": true
+						"url": {
+							"raw": "http://127.0.0.1:8000/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"register"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/register",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user email verification",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "email",
-							"value": "customer@gmail.com",
-							"type": "text"
+				{
+					"name": "user email verification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "customer@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "otp",
+									"value": "0",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "otp",
-							"value": "0",
-							"type": "text"
+						"url": {
+							"raw": "http://127.0.0.1:8000/verify",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"verify"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "customer@gmail.com",
+									"disabled": true
+								},
+								{
+									"key": "otp",
+									"value": "0",
+									"disabled": true
+								}
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/verify",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"verify"
-					],
-					"query": [
-						{
-							"key": "email",
-							"value": "customer@gmail.com",
-							"disabled": true
+				{
+					"name": "user login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "customer@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "customer",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "otp",
-							"value": "0",
-							"disabled": true
+						"url": {
+							"raw": "http://127.0.0.1:8000/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"login"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/list",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "role base users list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/list?role=customer",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"list"
-					],
-					"query": [
-						{
-							"key": "role",
-							"value": "customer"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "username",
-							"value": "customer@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "customer",
-							"type": "text"
-						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/login",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "forgot password",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "email",
-							"value": "customer@gmail.com",
-							"type": "text"
+				{
+					"name": "forgot password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "customer@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/forgot/password",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"forgot",
+								"password"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/forgot/password",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"forgot",
-						"password"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Reset password",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "email",
-							"value": "customer@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "otp",
-							"value": "731794",
-							"type": "text"
-						},
-						{
-							"key": "new_password",
-							"value": "customer",
-							"type": "text"
-						},
-						{
-							"key": "confirm_new_password",
-							"value": "customer",
-							"type": "text"
+				{
+					"name": "role base users list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/list?role=customer",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "customer"
+								}
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/reset/password",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"reset",
-						"password"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create profile",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "gender",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "mobile",
-							"value": "8523697410",
-							"type": "text"
-						},
-						{
-							"key": "user",
-							"value": "1",
-							"type": "text"
+				{
+					"name": "user list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/profile/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"profile",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user profile Retrieve",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/profile/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"profile",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create banner",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "title",
-							"value": "banner",
-							"type": "text"
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "customer@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "otp",
+									"value": "731794",
+									"type": "text"
+								},
+								{
+									"key": "new_password",
+									"value": "customer",
+									"type": "text"
+								},
+								{
+									"key": "confirm_new_password",
+									"value": "customer",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "image",
-							"type": "file",
-							"src": "/home/charan/Documents/sv.jpg"
+						"url": {
+							"raw": "http://127.0.0.1:8000/reset/password",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"reset",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "old_password",
+									"value": "customer2",
+									"type": "text"
+								},
+								{
+									"key": "new_password",
+									"value": "customer3",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "",
-							"value": "",
-							"type": "text",
-							"disabled": true
+						"url": {
+							"raw": "http://127.0.0.1:8000/change/password",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"change",
+								"password"
+							]
 						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/banner/create",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"banner",
-						"create"
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "banners list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/banners",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"banners"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "retrieve banner",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/banner/retrieve/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"banner",
-						"retrieve",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "banner update",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "title",
-							"value": "skill vidyalaya",
-							"type": "text"
+			"name": "user profile",
+			"item": [
+				{
+					"name": "profile update",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 44d7fbb2764b4f246f9cff70d668033a9358a5a8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
 						},
-						{
-							"key": "image",
-							"type": "file",
-							"src": "/home/charan/Documents/sv.jpg"
+						"url": {
+							"raw": "http://127.0.0.1:8000/profile/patch/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"profile",
+								"patch",
+								""
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/banner/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"banner",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "delete banner",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/banner/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"banner",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create category",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "eleectronics",
-							"type": "text"
+				{
+					"name": "list profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/profile/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"profile",
+								"list"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/category/create",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"category",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "categories list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/categories",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"categories"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "retrieve category",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/category/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"category",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "update category",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "Electronics",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/category/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"category",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "delete category",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/category/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"category",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create subcategory",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "mobiles",
-							"type": "text"
+				{
+					"name": "create profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sex",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "mobile",
+									"value": "8500010387",
+									"type": "text"
+								},
+								{
+									"key": "user",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
 						},
-						{
-							"key": "category",
-							"value": "2",
-							"type": "text"
+						"url": {
+							"raw": "http://127.0.0.1:8000/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"profile"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/subcategory/create",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"subcategory",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "subcategories list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/subcategories",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"subcategories"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "retrieve subcategory",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/subcategory/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"subcategory",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "update subcategory ",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "inverter",
-							"type": "text"
-						},
-						{
-							"key": "category",
-							"value": "2",
-							"type": "text"
+				{
+					"name": "retrieve profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"profile"
+							]
 						}
-					]
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delivery man profile",
+			"item": [
+				{
+					"name": "create dprofile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "vehicle",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "identity_type",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "identity_number",
+									"value": "This field is required.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"profile"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/subcategory/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"subcategory",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "delete subcategory",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/subcategory/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"subcategory",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create product varient",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/variant",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"variant"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product varient",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/variant/list",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"variant",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product varient by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/variant/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"variant",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update product varient",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/'variant/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"'variant",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete product varient",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/variant/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"variant",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create product",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/create",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "from min to max price filter",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products?min_price=100&max_price=14000",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "min_price",
-							"value": "100"
-						},
-						{
-							"key": "max_price",
-							"value": "14000"
-						},
-						{
-							"key": "subcategory",
-							"value": "8",
-							"disabled": true
-						},
-						{
-							"key": "variant",
-							"value": "r",
-							"disabled": true
+				{
+					"name": "get d profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"profile"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "max price filter",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products?max_price=14000",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "max_price",
-							"value": "14000"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "min price filter",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products?min_price=16000",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "min_price",
-							"value": "16000"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "product name filter ",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products?name=",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": ""
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "products filters (subcategory name)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products?subcategory=",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "subcategory",
-							"value": ""
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "products filter (variant name)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products?variant=",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "variant",
-							"value": ""
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve all product",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/products",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"products"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/retrieve/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"retrieve",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update product",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "santoor",
-							"type": "text"
-						},
-						{
-							"key": "price",
-							"value": "150",
-							"type": "text"
-						},
-						{
-							"key": "subcategories_id",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "variant",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "image",
-							"type": "file",
-							"src": "/home/charan/Desktop/download.jpeg"
-						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"update",
-						"1",
-						""
-					]
+				{
+					"name": "update d profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list d profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/profile/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"profile",
+								"list"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Delete product",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/update/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"update",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create cart items in cart",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "1",
-							"type": "text"
+			"name": "Address",
+			"item": [
+				{
+					"name": "create address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 44d7fbb2764b4f246f9cff70d668033a9358a5a8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "address",
+									"value": "vedayapalem",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "customer",
+									"type": "text"
+								},
+								{
+									"key": "mobile",
+									"value": "8686414467",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "nellore",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "ap",
+									"type": "text"
+								},
+								{
+									"key": "postal_code",
+									"value": "524004",
+									"type": "text"
+								},
+								{
+									"key": "user",
+									"value": "2",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "user",
-							"value": "2",
-							"type": "text",
-							"disabled": true
+						"url": {
+							"raw": "http://127.0.0.1:8000/address/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"address",
+								""
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/cart/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"cart",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "cart",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/cartlist/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"cartlist",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "update cart items quantity",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "",
-							"type": "text"
+				{
+					"name": "Retrieve Address",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 44d7fbb2764b4f246f9cff70d668033a9358a5a8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/address/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"address",
+								"1",
+								""
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/cart/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"cart",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete cart item",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "2",
-							"type": "text"
+				{
+					"name": "update address",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 44d7fbb2764b4f246f9cff70d668033a9358a5a8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "charan teja",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/address/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"address",
+								"1",
+								""
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/cart/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"cart",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "checkout order",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "1",
-							"type": "text",
-							"disabled": true
+				{
+					"name": "Delete address",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 44d7fbb2764b4f246f9cff70d668033a9358a5a8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/address/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"address",
+								"1",
+								""
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/checkout/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"checkout",
-						""
-					],
-					"query": [
-						{
-							"key": "Authorizatio",
-							"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-							"disabled": true
+				{
+					"name": "Get Address by userid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 44d7fbb2764b4f246f9cff70d668033a9358a5a8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/address/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"address",
+								"2",
+								""
+							]
 						}
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "retrieve orders",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/orders/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"orders",
-						""
-					],
-					"query": [
-						{
-							"key": "",
-							"value": "",
-							"disabled": true
+			"name": "Store and other Settings",
+			"item": [
+				{
+					"name": "create store settings",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "baratea",
+									"type": "text"
+								},
+								{
+									"key": "vat",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "gstin",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "contact_no",
+									"value": "9999999998",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "goons@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "ZIP",
+									"value": "89564",
+									"type": "text"
+								},
+								{
+									"key": "country_name",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "allow_radius",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "default_city",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "default_ZIP",
+									"value": "89789",
+									"type": "text"
+								},
+								{
+									"key": "delivery_charge",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "tax_charge",
+									"value": "2.3",
+									"type": "text"
+								},
+								{
+									"key": "delivery_type",
+									"value": "km",
+									"type": "text"
+								},
+								{
+									"key": "have_shop",
+									"value": "no",
+									"type": "text"
+								},
+								{
+									"key": "search_result_kind",
+									"value": "km",
+									"type": "text"
+								},
+								{
+									"key": "search_radius",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "currency_symbol",
+									"value": "$",
+									"type": "text"
+								},
+								{
+									"key": "currency_side",
+									"value": "right",
+									"type": "text"
+								},
+								{
+									"key": "currency_code",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "app_direction",
+									"value": "ltr",
+									"type": "text"
+								},
+								{
+									"key": "SMS_gateway",
+									"value": "firebase",
+									"type": "text"
+								},
+								{
+									"key": "user_login",
+									"value": "email & password",
+									"type": "text"
+								},
+								{
+									"key": "user_verify_with",
+									"value": "email verification",
+									"type": "text"
+								},
+								{
+									"key": "app_color",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "app_status",
+									"value": "active",
+									"type": "text"
+								},
+								{
+									"key": "default_country_code_without_plus",
+									"value": "31",
+									"type": "text"
+								},
+								{
+									"key": "countries",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "FCM_token",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "facebook_URL",
+									"value": "This field is required.",
+									"type": "text"
+								},
+								{
+									"key": "instagram_URL",
+									"value": "This field is required.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/store",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"store"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "change order status",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "status",
-							"value": "processing",
-							"type": "text"
-						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/change/status/12/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"change",
-						"status",
-						"12",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create product question",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/que",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"que"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product question",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/que/list",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"que",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product question by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/que/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"que",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create answer",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/ans",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"ans"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve answer",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/ans/list",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"ans",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve answer by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/product/ans/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"product",
-						"ans",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create product reviews",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/review",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"review"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product reviews",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/review/list",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"review",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve product reviews by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/review/1/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"review",
-						"1",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve count",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/count",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"count"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve wishlist",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/wishlist",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"wishlist"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create wishlist",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "",
-							"type": "text"
+				{
+					"name": "retrieve store settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/profile/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"profile",
+								"list"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/wishlist",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"wishlist"
-					]
+				{
+					"name": "updare store settings",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/store",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create twilio credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/twilio",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"twilio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve twilio credentials",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/twilio",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"twilio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update twilio credentials",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "create msg91 credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/msg91",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"msg91"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve msg91 credentials",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/msg91",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"msg91"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update msg91 credentials",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 29a5f7f85aa805178ad3f627bb3d990d9f1efcd4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/msg91",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"msg91"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create content",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/content",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"content"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve content",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/content",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"content"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update content",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/content",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"content"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Razorpay credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token fce67ba5be549c149fb1f43a40fd94021dd90630",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RAZORPAY_KEY",
+									"value": "rzp_test_fUQikkvZ4ppBwD",
+									"type": "text"
+								},
+								{
+									"key": "RAZORPAY_SECRET",
+									"value": "nzu3TTo5WsxClgHQjza8ezKc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/razorpay",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"razorpay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update razorpay credentials",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/razorpay",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"razorpay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve razorpay credentials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/razorpay",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"razorpay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create instamojo credentials",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/instamojo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"instamojo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve instamojo credentials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/instamojo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"instamojo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update instamojo credentials",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/instamojo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"instamojo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create paytm credentials",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/paytm",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"paytm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve paytm credentials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/paytm",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"paytm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update paytm credentials",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/paytm",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"paytm"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "Banner",
+			"item": [
+				{
+					"name": "create banner",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "banner",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/charan/Documents/sv.jpg"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/banner/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"banner",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "banners list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/banners",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"banners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve banner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/banner/retrieve/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"banner",
+								"retrieve",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete banner",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/banner/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"banner",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "banner update",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token af65c7cab08c9c39a2c8281ce1c020f6114e1235",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "skill vidyalaya",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/charan/Documents/sv.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/banner/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"banner",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "create category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 35bcabc28a67fb2e4b75c59cea26bcff6c06f271",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "eleectronics",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/category/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"category",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "categories list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/categories",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/category/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"category",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/category/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"category",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Electronics",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/category/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"category",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "category bulk JSON",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/category/bulk",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"category",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subcategory",
+			"item": [
+				{
+					"name": "subcategory excel bulk upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token fce67ba5be549c149fb1f43a40fd94021dd90630",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/charan/tbis projects/single-vendor-ecommerce-backend/subcategogy(1).xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcat/xl/bulk",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcat",
+								"xl",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subcategory bulk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"washing machines\",\n        \"category\":\"1\"\n    },\n    {\n        \"name\": \"electric cokkers\",\n        \"category\":\"1\"\n    },\n    {\n        \"name\": \"Air cooler\",\n        \"category\":\"1\"\n    },\n    {\n        \"name\": \"heaters\",\n        \"category\":\"1\"\n    },\n    {\n        \"name\": \"refrigerators\",\n        \"category\":\"1\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcategory/bulk",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcategory",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create subcategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "mobiles",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcategory/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcategory",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subcategories list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcategories",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve subcategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcategory/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcategory",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete subcategory",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcategory/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcategory",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update subcategory ",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 46918e3b05b093da2768efa04a91a582de638e77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "inverter",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/subcategory/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"subcategory",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Variant",
+			"item": [
+				{
+					"name": "Create product varient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/variant",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"variant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Variants xl bulk upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token fce67ba5be549c149fb1f43a40fd94021dd90630",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/charan/tbis projects/single-vendor-ecommerce-backend/Variants(1).xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/variant/xl/bulk",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"variant",
+								"xl",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product varient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/variant/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"variant",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product varient by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/variant/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"variant",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product varient",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/variant/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"variant",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product varient",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/'variant/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"'variant",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "products xl bulk upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token fce67ba5be549c149fb1f43a40fd94021dd90630",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/charan/tbis projects/single-vendor-ecommerce-backend/products(1).xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/xl/bulk",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"xl",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "from min to max price filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products?min_price=100&max_price=14000",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "min_price",
+									"value": "100"
+								},
+								{
+									"key": "max_price",
+									"value": "14000"
+								},
+								{
+									"key": "subcategory",
+									"value": "8",
+									"disabled": true
+								},
+								{
+									"key": "variant",
+									"value": "r",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "max price filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products?max_price=14000",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "max_price",
+									"value": "14000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "min price filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products?min_price=16000",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "min_price",
+									"value": "16000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product name filter ",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products?name=",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "products filters (subcategory name)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products?subcategory=",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "subcategory",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "products filter (variant name)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products?variant=",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "variant",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve all product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/products",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/retrieve/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"retrieve",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/update/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token fce67ba5be549c149fb1f43a40fd94021dd90630",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "dc motor pack of 6",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "price",
+									"value": "1000",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "stock",
+									"value": "30",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "subcategories_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "variant",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "discount",
+									"value": "200",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/update/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"update",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "create cart items in cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "user",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/cart/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/cartlist/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"cartlist",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete cart item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/cart/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update cart items quantity",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/cart/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product FAQ's",
+			"item": [
+				{
+					"name": "Create product question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/que",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"que"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create answer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/ans",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"ans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product question",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/que/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"que",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product question by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/que/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"que",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve answer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/ans/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"ans",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve answer by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/product/ans/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"product",
+								"ans",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Reviews",
+			"item": [
+				{
+					"name": "Create product reviews",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/review",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/review/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"review",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve product reviews by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/review/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"review",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wishlist",
+			"item": [
+				{
+					"name": "Create wishlist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/wishlist",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve wishlist",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 0c022679b3adec7cd2e3bf91c410f2e4250d5680",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/wishlist",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "retrieve orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/orders/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"orders",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change order status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token ",
+								"type": "text",
+								"uuid": "08f985e4-43e1-48b5-ae6e-8c32d5b93877"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "status",
+									"value": "delivered",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/change/status/4/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"change",
+								"status",
+								"4",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkout order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/checkout/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"checkout",
+								""
+							],
+							"query": [
+								{
+									"key": "Authorizatio",
+									"value": "Token 3ab935178af8f933d2b46c26439b2743559afae0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/orders/list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"orders",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change order address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/order/address/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"order",
+								"address",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "count",
+			"item": [
+				{
+					"name": "Retrieve count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/count",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/count",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"count"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "customer",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "pages",
+			"item": [
+				{
+					"name": "create page",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/page",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"page"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pages list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/page",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"page"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve page",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/page/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"page",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update page",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/page/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"page",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete page",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/page/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"page",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "delivery management",
+			"item": [
+				{
+					"name": "assign deliveries",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/deliveries",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"deliveries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list of assigned deliveries",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve assigned delivery",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update assign delivery status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/delivery/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delivery",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

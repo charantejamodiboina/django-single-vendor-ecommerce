@@ -1131,11 +1131,11 @@ class UserCount(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
         counts = {}
-        for role, _ in CustomUser.role:
+        roles = CustomUser.objects.values_list('role', flat=True).distinct()
+        for role in roles:
             count = CustomUser.objects.filter(role=role).count()
             counts[role] = count
         return Response(counts)
-
 # class PushNotificationView(APIView):
 #     permission_classes = (AllowAny,)
 #     def post(self, request):
