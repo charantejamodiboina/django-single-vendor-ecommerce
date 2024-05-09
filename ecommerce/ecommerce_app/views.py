@@ -1246,7 +1246,12 @@ class DeliverymanProfile(APIView):
     
 class StoreView(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        elif self.request.method in ['POST', 'PATCH']:
+            return [IsAuthenticated()]
     def get_object(self):
         store = Store.get_instance()
         if not store:

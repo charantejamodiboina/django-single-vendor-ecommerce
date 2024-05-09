@@ -185,6 +185,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderViewSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
+    address = AddressSerializer()
     class Meta:
         model = Order
         fields = "__all__"
