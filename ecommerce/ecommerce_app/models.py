@@ -71,6 +71,7 @@ class UserProfile(models.Model):
             MinValueValidator(1000000000)
         ])
     display_pic = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    # permission_classes = [IsAuthenticated]
 
 class Store(models.Model):
     name=models.CharField(max_length=255)
@@ -267,6 +268,9 @@ class Order(models.Model):
     order_id = models.CharField(max_length=20, unique=True, null=True)
     user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     items = models.ManyToManyField(Products, through='OrderItems')
+    price = models.FloatField()
+    gst = models.FloatField()
+    delivery_charge = models.FloatField()
     total_price = models.FloatField()
     address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=[
@@ -289,10 +293,17 @@ class Order(models.Model):
     @selected_address.setter
     def selected_address(self, address_id):
         self.address = ShippingAddress.objects.get(id=address_id)
-    def update_total_price(self):
-        # Calculate the total_price based on associated Cart
-        self.total_price = self.cart.total_price
-        self.save()
+    # def update_price(self):
+    #     # Calculate the total_price based on associated Cart
+    #     self.price = self.cart.total_price
+    #     self.save()
+    # def update_gst_and_delivery_charge(self):
+    #     store = Store.get_instance()
+    #     self.gst = store.tax_charge
+    #     self.delivery_charge = store.delivery_charge
+    # def update_total_price(self):
+    #     self.total_price = self.gst or 0+self.delivery_charge or 0+self.price
+    #     self.save()
 
 class OrderItems(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

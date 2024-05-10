@@ -50,10 +50,16 @@ class UserRegistrationView(APIView):
         serializers = self.serializer_class(data=request.data)
         valid = serializers.is_valid(raise_exception = True)
         if valid:
-            user=serializers.save()
-            cart = Cart.objects.create(user=user)
-            wishlist = WishList.objects.create(user=user)
-            email_otp(serializers.data['email'])
+            user=request.user
+            if user.role =='admin' or 'store admin' or 'employe' or 'delivery':
+                user.otp = 0
+                user.is_verified = True
+                user=serializers.save()
+            else:    
+                cart = Cart.objects.create(user=user)
+                wishlist = WishList.objects.create(user=user)
+                email_otp(serializers.data['email'])
+                user=serializers.save()
             
             status_code= status.HTTP_201_CREATED
             response={
@@ -1011,8 +1017,9 @@ class Checkout(APIView):
         if not address:
             return Response({'detail':'Please add shipping address before checkout order'}, status=status.HTTP_400_BAD_REQUEST)
         # Create an order
-        
-        order = Order.objects.create(user=user, total_price=cart.total_price, address=address)
+        store= Store.get_instance()
+        order = Order.objects.create(user=user, price=cart.total_price, address=address, gst=store.tax_charge,
+                                      delivery_charge=store.delivery_charge, total_price=cart.total_price+store.tax_charge+store.delivery_charge)
         order.generate_order_id()
         # Transfer items from the cart to the order
         for item in cart.cartitem_set.all():

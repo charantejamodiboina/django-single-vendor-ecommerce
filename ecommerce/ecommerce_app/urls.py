@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import*
 from ecommerce_app import views
 from django.conf.urls.static import static
+# from .invoice import*
 
 from rest_framework import routers
 routers = routers.DefaultRouter()
@@ -133,6 +134,7 @@ urlpatterns = [
     # delivery
     path('deliveries', AssigningOrder.as_view()),
     path('delivery/<int:pk>/', AssignedOrdersUpdateView.as_view()),
+    # path('invoice/<str:order_id>/', generate_invoice_pdf, name='generate_invoice_pdf'),
 
     
 ]

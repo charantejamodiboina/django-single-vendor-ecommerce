@@ -16,5 +16,5 @@ django-environ
 pandas
 openpyxl
 djangorestframework-bulk
-
+reportlab
 # GDAL
