@@ -34,7 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('employe', 'Employee')], default= 'customer')
     is_staff = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
-    modified_date = models.DateTimeField(default=timezone.now)
+    modified_date = models.DateTimeField(auto_now=True)
     is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -173,7 +173,7 @@ class SubCategories(models.Model):
     thumbnail=models.ImageField(upload_to='uploads/', null=True, blank=True)
     description=models.TextField(null=True)
     created_at=models.DateTimeField(auto_now_add=True)
-    modified_at=models.DateTimeField(default=timezone.now)
+    modified_at=models.DateTimeField(auto_now=True)
     
 class ProductVariant(models.Model):
     variant_name = models.CharField(max_length=100, unique=True)
@@ -552,7 +552,8 @@ class DeliveryProfile(models.Model):
 class Delivery(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'delivery'}, related_name='deliveries')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, limit_choices_to={'status': 'order placed'}, related_name='deliveries')
-    assigned_datetime = models.DateTimeField(default=timezone.now)
+    assigned_datetime = models.DateTimeField(auto_now_add=True)
+    delivered_datetime = models.DateTimeField(auto_now=True)
     is_delivered = models.BooleanField(default=False)
 
     def __str__(self):
