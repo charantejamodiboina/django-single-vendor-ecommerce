@@ -171,7 +171,7 @@ class OrderItemsSerializer(serializers.ModelSerializer):
     product=CustProductSerializer()
     class Meta:
         model = OrderItems
-        fields = ('product',)
+        fields = "__all__"
 
 class OrderSerializer(serializers.ModelSerializer):
     items=CustProductSerializer(many=True)

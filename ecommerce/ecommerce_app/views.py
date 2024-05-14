@@ -50,16 +50,17 @@ class UserRegistrationView(APIView):
         serializers = self.serializer_class(data=request.data)
         valid = serializers.is_valid(raise_exception = True)
         if valid:
-            user=request.user
-            if user.role =='admin' or 'store admin' or 'employe' or 'delivery':
-                user.otp = 0
-                user.is_verified = True
-                user=serializers.save()
-            else:    
+            user=serializers.save()
+            
+            if user.role == 'customer':    
                 cart = Cart.objects.create(user=user)
                 wishlist = WishList.objects.create(user=user)
                 email_otp(serializers.data['email'])
-                user=serializers.save()
+            elif user.role in ['admin', 'store admin', 'employe', 'delivery']:
+                user.otp = 0
+                user.is_verified = True
+                user.save()
+                
             
             status_code= status.HTTP_201_CREATED
             response={
