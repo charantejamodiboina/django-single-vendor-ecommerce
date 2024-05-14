@@ -1020,7 +1020,7 @@ class Checkout(APIView):
         # Create an order
         store= Store.get_instance()
         order = Order.objects.create(user=user, price=cart.total_price, address=address, gst=store.tax_charge,
-                                      delivery_charge=store.delivery_charge, total_price=cart.total_price+store.tax_charge+store.delivery_charge)
+                                      delivery_charge=store.delivery_charge, total_price=cart.total_price+(cart.total_price*(store.tax_charge/100))+store.delivery_charge)
         order.generate_order_id()
         # Transfer items from the cart to the order
         for item in cart.cartitem_set.all():
